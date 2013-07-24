@@ -1,0 +1,758 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>ioc_writer.ioc_api.IOC</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >iocwriter_11</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Package&nbsp;ioc_writer ::
+        <a href="ioc_writer.ioc_api-module.html">Module&nbsp;ioc_api</a> ::
+        Class&nbsp;IOC
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="ioc_writer.ioc_api.IOC-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class IOC</h1><p class="nomargin-top"><span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC">source&nbsp;code</a></span></p>
+<pre class="literalblock">
+
+Class for easy creation and manipulation of IOCs.
+
+class attributes
+    root:                   Root node of the IOC (OpenIOC element)
+    top_level_indicator:    Top level Indicator node, typically a toplevel
+                            OR node for a valid MIR IOC.
+    parameters:             Parameters node
+
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="ioc_writer.ioc_api.IOC-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fn</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">name</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">description</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">Automatically generated IOC</code><code class="variable-quote">'</code></span>,
+        <span class="summary-sig-arg">author</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">IOC_api</code><code class="variable-quote">'</code></span>,
+        <span class="summary-sig-arg">links</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">keywords</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">id</span>=<span class="summary-sig-default">None</span>)</span><br />
+      creates an IOC class object, populating the class attributes from a
+file or by creating them.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="ioc_writer.ioc_api.IOC-class.html#open_ioc" class="summary-sig-name">open_ioc</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fn</span>)</span><br />
+      Opens an IOC file, or XML string.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.open_ioc">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="ioc_writer.ioc_api.IOC-class.html#make_ioc" class="summary-sig-name">make_ioc</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">description</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">Automatically generated IOC</code><code class="variable-quote">'</code></span>,
+        <span class="summary-sig-arg">author</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">IOC_api</code><code class="variable-quote">'</code></span>,
+        <span class="summary-sig-arg">links</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">keywords</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">id</span>=<span class="summary-sig-default">None</span>)</span><br />
+      This generates all parts of an IOC, but without any definition.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.make_ioc">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="ioc_writer.ioc_api.IOC-class.html#set_lastmodified_date" class="summary-sig-name">set_lastmodified_date</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">date</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Set the last modified date of a IOC to the current date.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.set_lastmodified_date">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="ioc_writer.ioc_api.IOC-class.html#set_published_date" class="summary-sig-name">set_published_date</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">date</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Set the published date of a IOC to the current date.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.set_published_date">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="set_created_date"></a><span class="summary-sig-name">set_created_date</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">date</span>)</span><br />
+      Not Implemented Yet</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.set_created_date">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="ioc_writer.ioc_api.IOC-class.html#add_parameter" class="summary-sig-name">add_parameter</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">id</span>,
+        <span class="summary-sig-arg">content</span>,
+        <span class="summary-sig-arg">name</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">comment</code><code class="variable-quote">'</code></span>,
+        <span class="summary-sig-arg">type</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">string</code><code class="variable-quote">'</code></span>)</span><br />
+      Add a a parameter to the IOC.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.add_parameter">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="ioc_writer.ioc_api.IOC-class.html#add_link" class="summary-sig-name">add_link</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rel</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">href</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Add a Link metadata element to the IOC, with the</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.add_link">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="update_name"></a><span class="summary-sig-name">update_name</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      Not Implemented Yet</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.update_name">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="update_description"></a><span class="summary-sig-name">update_description</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">description</span>)</span><br />
+      Not Implemented Yet</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.update_description">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="update_link"></a><span class="summary-sig-name">update_link</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rel</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">href</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Not Implemented Yet</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.update_link">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="update_parameter"></a><span class="summary-sig-name">update_parameter</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">id</span>)</span><br />
+      Not Implemented Yet</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.update_parameter">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="remove_link"></a><span class="summary-sig-name">remove_link</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rel</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">href</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Not Implemented Yet</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.remove_link">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="remove_indicator"></a><span class="summary-sig-name">remove_indicator</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">id</span>)</span><br />
+      Not Implemented Yet</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.remove_indicator">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="remove_parameter"></a><span class="summary-sig-name">remove_parameter</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">id</span>)</span><br />
+      Not Implemented Yet</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.remove_parameter">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="remove_name"></a><span class="summary-sig-name">remove_name</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      Not Implemented Yet</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.remove_name">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="remove_description"></a><span class="summary-sig-name">remove_description</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">description</span>)</span><br />
+      Not Implemented Yet</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.remove_description">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">fn</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">name</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">description</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">Automatically generated IOC</code><code class="variable-quote">'</code></span>,
+        <span class="sig-arg">author</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">IOC_api</code><code class="variable-quote">'</code></span>,
+        <span class="sig-arg">links</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">keywords</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">id</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+creates an IOC class object, populating the class attributes from a
+file or by creating them.
+
+Input
+    fn: This is a path to a file to open, or a string containing XML 
+        representing an IOC.
+    name:       string, Name of the ioc
+    description:    string, description of the ioc
+    author:     string, author name/email address
+    links:      list of tuples.  Each tuple should be in the form 
+                (rel, href, value).
+    keywords:   string.  This is normally a space delimited string of 
+                values that may be used as keywords
+    id: GUID for the IOC.  This should not be specified under normal circumstances.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="open_ioc"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">open_ioc</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">fn</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.open_ioc">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Opens an IOC file, or XML string.  Returns the root element, top level
+indicator element, and parameters element.  If the IOC or string fails
+to parse, an IOCParseError is raised.
+
+input
+    fn: This is a path to a file to open, or a string containing XML 
+        representing an IOC.
+
+returns
+    a tuple containing three elementTree Element objects
+    The first element, the root, contains the entire IOC itself.
+    The second element, the top level OR indicator, allows the user to add
+        additional IndicatorItem or Indicator nodes to the IOC easily.
+    The third element, the parameters node, allows the user to quickly
+        parse the parameters.    
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="make_ioc"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">make_ioc</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">description</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">Automatically generated IOC</code><code class="variable-quote">'</code></span>,
+        <span class="sig-arg">author</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">IOC_api</code><code class="variable-quote">'</code></span>,
+        <span class="sig-arg">links</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">keywords</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">id</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.make_ioc">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+This generates all parts of an IOC, but without any definition.
+
+It allows the caller to then add IndicatorItems/Indicator nodes to the 
+top level OR statement.
+
+input
+    name:   string, Name of the ioc
+    description:    string, description of the iocs
+    author: string, author name/email address
+    links:  list of tuples.  Each tuple should be in the form 
+        (rel, href, value).
+    keywords:   string.  This is normally a space delimited string of
+        values that may be used as keywords
+    id: GUID for the IOC.  This should not be specified under normal
+        circumstances.
+
+returns
+    a tuple containing three elementTree Element objects
+    The first element, the root, contains the entire IOC itself.
+    The second element, the top level OR indicator, allows the user to add
+        additional IndicatorItem or Indicator nodes to the IOC easily.
+    The third element, the parameters node, allows the user to quickly
+        parse the parameters.
+    
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="set_lastmodified_date"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">set_lastmodified_date</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">date</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.set_lastmodified_date">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Set the last modified date of a IOC to the current date.
+User may specify the date they want to set as well.
+
+input
+    date:   Date value to set the last modified date to.  This should be
+        in the TZ form.
+        This defaults to the current date if it is not provided.
+    
+output:
+    returns True
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="set_published_date"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">set_published_date</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">date</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.set_published_date">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Set the published date of a IOC to the current date.
+User may specify the date they want to set as well.
+
+input
+    date:   Date value to set the published date to.  This should be in the TZ form.
+            This defaults to the current date if it is not provided.
+    
+output:
+    returns True
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="add_parameter"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_parameter</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">id</span>,
+        <span class="sig-arg">content</span>,
+        <span class="sig-arg">name</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">comment</code><code class="variable-quote">'</code></span>,
+        <span class="sig-arg">type</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">string</code><code class="variable-quote">'</code></span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.add_parameter">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Add a a parameter to the IOC.
+    
+input
+    id:         The unique Indicator/IndicatorItem id the parameter is
+                associated with.
+    content:    The value of the parameter.
+    name:       The name of the parameter.  This defaults to 'comment'.
+    type:       The type of the parameter content.  This defaults to
+                'string'.
+    
+returns True
+
+Will raise a IOCParseError if the id is not associated with a Indicator
+or IndicatorItem id.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="add_link"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_link</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">rel</span>,
+        <span class="sig-arg">value</span>,
+        <span class="sig-arg">href</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="ioc_writer.ioc_api-pysrc.html#IOC.add_link">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Add a Link metadata element to the IOC, with the 
+
+input
+    rel:    The type of link
+    value:  The content of the link
+    href:   An href value for the link.  This defaults to None
+    
+returns True
+    
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >iocwriter_11</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Jun 11 14:49:41 2013
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

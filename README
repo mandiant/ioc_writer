@@ -1,0 +1,80 @@
+iocwriter_11
+
+===============================================================================
+
+The source code in this package is made available under the terms of the
+Apache License , Version 2.0. See the "LICENSE " file for more information.
+
+===============================================================================
+Author:
+William Gibb
+william.gibb@mandiant.com
+
+===============================================================================
+Purpose:
+
+Provide a python library that allows for basic creation and editing of OpenIOC
+objects.  It supports a basic CRUD (Create, Read, Update, Delete) for various
+items:
+
+    item                Create  Read    Update  Delete
+    IOC name            Yes     No      Yes     Yes
+    IOC description     Yes     No      Yes     Yes
+    created date        Yes     No      Yes     N/A
+    last modified date  Yes     No      Yes     N/A
+    published date      Yes     No      Yes     N/A
+    link metadata       Yes     No      Yes     Yes
+    IndicatorItem nodes Yes     No      NotYet  Yes
+    Indicator nodes     Yes     No      NotYet  Yes
+    Parameters          Yes     No      Yes     Yes
+
+Items do not have built in Read operations, since all items can be accesed
+with built in ElementTree syntax or the use of XPATH to select portions
+of the IOC.
+    
+No decision has been made about whether or not to support changing of
+existing Indicator/IndicatorItem nodes.
+
+See the Docs in the Docs\ directory, and the examples directory for examples of
+working with the library.  The user code should only be calling functionality
+provided in ioc_api or ioc_common.
+
+===============================================================================
+Requirements:
+
+The python "lxml" library must be installed.  This can be obtained from one of
+following locations.
+    https://pypi.python.org/pypi/lxml/3.2.1
+    http://lxml.de/
+    
+============================================================================
+Installation:
+See the file named "INSTALL" for instructions on installing this library 
+locally.
+    
+============================================================================
+Manifest:
+
+ioc_writer
+  actual library containing the code to build & manipulate the iocs
+
+ioc_writer/ioc_api.py
+  contains building blocks for IOCs that other tools can consume.
+
+ioc_writer/ioc_common.py
+  contains common IndicatorItem nodes
+
+ioc_writer/ioc_et.py
+  contains elementtree building blocks used by ioc_api.
+
+ioc_writer/xmlutils.py
+  contains xml handling tools to make life easier
+
+examples/simple_ioc_writer.py
+  consumes a csv of data to build an IOC.  this csv contains the content, context, etc..
+
+  
+===============================================================================
+Bug reports / questions / feedback / feature requests:
+william.gibb@mandiant.com
+

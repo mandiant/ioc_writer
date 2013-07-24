@@ -1,0 +1,5 @@
+contains,EventLogItem,EventLogItem/message,string,foo
+contains,EventLogItem,EventLogItem/message,string,bar
+contains,EventLogItem,EventLogItem/message,string,bob
+contains,EventLogItem,EventLogItem/message,string,bank
+contains,EventLogItem,EventLogItem/message,string,thing
