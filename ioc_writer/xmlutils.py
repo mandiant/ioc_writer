@@ -121,10 +121,4 @@ def read_xml_no_ns(filename):
     if parsedXML is None:
         return None
     return delete_namespace(parsedXML)
-
-
-def main():
-    pass
-
-if __name__ == '__main__':
-    main()
+    

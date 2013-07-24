@@ -27,12 +27,7 @@
       <th>&nbsp;&nbsp;&nbsp;<a
         href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Project homepage -->
-      <th class="navbar" align="right" width="100%">
-        <table border="0" cellpadding="0" cellspacing="0">
-          <tr><th class="navbar" align="center"
-            >iocwriter_11</th>
-          </tr></table></th>
+      <th class="navbar" width="100%"></th>
   </tr>
 </table>
 <table width="100%" cellpadding="0" cellspacing="0">
@@ -100,7 +95,8 @@
         <tr>
           <td><span class="summary-sig"><a href="ioc_writer.xmlutils-module.html#remove_namespace" class="summary-sig-name">remove_namespace</a>(<span class="summary-sig-arg">doc</span>,
         <span class="summary-sig-arg">namespace</span>)</span><br />
-      XXX: http://homework.nwsnet.de/products/45be_remove-namespace-in-an-xml-document-using-elementtree</td>
+      XXX: 
+      http://homework.nwsnet.de/products/45be_remove-namespace-in-an-xml-document-using-elementtree</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="ioc_writer.xmlutils-pysrc.html#remove_namespace">source&nbsp;code</a></span>
             
@@ -137,22 +133,6 @@
       read_xml_lxml_no_ns_no_blanks</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="ioc_writer.xmlutils-pysrc.html#read_xml_no_ns">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="main"></a><span class="summary-sig-name">main</span>()</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="ioc_writer.xmlutils-pysrc.html#main">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -218,15 +198,9 @@
     </td>
   </tr></table>
   
-  <pre class="literalblock">
-
-read_xml
-
-Use et to read in a xml file, or string, into a Element object.
-
-return: lxml._elementTree object or None
-
-</pre>
+  <p>read_xml</p>
+  <p>Use et to read in a xml file, or string, into a Element object.</p>
+  <p>return: lxml._elementTree object or None</p>
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -246,39 +220,29 @@ return: lxml._elementTree object or None
     </td>
   </tr></table>
   
-  <pre class="literalblock">
-
-XXX: http://homework.nwsnet.de/products/45be_remove-namespace-in-an-xml-document-using-elementtree
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-&quot;Software&quot;), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-remove_namespace
-
-Takes in a ElementTree object and namespace value.  The length of that 
-namespace value is removed from all Element nodes within the document.
-This effectively removes the namespace from that document.
-
-Returns the source document.
-
-</pre>
+  <p>XXX: 
+  http://homework.nwsnet.de/products/45be_remove-namespace-in-an-xml-document-using-elementtree</p>
+  <p>Permission is hereby granted, free of charge, to any person obtaining 
+  a copy of this software and associated documentation files (the 
+  &quot;Software&quot;), to deal in the Software without restriction, 
+  including without limitation the rights to use, copy, modify, merge, 
+  publish, distribute, sublicense, and/or sell copies of the Software, and 
+  to permit persons to whom the Software is furnished to do so, subject to 
+  the following conditions:</p>
+  <p>The above copyright notice and this permission notice shall be 
+  included in all copies or substantial portions of the Software.</p>
+  <p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY 
+  KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+  NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+  USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+  <p>remove_namespace</p>
+  <p>Takes in a ElementTree object and namespace value.  The length of that
+  namespace value is removed from all Element nodes within the document. 
+  This effectively removes the namespace from that document.</p>
+  <p>Returns the source document.</p>
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -297,16 +261,10 @@ Returns the source document.
     </td>
   </tr></table>
   
-  <pre class="literalblock">
-
-delete_namespace
-
-Identifies the namespace associated with the root node of a XML document
-and removes that names from the document.
-
-Returns the sources document.
-
-</pre>
+  <p>delete_namespace</p>
+  <p>Identifies the namespace associated with the root node of a XML 
+  document and removes that names from the document.</p>
+  <p>Returns the sources document.</p>
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -325,18 +283,11 @@ Returns the sources document.
     </td>
   </tr></table>
   
-  <pre class="literalblock">
-
-read_xml_lxml_no_ns_no_blanks
-
-read in the file or data, populating a lxml._elementTree object
-stripping out namespaces
-
-input: filename representing a xml file or a string of xml data 
-
-return: lxml._elementTree object or None
-
-</pre>
+  <p>read_xml_lxml_no_ns_no_blanks</p>
+  <p>read in the file or data, populating a lxml._elementTree object 
+  stripping out namespaces</p>
+  <p>input: filename representing a xml file or a string of xml data</p>
+  <p>return: lxml._elementTree object or None</p>
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -359,18 +310,13 @@ return: lxml._elementTree object or None
       <th>&nbsp;&nbsp;&nbsp;<a
         href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Project homepage -->
-      <th class="navbar" align="right" width="100%">
-        <table border="0" cellpadding="0" cellspacing="0">
-          <tr><th class="navbar" align="center"
-            >iocwriter_11</th>
-          </tr></table></th>
+      <th class="navbar" width="100%"></th>
   </tr>
 </table>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Jun 11 14:49:41 2013
+    Generated by Epydoc 3.0.1 on Wed Jul 24 17:29:34 2013
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

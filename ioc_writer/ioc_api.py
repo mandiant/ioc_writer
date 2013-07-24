@@ -28,7 +28,8 @@ import ioc_et
 import xmlutils
 
 #XXX: Consider changing this to a dictionary, with condition values that point
-# to the types of operators (string, datetime, etc) in order to do validation
+# to the types of operators (string, datetime, etc) in order to do more 
+# validation
 valid_indicatoritem_conditions = ['is',
                                    'contains',
                                    'matches',
@@ -48,10 +49,12 @@ class IOC():
     Class for easy creation and manipulation of IOCs.
     
     class attributes
-        root:                   Root node of the IOC (OpenIOC element)
+        id:                     Unique identifier for the ioc
+        metadata:               The metadata node
+        parameters:             The Parameters node
         top_level_indicator:    Top level Indicator node, typically a toplevel
                                 OR node for a valid MIR IOC.
-        parameters:             Parameters node
+        root:                   Root node of the IOC (OpenIOC element)
     '''
     def __init__(self,
                 fn=None,
@@ -96,6 +99,9 @@ class IOC():
         indicator element, and parameters element.  If the IOC or string fails
         to parse, an IOCParseError is raised.
         
+        This does not need to be called if using the IOC class to open an IOC 
+        file.
+        
         input
             fn: This is a path to a file to open, or a string containing XML 
                 representing an IOC.
@@ -134,6 +140,8 @@ class IOC():
         
         It allows the caller to then add IndicatorItems/Indicator nodes to the 
         top level OR statement.
+        
+        This does not need to be called if using the IOC class to create an IOC
         
         input
             name:   string, Name of the ioc
@@ -270,9 +278,11 @@ class IOC():
             rel:    The type of link
             value:  The content of the link
             href:   An href value for the link.  This defaults to None
+            rel:    The link/@rel value
+            value:  The link/text() value
+            href:   A uri or url value
             
         returns True
-            
         '''
         links_node = self.metadata.find('links')
         if links_node is None:
@@ -287,6 +297,9 @@ class IOC():
         Update the name (short description) of an IOC
         
         This creates the short description node if it is not present.
+        
+        input
+            name:   Value to set the short description too
         
         returns True.
         '''
@@ -305,6 +318,9 @@ class IOC():
         Update the description) of an IOC
         
         This creates the description node if it is not present.
+        
+        input
+            description:   Value to set the description too
         
         returns True.
         '''
@@ -327,8 +343,19 @@ class IOC():
     def update_link_rel_based(self, old_rel, new_rel=None, new_text=None, single_link=False):
         '''
         Update link nodes, based on the existing link/@rel values.
-        
-        XXX Write something better here
+            
+        This requires specifying a link/@rel value to update, and either a new
+        link/@rel value, or a new link/text() value for all links which match
+        the link/@rel value.  Optionally, only the first link which matches the
+        link/@rel value will be modified.
+            
+        input
+            old_rel:        The link/@rel value used to select link nodes to 
+                            update.
+            new_rel:        The new link/@rel value
+            new_text:       The new link/text() value
+            single_link:    Determine if only the first, or multiple, linkes
+                            are modified.
         
         Returns True, unless there are no links with link[@rel='old_rel']
         '''
@@ -360,7 +387,17 @@ class IOC():
         '''
         Rewrite the text() value of a link based on the link/@rel and link/text() value.
         
-        XXX Write somthing better here
+        This is similar to update_link_rel_based but users link/@rel AND link/text() values
+        to determine which links have their link/@text() values updated.
+        
+        input
+            old_rel:        The link/@rel value used to select link nodes to 
+                            update.
+            old_text:       The link/text() value used to select link nodes to
+                            update.
+            new_text:       The new link/text() value to set on link nodes.
+            single_link:    Determine if only the first, or multiple, linkes
+                            are modified.
         
         Returns True, unless there are no links with link/[@rel='old_rel' and text()='old_text']
         '''
@@ -386,7 +423,7 @@ class IOC():
             
             All inputs must be strings or unicode objects.
             
-        returns True, unless no arguments are supplied.
+        Returns True, unless no arguments are supplied.
         
         Will raise a IOCParseError if the parameter id is not present
         '''
@@ -455,7 +492,7 @@ class IOC():
                 counter = counter + 1
         return counter
         
-    def remove_indicator(self, id, prune = False):
+    def remove_indicator(self, id, prune=False):
         '''
         Removes a Indicator or IndicatorItem node from the IOC.  By default,
         if nodes are removed, any children nodes are inherited by the removed
@@ -503,7 +540,6 @@ class IOC():
                 self.remove_parameter(ref_id=id)
             return True
         else:
-            # XXX Should never get here
             raise IOCParseError('Bad tag found.  Expected "IndicatorItem" or "Indicator", got [%s]' % str(node_to_remove.tag))     
         
     def remove_parameter(self, param_id=None, name=None, ref_id=None,):
@@ -586,7 +622,7 @@ class IOC():
             
     def write_ioc_to_file(self, output_dir=None):
         '''
-        writes an IOC, as defined by a set of etree Elements, to a .IOC file.
+        Writes the IOC to a .ioc file.
     
         input 
             output_dir: directory to write the ioc out to.  default is the current
@@ -690,7 +726,7 @@ def get_top_level_indicator_node(root_node):
         The top level level In
     '''
     if root_node.tag != 'OpenIOC':
-        raise ValueError('Root tag is not "OpenIOC" [%s].' % str(root_node.tag))
+        raise IOCParseError('Root tag is not "OpenIOC" [%s].' % str(root_node.tag))
     elems = root_node.xpath('criteria/Indicator')
     if len(elems) == 0:
         print 'WARNING: No top level Indicator node found.'
