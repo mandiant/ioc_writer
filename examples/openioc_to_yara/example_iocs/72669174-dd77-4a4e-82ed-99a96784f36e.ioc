@@ -1,0 +1,268 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="72669174-dd77-4a4e-82ed-99a96784f36e" last-modified="2013-07-29T21:55:24Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>DUQU (METHODOLOGY)</short_description>
+    <description>Indicator for the duqu trojan. The initial duqu driver will decode and inject a dll (marked as .pnf) into a system process (usually services.exe).  The injected dll contains another dll encoded within it's resource section which it will inject into other processes as identified within its encoded configuruation file (another .pnf file).  This second injected dll is responsible for all backdoor/C2 communication.
+
+Yara signatures are designed to detect samples available here http://contagiodump.blogspot.com/2011/10/duqu-rat-trojan-precursor-to-next.html</description>
+    <keywords />
+    <authored_by>MANDIANT</authored_by>
+    <authored_date>2011-10-21T16:13:31</authored_date>
+    <links>
+      <link rel="caveat">Methodology</link>
+    </links>
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="9fd46693-ee1c-4d31-b732-35bf952651e3">
+      <IndicatorItem id="9487aeba-2610-4aab-ba34-d347933a7fda" condition="greater-than" preserve-case="true" negate="false">
+        <Context document="Yara" search="Yara/TextString" type="yara" />
+        <Content type="string">+rs4</Content>
+      </IndicatorItem>
+      <Indicator operator="AND" id="e4deb0af-7558-498e-b953-6e70ec694767">
+        <IndicatorItem id="d5b29cfe-8599-498a-b805-326273fe10c5" condition="contains" preserve-case="false" negate="false">
+          <Context document="FileItem" search="FileItem/PEInfo/DigitalSignature/CertificateSubject" type="mir" />
+          <Content type="string">C-Media Electronics Incorporation</Content>
+        </IndicatorItem>
+        <IndicatorItem id="1ca2947c-0b26-409c-93d2-28f6b364bc0b" condition="contains" preserve-case="false" negate="false">
+          <Context document="FileItem" search="FileItem/FileName" type="mir" />
+          <Content type="string">cmi4432.sys</Content>
+        </IndicatorItem>
+      </Indicator>
+      <Indicator operator="AND" id="025d5bf1-e062-4300-a24a-e2d1c9877f1c">
+        <IndicatorItem id="8a9e777b-ebbb-4494-ab05-acf39a3f6e48" condition="is" preserve-case="false" negate="false">
+          <Context document="DriverItem" search="DriverItem/DeviceItem/DeviceName" type="mir" />
+          <Content type="string">Gpd1</Content>
+        </IndicatorItem>
+        <Indicator operator="OR" id="3cfe6f4c-3276-4e8b-88d5-9b53665da358">
+          <IndicatorItem id="0a704ede-840d-4075-a508-3ee5744c332f" condition="is" preserve-case="false" negate="false">
+            <Context document="DriverItem" search="DriverItem/DeviceItem/DeviceName" type="mir" />
+            <Content type="string">{3093AAZ3-1092-2929-9391}</Content>
+          </IndicatorItem>
+          <IndicatorItem id="09900e0b-8219-43dc-930b-fabf5324da4e" condition="is" preserve-case="false" negate="false">
+            <Context document="DriverItem" search="DriverItem/DeviceItem/DeviceName" type="mir" />
+            <Content type="string">{624409B3-4CEF-41C0-8B81-7634279A41E5}</Content>
+          </IndicatorItem>
+        </Indicator>
+      </Indicator>
+      <Indicator operator="AND" id="d0f65908-5a1a-4936-98e0-cf98ba51037e">
+        <IndicatorItem id="b38d3a14-3839-4c62-ae38-3ff48b720add" condition="contains" preserve-case="false" negate="false">
+          <Context document="RegistryItem" search="RegistryItem/Path" type="mir" />
+          <Content type="string">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4</Content>
+        </IndicatorItem>
+        <Indicator operator="OR" id="e415d391-871f-44b9-8fd3-70967644d36f">
+          <IndicatorItem id="bcf49307-8362-4f05-998c-a8dd629dbb7d" condition="is" preserve-case="false" negate="false">
+            <Context document="RegistryItem" search="RegistryItem/ValueName" type="mir" />
+            <Content type="string">CF1D</Content>
+          </IndicatorItem>
+          <IndicatorItem id="c13f696c-53ef-4102-b462-4fb9623f2ac5" condition="is" preserve-case="false" negate="false">
+            <Context document="RegistryItem" search="RegistryItem/ValueName" type="mir" />
+            <Content type="string">CFID</Content>
+          </IndicatorItem>
+        </Indicator>
+      </Indicator>
+      <Indicator operator="AND" id="e59031e1-1a15-42be-8cae-198e69c88ced">
+        <IndicatorItem id="0f00f74d-c2ff-4c24-9334-bcfa8430a00b" condition="is" preserve-case="false" negate="false">
+          <Context document="EventLogItem" search="EventLogItem/type" type="mir" />
+          <Content type="string">Error</Content>
+        </IndicatorItem>
+        <IndicatorItem id="a3ae813d-27b1-49d5-8057-04d0702eb3ee" condition="is" preserve-case="false" negate="false">
+          <Context document="EventLogItem" search="EventLogItem/source" type="mir" />
+          <Content type="string">DCOM</Content>
+        </IndicatorItem>
+        <IndicatorItem id="a10fc902-a5fa-4f1a-87a7-ad7855066be1" condition="is" preserve-case="false" negate="false">
+          <Context document="EventLogItem" search="EventLogItem/EID" type="mir" />
+          <Content type="int">3221235481</Content>
+        </IndicatorItem>
+      </Indicator>
+      <Indicator operator="AND" id="48479d30-7791-486c-8bb9-2f82bb333ee3">
+        <IndicatorItem id="62dba9e1-0e60-49a9-9e09-1b6c9d393d83" condition="is" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/name" type="mir" />
+          <Content type="string">services.exe</Content>
+        </IndicatorItem>
+        <IndicatorItem id="22c5d023-55b4-4857-9bf0-a5d56395a2eb" condition="is" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/Injected" type="mir" />
+          <Content type="string">TRUE</Content>
+        </IndicatorItem>
+        <IndicatorItem id="ccb95100-7cb4-445f-833e-12c2ff460617" condition="is" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/HandleList/Handle/Name" type="mir" />
+          <Content type="string">{0de1ac9d-35da-433f-937a-8553016874f1}</Content>
+        </IndicatorItem>
+        <IndicatorItem id="eaa86c31-fcf5-4565-be04-b6a0cea1c3ab" condition="is" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/HandleList/Handle/Name" type="mir" />
+          <Content type="string">{0df29544-7ded-4091-a8e6-b87402e6064c}2</Content>
+        </IndicatorItem>
+        <IndicatorItem id="9adc21a9-26a9-4614-abb0-24e510e17c54" condition="is" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/HandleList/Handle/Name" type="mir" />
+          <Content type="string">{92D9FA5C-D148-476E-BCC9-A4BEAC2E70D7}</Content>
+        </IndicatorItem>
+      </Indicator>
+      <Indicator operator="AND" id="bc47e9cf-0463-47ad-bcf4-f7ab394936ae">
+        <IndicatorItem id="43fb1d62-cc30-493b-9229-216c4ec1e362" condition="is" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/name" type="mir" />
+          <Content type="string">lsass.exe</Content>
+        </IndicatorItem>
+        <IndicatorItem id="de03fbaa-253f-429f-85b8-cbd58cab2d6f" condition="contains" preserve-case="false" negate="true">
+          <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/Name" type="mir" />
+          <Content type="string">lsass.exe</Content>
+        </IndicatorItem>
+        <IndicatorItem id="88b75212-b0de-487a-958a-6c13b49a9714" condition="is" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/Injected" type="mir" />
+          <Content type="string">TRUE</Content>
+        </IndicatorItem>
+      </Indicator>
+      <Indicator operator="AND" id="1bd40f96-b1bc-43ef-b482-5d2e81fa6da7">
+        <IndicatorItem id="2e0bd752-975b-4155-94ad-2ab760a9a53a" condition="is" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/name" type="mir" />
+          <Content type="string">winlogon.exe</Content>
+        </IndicatorItem>
+        <IndicatorItem id="174d0bcd-4325-44f6-805d-87dce4c51b47" condition="contains" preserve-case="false" negate="true">
+          <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/Name" type="mir" />
+          <Content type="string">winlogon.exe</Content>
+        </IndicatorItem>
+        <IndicatorItem id="5215ed3f-7795-4689-801b-13373da473f6" condition="is" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/Injected" type="mir" />
+          <Content type="string">TRUE</Content>
+        </IndicatorItem>
+      </Indicator>
+      <Indicator operator="AND" id="37897b71-89cf-46dc-8e77-a4f731cb1d92">
+        <IndicatorItem id="80a37c9e-ab5d-461d-ba3f-9a5ccbf65779" condition="contains" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/name" type="mir" />
+          <Content type="string">svchost.exe</Content>
+        </IndicatorItem>
+        <IndicatorItem id="5fcc9fc2-a470-4cce-97c9-6d96dc94a57f" condition="contains" preserve-case="false" negate="true">
+          <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/Name" type="mir" />
+          <Content type="string">svchost.exe</Content>
+        </IndicatorItem>
+        <IndicatorItem id="dc046b4b-a0a8-47e5-92c9-e3e8c73679d6" condition="is" preserve-case="false" negate="false">
+          <Context document="ProcessItem" search="ProcessItem/SectionList/MemorySection/Injected" type="mir" />
+          <Content type="string">TRUE</Content>
+        </IndicatorItem>
+      </Indicator>
+      <Indicator operator="AND" id="c90cdf2d-8e40-4489-aea6-d5dd3de95afb">
+        <Indicator operator="OR" id="00231f9c-cd41-44c3-879e-02299c0f0325">
+          <IndicatorItem id="88723fa4-c813-4c1d-87ba-b8d5a3c6ebe9" condition="is" preserve-case="true" negate="false">
+            <Context document="Yara" search="Yara/TextString" type="yara" />
+            <Content type="string">C-Media Electronics Incorporation</Content>
+          </IndicatorItem>
+          <IndicatorItem id="e8dcba89-0e1b-4e26-a68c-46a5048fe95f" condition="is" preserve-case="true" negate="false">
+            <Context document="Yara" search="Yara/TextString" type="yara" />
+            <Content type="string">IBM ServeRAID Contoller</Content>
+          </IndicatorItem>
+          <IndicatorItem id="9ac1d76d-55a6-40c8-a835-20783ce67ce9" condition="is" preserve-case="true" negate="false">
+            <Context document="Yara" search="Yara/TextString" type="yara" />
+            <Content type="string">JMicron Volume Snapshot</Content>
+          </IndicatorItem>
+          <Indicator operator="AND" id="4b63d99d-feee-4649-9c51-ce5a19213472">
+            <IndicatorItem id="cff238d3-0b5e-4d65-9355-c65fde1e33f4" condition="is" preserve-case="true" negate="false">
+              <Context document="Yara" search="Yara/TextString" type="yara" />
+              <Content type="string">SystemRoot\\System32\\hal.dll</Content>
+            </IndicatorItem>
+            <IndicatorItem id="d79d0892-5568-48a4-8ccc-ba94cb6b32ee" condition="is" preserve-case="true" negate="false">
+              <Context document="Yara" search="Yara/TextString" type="yara" />
+              <Content type="string">\\Device\\Gpd1</Content>
+            </IndicatorItem>
+            <IndicatorItem id="049963bf-2a11-49cb-83c3-a56e3e063878" condition="is" preserve-case="true" negate="false">
+              <Context document="Yara" search="Yara/TextString" type="yara" />
+              <Content type="string">\\Device\\Gpd0</Content>
+            </IndicatorItem>
+            <IndicatorItem id="a822a519-7a32-4440-adac-61f433a796e6" condition="is" preserve-case="true" negate="false">
+              <Context document="Yara" search="Yara/TextString" type="yara" />
+              <Content type="string">\\DosDevices\\GpdDev</Content>
+            </IndicatorItem>
+          </Indicator>
+        </Indicator>
+        <Indicator operator="OR" id="d65c7a21-7408-4707-840d-79def1e4d5b2">
+          <IndicatorItem id="5acd4c2f-0bd9-41e8-9d0e-8bc0f2b76eb1" condition="is" preserve-case="true" negate="false">
+            <Context document="Yara" search="Yara/TextString" type="yara" />
+            <Content type="string">B.reloc</Content>
+          </IndicatorItem>
+          <IndicatorItem id="a00945da-dbd8-4217-a414-67be9c29b8ec" condition="is" preserve-case="true" negate="false">
+            <Context document="Yara" search="Yara/TextString" type="yara" />
+            <Content type="string">h.rdata</Content>
+          </IndicatorItem>
+          <IndicatorItem id="2cc85a00-788b-4a64-ba21-36b6e5247c9a" condition="is" preserve-case="true" negate="false">
+            <Context document="Yara" search="Yara/TextString" type="yara" />
+            <Content type="string">H.data</Content>
+          </IndicatorItem>
+          <IndicatorItem id="f61564cb-e48c-4fa6-be1a-0a5990f55b5c" condition="is" preserve-case="true" negate="false">
+            <Context document="Yara" search="Yara/TextString" type="yara" />
+            <Content type="string">0SUVW3</Content>
+          </IndicatorItem>
+        </Indicator>
+      </Indicator>
+      <Indicator operator="AND" id="d42d9b70-7df3-4f48-9647-33a50de48a0f">
+        <IndicatorItem id="181e3dfa-7875-4892-a11c-d349fb4af269" condition="is" preserve-case="true" negate="false">
+          <Context document="Yara" search="Yara/TextString" type="yara" />
+          <Content type="string">restart</Content>
+        </IndicatorItem>
+        <IndicatorItem id="cd8de413-b69f-410d-b83a-51dbb940774d" condition="is" preserve-case="true" negate="false">
+          <Context document="Yara" search="Yara/TextString" type="yara" />
+          <Content type="string">quite</Content>
+        </IndicatorItem>
+        <IndicatorItem id="4039366f-edca-4481-80db-cd3d365d349d" condition="is" preserve-case="true" negate="false">
+          <Context document="Yara" search="Yara/TextString" type="yara" />
+          <Content type="string">delme</Content>
+        </IndicatorItem>
+        <Indicator operator="OR" id="3cb7a079-52d2-43a4-851e-f5999eb0c3ff">
+          <IndicatorItem id="1c4d3e75-d072-4948-922e-0f677b2998fd" condition="is" preserve-case="true" negate="false">
+            <Context document="Yara" search="Yara/TextString" type="yara" />
+            <Content type="string">PID: %u</Content>
+          </IndicatorItem>
+          <IndicatorItem id="dd87aa53-66cf-42b1-a906-05fd14724f83" condition="is" preserve-case="true" negate="false">
+            <Context document="Yara" search="Yara/TextString" type="yara" />
+            <Content type="string">SELECT ExecutablePath FROM Win32_Process WHERE ProcessID = %u</Content>
+          </IndicatorItem>
+          <IndicatorItem id="c09047ea-187c-427f-aac0-c159e7860320" condition="is" preserve-case="true" negate="false">
+            <Context document="Yara" search="Yara/TextString" type="yara" />
+            <Content type="string">winlogon.exe</Content>
+          </IndicatorItem>
+          <IndicatorItem id="c168aaa6-f5de-4aff-96b5-9e0846088b5c" condition="is" preserve-case="true" negate="false">
+            <Context document="Yara" search="Yara/TextString" type="yara" />
+            <Content type="string">svchost.exe</Content>
+          </IndicatorItem>
+        </Indicator>
+      </Indicator>
+    </Indicator>
+  </criteria>
+  <parameters>
+    <param ref-id="9487aeba-2610-4aab-ba34-d347933a7fda" id="e44df99c-922a-464c-afc6-81083a5b4e6e" name="yara/count">
+      <value type="">100</value>
+    </param>
+    <param ref-id="88723fa4-c813-4c1d-87ba-b8d5a3c6ebe9" id="ba6fea07-56d4-4276-aebd-c2015d3d8cd8" name="yara/wide">
+      <value type="">True</value>
+    </param>
+    <param ref-id="e8dcba89-0e1b-4e26-a68c-46a5048fe95f" id="7252d52e-4a3a-4130-9b02-95273271369f" name="yara/wide">
+      <value type="">True</value>
+    </param>
+    <param ref-id="9ac1d76d-55a6-40c8-a835-20783ce67ce9" id="c5d97966-d761-4a53-97fa-608f280f1b55" name="yara/wide">
+      <value type="">True</value>
+    </param>
+    <param ref-id="4b63d99d-feee-4649-9c51-ce5a19213472" id="a2c1dbb5-ca69-47ca-9b0e-75d892e08085" name="yara/set">
+      <value type="">3</value>
+    </param>
+    <param ref-id="cff238d3-0b5e-4d65-9355-c65fde1e33f4" id="20320cd7-7718-45a0-bdd4-7674e712c45f" name="yara/wide">
+      <value type="">True</value>
+    </param>
+    <param ref-id="d79d0892-5568-48a4-8ccc-ba94cb6b32ee" id="54c320b6-c592-4081-b067-eb68766f6979" name="yara/wide">
+      <value type="">true</value>
+    </param>
+    <param ref-id="049963bf-2a11-49cb-83c3-a56e3e063878" id="4c29de54-c14f-4b1b-9a6b-ff7cc0c3692f" name="yara/wide">
+      <value type="">True</value>
+    </param>
+    <param ref-id="a822a519-7a32-4440-adac-61f433a796e6" id="c3abbfc7-5f64-42d4-a9e1-394070279b48" name="yara/wide">
+      <value type="">True</value>
+    </param>
+    <param ref-id="1c4d3e75-d072-4948-922e-0f677b2998fd" id="fa6151b3-9b8f-4b87-b4e4-e879cb1e9214" name="yara/fullword">
+      <value type="">true</value>
+    </param>
+    <param ref-id="dd87aa53-66cf-42b1-a906-05fd14724f83" id="10e85822-4667-41b9-948c-9b5f93521691" name="yara/wide">
+      <value type="">true</value>
+    </param>
+    <param ref-id="c09047ea-187c-427f-aac0-c159e7860320" id="a7f445dc-af61-4752-ac7f-394dc1bec161" name="yara/wide">
+      <value type="">true</value>
+    </param>
+    <param ref-id="c168aaa6-f5de-4aff-96b5-9e0846088b5c" id="5d3663fd-c41e-4916-8d8f-e8a8ced5ea03" name="yara/wide">
+      <value type="">true</value>
+    </param>
+  </parameters>
+</OpenIOC>
