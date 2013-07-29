@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="2363f981-2cf0-416b-b391-4f0e5e189963" last-modified="2013-07-27T23:10:28Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>ExampleRule</short_description>
+    <authored_date>2013-07-27T23:05:49Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="0bb468c7-a3c6-4686-8d96-4053b4b1df9d">
+      <IndicatorItem id="bf92a8b3-0a0f-48c8-b1fd-c05af101fc20" condition="contains" preserve-case="true" negate="false">
+        <Context document="Yara" search="Yara/TextString" type="yara" />
+        <Content type="string">text here</Content>
+      </IndicatorItem>
+      <IndicatorItem id="d78b0d21-c8a3-4771-a268-6b58a2cfc086" condition="contains" preserve-case="false" negate="false">
+        <Context document="Yara" search="Yara/HexString" type="yara" />
+        <Content type="string">E2 34 A1 C8 23 FB</Content>
+      </IndicatorItem>
+    </Indicator>
+  </criteria>
+  <parameters />
+</OpenIOC>

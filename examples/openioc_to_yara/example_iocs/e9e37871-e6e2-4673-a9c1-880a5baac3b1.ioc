@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="e9e37871-e6e2-4673-a9c1-880a5baac3b1" last-modified="2013-07-28T23:38:59Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>Mixed_Yara_signatures_and_embedded_signatures</short_description>
+    <authored_date>2013-07-28T21:34:54Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="09040328-cd27-4042-bc90-865fa40b460c">
+      <IndicatorItem id="00be843e-d87e-4f0d-8260-cca22976edcb" condition="contains" preserve-case="false" negate="false">
+        <Context document="Yara" search="Yara/TextString" type="yara" />
+        <Content type="string">evilMutex</Content>
+      </IndicatorItem>
+      <IndicatorItem id="345f9120-aeed-45f7-a6f8-41ba52752324" condition="contains" preserve-case="false" negate="false">
+        <Context document="Yara" search="Yara/Yara" type="yara" />
+        <Content type="string">rule Ocurrences
+{
+strings:
+$a = "dummy1"
+$b = "dummy2"
+condition:
+for all i in (1,2,3) : (@a[i] + 10 == @b[i])
+}</Content>
+      </IndicatorItem>
+    </Indicator>
+  </criteria>
+  <parameters />
+</OpenIOC>

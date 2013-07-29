@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="c346142a-c3e9-409c-b569-73693a33bdd2" last-modified="2013-07-28T00:55:41Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>BadFile</short_description>
+    <authored_date>2013-07-27T23:02:39Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="c64050e5-0a95-4035-aec5-93c67d604f68">
+      <Indicator operator="AND" id="6bc7f25b-0b16-4631-88eb-769d4774abfd">
+        <IndicatorItem id="1c1161b2-4050-48cc-bde6-e93881088665" condition="contains" preserve-case="true" negate="false">
+          <Context document="Yara" search="Yara/TextString" type="yara" />
+          <Content type="string">win.exe</Content>
+        </IndicatorItem>
+        <Indicator operator="OR" id="9c27b9f5-6496-4af4-9249-c4e8bbbe7b66">
+          <IndicatorItem id="99ec5fcf-43bb-4321-a241-d4b67cb0752c" condition="contains" preserve-case="true" negate="false">
+            <Context document="Yara" search="Yara/TextString" type="yara" />
+            <Content type="string">http://foo.com/badfile1.exe</Content>
+          </IndicatorItem>
+          <IndicatorItem id="cdc28626-9fbb-4eac-8a61-ee1d4e7ec1a6" condition="contains" preserve-case="true" negate="false">
+            <Context document="Yara" search="Yara/TextString" type="yara" />
+            <Content type="string">http://foo.com/badfile2.exe</Content>
+          </IndicatorItem>
+        </Indicator>
+      </Indicator>
+    </Indicator>
+  </criteria>
+  <parameters />
+</OpenIOC>

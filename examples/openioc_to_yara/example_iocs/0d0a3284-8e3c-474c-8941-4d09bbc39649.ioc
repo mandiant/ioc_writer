@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="0d0a3284-8e3c-474c-8941-4d09bbc39649" last-modified="2013-07-27T23:08:59Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>WildcardExample</short_description>
+    <authored_date>2013-07-27T23:07:01Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="fdde91a4-31cb-40a8-a8bc-461ec0709b08">
+      <IndicatorItem id="9230ac29-9ae3-445c-bf1b-8d8361b5f5dd" condition="contains" preserve-case="false" negate="false">
+        <Context document="Yara" search="Yara/HexString" type="yara" />
+        <Content type="string">E2 34 ?? C8 A? FB</Content>
+      </IndicatorItem>
+    </Indicator>
+  </criteria>
+  <parameters />
+</OpenIOC>

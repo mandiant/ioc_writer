@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="c6049b90-d5b0-4472-b414-ba400f04dca3" last-modified="2013-07-28T23:38:49Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>FileSizeExample</short_description>
+    <authored_date>2013-07-27T23:19:09Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="c7e2f41d-f3f9-4831-9dd4-10b71e4af038">
+      <IndicatorItem id="6d87b980-759c-4d96-bac3-1351efeb7eca" condition="greater-than" preserve-case="false" negate="false">
+        <Context document="Yara" search="Yara/FileSize" type="yara" />
+        <Content type="string">200KB</Content>
+      </IndicatorItem>
+    </Indicator>
+  </criteria>
+  <parameters />
+</OpenIOC>

@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="31bdd683-368a-4920-ab6e-1a20fea10bf5" last-modified="2013-07-27T23:18:49Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>InExample</short_description>
+    <authored_date>2013-07-27T23:17:41Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="152b73d4-c5cf-4292-ae02-fa3e1f53ade7">
+      <Indicator operator="AND" id="e7a1d228-97e4-4c70-a163-07af5eea168e">
+        <IndicatorItem id="d51e6011-851e-4e1f-8d00-b1365fd1c40f" condition="contains" preserve-case="true" negate="false">
+          <Context document="Yara" search="Yara/TextString" type="yara" />
+          <Content type="string">dummy1</Content>
+        </IndicatorItem>
+        <IndicatorItem id="0a38138f-30f8-457a-9461-214b434ba282" condition="contains" preserve-case="true" negate="false">
+          <Context document="Yara" search="Yara/TextString" type="yara" />
+          <Content type="string">dummy2</Content>
+        </IndicatorItem>
+      </Indicator>
+    </Indicator>
+  </criteria>
+  <parameters>
+    <param ref-id="d51e6011-851e-4e1f-8d00-b1365fd1c40f" id="20514c11-c151-4bd1-bc8e-3831a215f47a" name="yara/offset/in">
+      <value type="">(0..100)</value>
+    </param>
+    <param ref-id="0a38138f-30f8-457a-9461-214b434ba282" id="6a063389-c0b4-4a46-9ada-aaa7c68f8851" name="yara/offset/in">
+      <value type="">(100..filesize)</value>
+    </param>
+  </parameters>
+</OpenIOC>

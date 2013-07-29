@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="5e4c5d7b-0fc0-47a3-ae4d-bfaf9310bf38" last-modified="2013-07-27T23:23:35Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>OfExample1</short_description>
+    <authored_date>2013-07-27T23:22:06Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="5f8412f2-663f-44f1-8ad3-13a409e19317">
+      <Indicator operator="AND" id="225bca01-6461-42a9-9de0-bbdd164ece7b">
+        <IndicatorItem id="40ae6053-064e-4e1a-931a-eb2503641f08" condition="contains" preserve-case="true" negate="false">
+          <Context document="Yara" search="Yara/TextString" type="yara" />
+          <Content type="string">dummy1</Content>
+        </IndicatorItem>
+        <IndicatorItem id="6aefc36d-0c81-495f-a219-0c84b5b13fd0" condition="contains" preserve-case="true" negate="false">
+          <Context document="Yara" search="Yara/TextString" type="yara" />
+          <Content type="string">dummy2</Content>
+        </IndicatorItem>
+        <IndicatorItem id="3fdec7b3-485a-4704-b666-0428695957d1" condition="contains" preserve-case="true" negate="false">
+          <Context document="Yara" search="Yara/TextString" type="yara" />
+          <Content type="string">dummy3</Content>
+        </IndicatorItem>
+      </Indicator>
+    </Indicator>
+  </criteria>
+  <parameters>
+    <param ref-id="225bca01-6461-42a9-9de0-bbdd164ece7b" id="f4c9599f-a323-43fb-b90d-42a29c1a5a93" name="yara/set">
+      <value type="">2</value>
+    </param>
+  </parameters>
+</OpenIOC>

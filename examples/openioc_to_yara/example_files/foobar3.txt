@@ -1,0 +1,4 @@
+foo1
+bar!
+bar2
+foo2!

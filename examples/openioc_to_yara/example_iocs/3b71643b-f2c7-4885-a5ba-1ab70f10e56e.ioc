@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="3b71643b-f2c7-4885-a5ba-1ab70f10e56e" last-modified="2013-07-27T23:21:56Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>EntryPointExample1</short_description>
+    <authored_date>2013-07-27T23:19:58Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="b1281ed3-cc06-4e1f-8796-d4e9c121c1aa">
+      <IndicatorItem id="9240f291-63ed-4ce0-a7da-e199c8b63cac" condition="contains" preserve-case="false" negate="false">
+        <Context document="Yara" search="Yara/HexString" type="yara" />
+        <Content type="string">E8 00 00 00 00</Content>
+      </IndicatorItem>
+    </Indicator>
+  </criteria>
+  <parameters>
+    <param ref-id="9240f291-63ed-4ce0-a7da-e199c8b63cac" id="e4c9e96f-5580-4af2-8d2e-e78edbb86f86" name="yara/offset/at">
+      <value type="">entrypoint</value>
+    </param>
+  </parameters>
+</OpenIOC>

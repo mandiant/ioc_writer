@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="1ae7c501-12bf-41a4-b8a2-7d5209a01bb7" last-modified="2013-07-27T23:14:43Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>Example</short_description>
+    <authored_date>2013-07-27T23:13:14Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="22613a58-97b5-4951-8f4b-4bc6a08c130f">
+      <Indicator operator="AND" id="97120abd-fe00-486f-95eb-2e987752dcfb">
+        <Indicator operator="OR" id="85da4bf5-bc85-4dac-8441-eefb7724e612">
+          <IndicatorItem id="84725769-b448-42ee-9a49-875e4711d34c" condition="contains" preserve-case="true" negate="false">
+            <Context document="Yara" search="Yara/TextString" type="yara" />
+            <Content type="string">text1</Content>
+          </IndicatorItem>
+          <IndicatorItem id="41fafbb7-59e4-4b45-bceb-faa9b5531b7c" condition="contains" preserve-case="true" negate="false">
+            <Context document="Yara" search="Yara/TextString" type="yara" />
+            <Content type="string">text2</Content>
+          </IndicatorItem>
+        </Indicator>
+        <Indicator operator="OR" id="015e60d7-bc71-4efc-a6ff-6c07eabcc35b">
+          <IndicatorItem id="b2d9bc78-c6dd-420a-9e82-775d757ff35e" condition="contains" preserve-case="true" negate="false">
+            <Context document="Yara" search="Yara/TextString" type="yara" />
+            <Content type="string">text3</Content>
+          </IndicatorItem>
+          <IndicatorItem id="e1a409c4-4693-4368-8275-fe4c91e1b3d3" condition="contains" preserve-case="true" negate="false">
+            <Context document="Yara" search="Yara/TextString" type="yara" />
+            <Content type="string">text4</Content>
+          </IndicatorItem>
+        </Indicator>
+      </Indicator>
+    </Indicator>
+  </criteria>
+  <parameters />
+</OpenIOC>

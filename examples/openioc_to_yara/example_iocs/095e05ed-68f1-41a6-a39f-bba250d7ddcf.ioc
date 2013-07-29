@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="095e05ed-68f1-41a6-a39f-bba250d7ddcf" last-modified="2013-07-27T23:10:28Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>TextExample</short_description>
+    <authored_date>2013-07-27T23:09:47Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="59138327-e977-4dda-9e1f-90af79571382">
+      <IndicatorItem id="0a247966-ad02-4096-9db0-81d6d18ab7c2" condition="contains" preserve-case="true" negate="false">
+        <Context document="Yara" search="Yara/TextString" type="yara" />
+        <Content type="string">foobar</Content>
+      </IndicatorItem>
+    </Indicator>
+  </criteria>
+  <parameters />
+</OpenIOC>

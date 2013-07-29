@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="50daf970-66cf-40e1-ada3-063dec5dbd27" last-modified="2013-07-27T23:08:59Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>JumpExample</short_description>
+    <authored_date>2013-07-27T23:08:09Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="28482d08-4865-4eb1-b84e-785fc357ae3f">
+      <IndicatorItem id="a38341bd-0408-4da5-916f-aca5739a66f0" condition="contains" preserve-case="false" negate="false">
+        <Context document="Yara" search="Yara/HexString" type="yara" />
+        <Content type="string">F4 23 [4-6] 62 B4</Content>
+      </IndicatorItem>
+    </Indicator>
+  </criteria>
+  <parameters />
+</OpenIOC>

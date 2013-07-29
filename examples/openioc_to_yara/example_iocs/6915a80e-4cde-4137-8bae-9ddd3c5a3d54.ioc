@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="6915a80e-4cde-4137-8bae-9ddd3c5a3d54" last-modified="2013-07-27T23:15:57Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>CountExample</short_description>
+    <authored_date>2013-07-27T23:14:54Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="2ed6a7ca-6ffa-484c-b899-6c148bbba4dd">
+      <Indicator operator="AND" id="d90dbe72-5d91-420e-aa59-03fefd5bb7ce">
+        <IndicatorItem id="824f2075-5025-4455-9d8c-38fad8659289" condition="contains" preserve-case="true" negate="false">
+          <Context document="Yara" search="Yara/TextString" type="yara" />
+          <Content type="string">dummy1</Content>
+        </IndicatorItem>
+        <IndicatorItem id="b1c9d69f-56ab-41d2-acb1-faf614c02e89" condition="greater-than" preserve-case="true" negate="false">
+          <Context document="Yara" search="Yara/TextString" type="yara" />
+          <Content type="string">dummy2</Content>
+        </IndicatorItem>
+      </Indicator>
+    </Indicator>
+  </criteria>
+  <parameters>
+    <param ref-id="824f2075-5025-4455-9d8c-38fad8659289" id="244beeff-eb79-468d-ba48-379bca0f5a1a" name="yara/count">
+      <value type="">6</value>
+    </param>
+    <param ref-id="b1c9d69f-56ab-41d2-acb1-faf614c02e89" id="1377b246-7365-4c5f-b49c-d63996fe593e" name="yara/count">
+      <value type="">10</value>
+    </param>
+  </parameters>
+</OpenIOC>

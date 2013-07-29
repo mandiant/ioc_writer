@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="04f522c1-efc9-492a-a07f-25501f395255" last-modified="2013-07-27T23:13:42Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>WideCharTextExample</short_description>
+    <authored_date>2013-07-27T23:10:56Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="dad3e9d8-940d-4e48-9b2c-471170472476">
+      <IndicatorItem id="4e0a03af-25bb-4451-8662-8db20c45e475" condition="contains" preserve-case="true" negate="false">
+        <Context document="Yara" search="Yara/TextString" type="yara" />
+        <Content type="string">Borland</Content>
+      </IndicatorItem>
+    </Indicator>
+  </criteria>
+  <parameters>
+    <param ref-id="4e0a03af-25bb-4451-8662-8db20c45e475" id="29bfde48-a800-4f5f-9169-6225bf6df59b" name="yara/wide">
+      <value type="bool">True</value>
+    </param>
+    <param ref-id="4e0a03af-25bb-4451-8662-8db20c45e475" id="09c52038-e5d8-4042-8a47-1a38de364043" name="yara/ascii">
+      <value type="bool">True</value>
+    </param>
+  </parameters>
+</OpenIOC>

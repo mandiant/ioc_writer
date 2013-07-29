@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="5abb4ee9-f9fe-4ee6-a90f-2aece8907338" last-modified="2013-07-27T23:28:15Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>Rule2</short_description>
+    <authored_date>2013-07-27T23:27:32Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="35cbecab-165b-4e89-8241-38ca748a36ed">
+      <IndicatorItem id="f74c7161-5df3-4f61-894b-4f593e4cef0b" condition="contains" preserve-case="true" negate="false">
+        <Context document="Yara" search="Yara/TextString" type="yara" />
+        <Content type="string">dummy2</Content>
+      </IndicatorItem>
+      <IndicatorItem id="f6751894-3f0b-4247-8262-fc5b13bb650c" condition="contains" preserve-case="false" negate="false">
+        <Context document="Yara" search="Yara/RuleName" type="yara" />
+        <Content type="string">Rule1</Content>
+      </IndicatorItem>
+    </Indicator>
+  </criteria>
+  <parameters />
+</OpenIOC>

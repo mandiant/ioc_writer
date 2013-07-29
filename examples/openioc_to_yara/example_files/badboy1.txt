@@ -1,0 +1,3 @@
+C:\windows\win.exe
+
+http://foo.com/badfile1.exe
