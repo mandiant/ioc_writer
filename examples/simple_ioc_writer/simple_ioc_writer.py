@@ -1,7 +1,8 @@
 # simple_ioc_writer.py
 #
-# William Gibb, william.gibb@mandiant.com
-# Copyright 2013 Mandiant
+# Copyright 2013 Mandiant Corporation.  
+# Licensed under the Apache 2.0 license.  Developed for Mandiant by William 
+# Gibb.
 #
 # Mandiant licenses this file to you under the Apache License, Version
 # 2.0 (the "License"); you may not use this file except in compliance with the
