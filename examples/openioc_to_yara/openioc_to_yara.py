@@ -45,6 +45,7 @@ class ioc_manager:
         self.iocs = {} # elementTree representing the IOC
         self.ioc_name = {} # guid -> name mapping
         self.ioc_names_set = set([]) # allows for quickly checking if a ioc name is present
+        self.ioc_names_mangaled_set = set([]) # set containing mangled names
         self.yara_signatures = {} # guid -> yara string mapping
         
         self.metadata_fields = ['short_description', 'description', 'keywords', 'authored_by', 'authored_date']
@@ -120,6 +121,7 @@ class ioc_manager:
             logging.warning('duplicate IOC UUID [%s] [orig_shortName: %s][new_shortName: %s]' % (iocid, self.ioc_name[iocid], IOC_obj.root.findtext('.//short_description') or 'NoName'))
         self.ioc_name[iocid] = IOC_obj.root.findtext('.//short_description') or 'NoName'
         self.ioc_names_set.add(self.ioc_name[iocid])
+        self.ioc_names_mangaled_set.add(mangle_name(self.ioc_name[iocid]))
         self.iocs[iocid] = IOC_obj
         
     
@@ -128,8 +130,7 @@ class ioc_manager:
             logging.error('No IOCs to convert')
         for iocid in self.iocs:
             name = self.ioc_name[iocid]
-            # XXX cannot have spaces in the name, causes libyara errors.
-            name = name.replace(' ', '_')
+            name = mangle_name(name)
             # extract yara signatures in parts
             try:
                 metadata_string = self.get_yara_metadata(iocid)
@@ -287,9 +288,13 @@ class ioc_manager:
                         use_condition_template = True
                     elif search == 'Yara/RuleName':
                         if content not in self.ioc_names_set:
-                            logging.warning('Yara/RuleName points to a name [%s] that is not in the set of IOCs being processed [%s]' % (str(content),str(node_id)))
-                        if ' ' in content:
-                            raise IOCParseError('Yara/RuleName contains whitespace, which will cause libyara errors [%s]' % node_id)
+                            if mangle_name(content) in self.ioc_names_mangled_set:
+                                logging.warning('Yara/RuleName is present as a mangled name.[%s][%s]' % (str(mangle_name(content)),str(node_id)))
+                                content = mangle_name(content)
+                            else:
+                                logging.warning('Yara/RuleName points to a name [%s] that is not in the set of IOCs being processed [%s]' % (str(content),str(node_id)))
+                        if mangle_name(content) != content:
+                            raise IOCParseError('Yara/RuleName contains invalid characters which would cause libyara errors [%s]' % node_id)
                         mapping['prefix'] = ''
                         mapping['identifier'] = content
                     # handle parameters
@@ -460,7 +465,17 @@ class ioc_manager:
         
         fout.close()
         return True
-            
+
+def mangle_name(name):
+    # XXX cannot have certain characters in the name, causes libyara errors.
+    new_name = str(name)
+    chars_to_replace = [(' ','_'), ('(','_'), (')','_')]
+    for pair in chars_to_replace:
+        src, dest = pair
+        new_name = new_name.replace(src, dest)
+    return new_name
+
+        
 def has_siblings(node):
     if node.getnext() is not None or node.getprevious() is not None:
         return True
