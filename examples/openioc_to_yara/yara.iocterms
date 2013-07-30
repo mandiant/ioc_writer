@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<ioctermlist xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" last-modified="2013-07-22T20:08:42Z" description="New IOC Terms File" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <iocterm text="Yara/HexString" title="Yara Hex String" data-type="xs:string" display-type="string" />
+  <iocterm text="Yara/TextString" title="Yara Text String" data-type="xs:string" display-type="string" />
+  <iocterm text="Yara/RegexString" title="Yara Regular Expression" data-type="xs:string" display-type="string" />
+  <iocterm text="Yara/FileSize" title="Yara File Size" data-type="xs:string" display-type="string" />
+  <iocterm text="Yara/RuleName" title="Yara Rule Name" data-type="xs:string" display-type="string" />
+</ioctermlist>
