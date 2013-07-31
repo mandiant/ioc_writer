@@ -124,7 +124,7 @@ In addition, a variety of conditions are supported.
 
 Boolean expressions, such as '$a or ($b and $c)' are derived from the logic
 tree that is represented an the OpenIOC XML.  The children of Indicator nodes,
-IndicatorItem or more Indicator nodes, are used to generate the neccesary
+IndicatorItem or more Indicator nodes, are used to generate the necessary
 boolean operators and string identifiers.
 	Example IOC ids:
 		1ae7c501-12bf-41a4-b8a2-7d5209a01bb7
