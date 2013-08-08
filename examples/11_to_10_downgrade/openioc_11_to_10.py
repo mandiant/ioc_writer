@@ -72,7 +72,7 @@ class ioc_manager:
         errors = []
         if os.path.isfile(filename):
             logging.info('loading IOC from: %s' % (filename))
-            self.parse(read_xml_no_ns(filename))
+            self.parse(ioc_api.IOC(filename))
         elif os.path.isdir(filename):
             logging.info('loading IOCs from: %s' % (filename))
             for fn in glob.glob(filename+os.path.sep+'*.ioc'):
@@ -254,10 +254,6 @@ class ioc_manager:
                 content_type = node.xpath('Content/@type')[0]
                 content = node.findtext('Content')
                 context_type = node.xpath('Context/@type')[0]
-                if node_id in comment_dict:
-                    comment = comment_dict[node_id]
-                else:
-                    comment = None
                 new_II_node = ioc_api.make_IndicatorItem_node(condition = condition, 
                                                             document = document,
                                                             search = search,
@@ -271,6 +267,7 @@ class ioc_manager:
                 if node_id in comment_dict:
                     comment = comment_dict[node_id]
                     comment_node = et.Element('Comment')
+                    comment_node.text = comment
                     new_II_node.append(comment_node)
                 # remove preserver-case and negate
                 del new_II_node.attrib['negate']
