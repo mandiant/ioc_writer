@@ -1,4 +1,4 @@
-iocwriter_11
+ioc_writer
 
 ===============================================================================
 
@@ -8,7 +8,7 @@ Apache License , Version 2.0. See the "LICENSE " file for more information.
 ===============================================================================
 Author:
 William Gibb
-william.gibb@mandiant.com
+william.gibb at mandiant dot com
 
 ===============================================================================
 Purpose:
@@ -55,26 +55,30 @@ locally.
 ============================================================================
 Manifest:
 
-ioc_writer
-  actual library containing the code to build & manipulate the iocs
+README
+	this file
+INSTALL
+	instructions for installing the library
+setup.py
+	installation script
 
-ioc_writer/ioc_api.py
-  contains building blocks for IOCs that other tools can consume.
+ioc_writer/
+	actual library containing the code to build & manipulate the iocs
 
-ioc_writer/ioc_common.py
-  contains common IndicatorItem nodes
+docs/
+	Generated HTML documentation for the ioc_writer library
 
-ioc_writer/ioc_et.py
-  contains elementtree building blocks used by ioc_api.
-
-ioc_writer/xmlutils.py
-  contains xml handling tools to make life easier
-
-examples/simple_ioc_writer.py
-  consumes a csv of data to build an IOC.  this csv contains the content, context, etc..
-
+examples/
+	Example code
+examples/11_to_10_downgrade
+	Script to downgrade OpenIOC 1.1 to OpenIOC 1.1.
+examples/openioc_to_yara
+	Scripts that support encapsulating YARA signatures in OpenIOC 1.1 format.
+examples/simple_ioc_writer
+	Script that consumes a csv of data to build an IOC.  this csv contains the 
+	content, context, et cetera. An example CSV is provided.  
   
 ===============================================================================
 Bug reports / questions / feedback / feature requests:
-william.gibb@mandiant.com
+william.gibb at mandiant dot com
 
