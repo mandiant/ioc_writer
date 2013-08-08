@@ -314,7 +314,9 @@ class ioc_manager:
         # serialize the iocs
         for iocid in source_iocs:
             ioc_obj = source[iocid]
-            self.ioc_xml[iocid] = et.tostring(ioc_obj.root, pretty_print = True, xml_declaration = True)
+            tree = ioc_obj.root.getroottree()
+            ioc_encoding = tree.docinfo.encoding
+            self.ioc_xml[iocid] = et.tostring(tree, encoding = ioc_encoding, pretty_print = True, xml_declaration = True)
         # write the iocs to disk
         for iocid in source_iocs:
             fn = os.path.join(output_dir, iocid + '.ioc')
@@ -343,8 +345,10 @@ class ioc_manager:
         output_dir = os.path.abspath(directory)
         # serialize the iocs
         for iocid in pruned_source:
-            ioc_obj = self.iocs_10[iocid]
-            self.ioc_xml[iocid] = et.tostring(ioc_obj.root, pretty_print = True, xml_declaration = True)
+            ioc_obj = source[iocid]
+            tree = ioc_obj.root.getroottree()
+            ioc_encoding = tree.docinfo.encoding
+            self.ioc_xml[iocid] = et.tostring(tree, encoding = ioc_encoding, pretty_print = True, xml_declaration = True)
         # write the iocs to disk
         for iocid in pruned_source:
             fn = os.path.join(output_dir, iocid + '.ioc')
