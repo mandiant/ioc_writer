@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 
 #This is a list of files to install, and where
 #(relative to the 'root' dir, where setup.py is)
@@ -13,6 +13,7 @@ setup(name = "ioc_writer",
     url = "http://www.github.com/mandiant/iocwriter_11/",
     packages = ['ioc_writer'],
     package_data = {'package' : files },
+    install_requires = ['lxml>=3.2.0'],
     #scripts = ["runner"],
     long_description = """API providing a limited CRUD for manipulating OpenIOC formatted Indicators of Compromise.""",
     #This next part it for the Cheese Shop, look a little down the page.
