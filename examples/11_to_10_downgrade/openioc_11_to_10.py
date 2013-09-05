@@ -72,16 +72,25 @@ class ioc_manager:
         errors = []
         if os.path.isfile(filename):
             logging.info('loading IOC from: %s' % (filename))
-            self.parse(ioc_api.IOC(filename))
+            try:
+                self.parse(ioc_api.IOC(filename))
+            except ioc_api.IOCParseError,e:
+                logging.warning('Parse Error [%s]' % str(e))
+                errors.append(fn)
         elif os.path.isdir(filename):
             logging.info('loading IOCs from: %s' % (filename))
             for fn in glob.glob(filename+os.path.sep+'*.ioc'):
                 if not os.path.isfile(fn):
                     continue
                 else:
-                    self.parse(ioc_api.IOC(fn))
+                    try:
+                        self.parse(ioc_api.IOC(fn))
+                    except ioc_api.IOCParseError,e:
+                        logging.warning('Parse Error [%s]' % str(e))
+                        errors.append(fn)
         else:
             pass
+        logging.info('Parsed [%s] IOCs' % str(len(self)))
         return errors
 
     def parse(self, ioc_obj):
