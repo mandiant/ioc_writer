@@ -23,7 +23,6 @@
 import os.path
 import cStringIO as sio
 from lxml import etree as et
-import xml.parsers.expat
 import logging
 
 # logging config
@@ -46,8 +45,9 @@ def read_xml(filename):
             return et.parse(d, parser)
     except IOError:
         logging.exception('unable to open file [%s]' % (filename))
-    except (xml.parsers.expat.ExpatError, SyntaxError), e:
+    except (XMLParseError, XMLSyntaxError), e:
         logging.exception('unable to parse XML [%s]' % (filename))
+        return None
     return None
 
 def remove_namespace(doc, namespace):
