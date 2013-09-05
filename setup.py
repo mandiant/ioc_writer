@@ -6,7 +6,7 @@ from distutils.core import setup
 files = ["ioc_writer/*"]
 
 setup(name = "ioc_writer",
-    version = "0.1.0",
+    version = "0.1.1",
     description = "",
     author = "William Gibb",
     author_email = "william.gibb@mandiant.com",
