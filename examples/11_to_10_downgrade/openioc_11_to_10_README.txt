@@ -63,11 +63,11 @@ Usage Examples:
 
 To downgrade a directory of IOCs:
 
-    python -i /path/to/ioc/files -o downgraded_iocs
+    python openioc_11_to_10.py -i /path/to/ioc/files -o downgraded_iocs
 
 To downgrade a single IOC:
 
-    python -i /path/to/ioc/file/12341234-1234-1234-1234-123412341234.ioc 
+    python openioc_11_to_10.py -i /path/to/ioc/file/12341234-1234-1234-1234-123412341234.ioc 
         -o downgraded_ioc_file
 
 ===============================================================================
