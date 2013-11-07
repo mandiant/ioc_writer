@@ -1,5 +1,5 @@
 ===============================================================================
-OpenIOC 1.1 to 1.0 Downgrade script
+OpenIOC 1.1 to 1.0 Upgrade script
 
 openioc_11_to_10.py
 ===============================================================================
@@ -16,13 +16,13 @@ william.gibb at mandiant dot com
 Purpose:
 
 This script is designed to upgrade Indicators Of Compromise (IOCs) in the 
-OpenIOC 1.0 format, to the OpenIOC 1.1 format.  This downgrade process is a 
+OpenIOC 1.0 format, to the OpenIOC 1.1 format.  This upgrade process is a 
 non-lossy process, as all conditions that can be expressed in OpenIOC 1.0 can
 also be expressed in OpenIOC 1.1.
 
 ===============================================================================
 Options:
-    -i IOCS, --iocs=IOCS        Directory containing .ioc files to downgrade.  
+    -i IOCS, --iocs=IOCS        Directory containing .ioc files to upgrade.  
                                 This may point to a single .ioc file.
     
     -o OUTPUT, --output=OUTPUT

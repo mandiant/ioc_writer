@@ -88,7 +88,7 @@ class iocmanager():
         the converted iocs are stored in the dictionary self.iocs_11
         '''
         if len(self) < 1:
-            logging.error('No iocs availble to modify.')
+            logging.error('No iocs available to modify.')
             return False
         logging.info('Converting IOCs from 1.0 to 1.1')
         errors = []
@@ -265,7 +265,7 @@ def main(options):
         
 def upgrade_options():
     opts = []
-    opts.append(optparse.make_option('--iocs', '-i', dest='iocs', help='Directory to iocs or the ioc to process', action='store', default = None))
+    opts.append(optparse.make_option('--iocs', '-i', dest='iocs', help='Directory of iocs or the ioc to process', action='store', default = None))
     opts.append(optparse.make_option('--output', '-o', dest='output', help='Directory to write iocs out too.', action='store', default = None))
     return opts
         
