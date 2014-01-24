@@ -771,19 +771,16 @@ def write_ioc(root, output_dir=None):
         raise
     return True
 
-def write_ioc_String(root):
+def write_ioc_string(root):
     '''
     writes an IOC, as defined by a set of etree Elements, to a String.
     
     input 
         root: etree Element to write out.  Should have the tag 'OpenIOC'
-        output_dir: directory to write the ioc out to.  default is current
-        working directory.
     
-    output: return the XML.
+    output: return the XML as String.
     '''
     root_tag = 'OpenIOC'
     if root.tag != root_tag:
         raise ValueError('Root tag is not "%s".' % str(root_tag))
-    ioc_id = root.attrib['id']
     return et.tostring(root, encoding='utf-8', xml_declaration=True, pretty_print = True)
