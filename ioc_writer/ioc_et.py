@@ -84,7 +84,7 @@ def make_links_node(links = None):
     links_node = et.Element('links')
     if links:
         for rel, href, value in links:
-            links_node.append(make_link_node(rel,href,value))
+            links_node.append(make_link_node(rel,value, href))
     return links_node
     
 def set_root_lastmodified(root_node, date=None):
