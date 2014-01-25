@@ -354,7 +354,7 @@ class ioc_manager:
         output_dir = os.path.abspath(directory)
         # serialize the iocs
         for iocid in pruned_source:
-            ioc_obj = self.iocs[iocid]
+            ioc_obj = self.iocs_10[iocid]
             tree = ioc_obj.root.getroottree()
             ioc_encoding = tree.docinfo.encoding
             self.ioc_xml[iocid] = et.tostring(tree, encoding = ioc_encoding, pretty_print = True, xml_declaration = True)
