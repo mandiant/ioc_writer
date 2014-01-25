@@ -632,6 +632,14 @@ class IOC():
         '''
         return write_ioc(self.root, output_dir)
     
+    def write_ioc_to_string(self):
+        '''
+        Writes the IOC to a string.
+        
+        output: returns a string, which is the XML representation of the IOC.
+        '''
+        return write_ioc_string(self.root)
+    
 def make_Indicator_node(operator, id = None):
     '''
     This makes a Indicator node element.  These allow the construction of a
