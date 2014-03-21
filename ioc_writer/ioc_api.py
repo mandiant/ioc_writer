@@ -762,6 +762,13 @@ def write_ioc(root, output_dir=None):
     root_tag = 'OpenIOC'
     if root.tag != root_tag:
         raise ValueError('Root tag is not "%s".' % str(root_tag))
+    default_encoding = 'utf-8'
+    tree = root.getroottree()
+    try:
+        encoding = tree.docinfo.encoding
+    except:
+        print 'Failed to get encoding from docinfo'
+        encoding = default_encoding
     ioc_id = root.attrib['id']
     fn = ioc_id + '.ioc'
     if output_dir:
@@ -770,7 +777,7 @@ def write_ioc(root, output_dir=None):
         fn = os.path.join(os.getcwd(),fn)
     try:
         fout = open(fn, 'wb')
-        fout.write(et.tostring(root, encoding='utf-8', xml_declaration=True, pretty_print = True))
+        fout.write(et.tostring(root, encoding=encoding, xml_declaration=True, pretty_print = True))
         fout.close()
     except (IOError, OSError), e:
         print 'Failed to write out IOC [%s]' % str(e)
@@ -791,4 +798,11 @@ def write_ioc_string(root):
     root_tag = 'OpenIOC'
     if root.tag != root_tag:
         raise ValueError('Root tag is not "%s".' % str(root_tag))
-    return et.tostring(root, encoding='utf-8', xml_declaration=True, pretty_print = True)
+    default_encoding = 'utf-8'
+    tree = root.getroottree()
+    try:
+        encoding = tree.docinfo.encoding
+    except:
+        print 'Failed to get encoding from docinfo'
+        encoding = default_encoding
+    return et.tostring(root, encoding=encoding, xml_declaration=True, pretty_print = True)
