@@ -58,7 +58,7 @@ class ioc_manager:
         self.iocs_10 = {} # elementTree representing the IOC, used by ioc_manager.convert_to_10
         self.pruned_11_iocs = set() # set representing pruned IOCs, used by ioc_manager.convert_to_10
         self.null_pruned_iocs = set() # set representing null IOCs, used by ioc_manager.convert_to_10
-        self.openioc_11_only_conditions = ['starts-with', 'ends-with', 'great-than', 'less-than', 'matches']
+        self.openioc_11_only_conditions = ['starts-with', 'ends-with', 'greater-than', 'less-than', 'matches']
         
     def __len__(self):
         return len(self.iocs)
