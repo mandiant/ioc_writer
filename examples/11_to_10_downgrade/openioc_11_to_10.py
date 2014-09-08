@@ -136,7 +136,7 @@ class ioc_manager:
             for link in metadata.xpath('//link'):
                 link_rel = link.get('rel')
                 link_text = link.text
-                links_11.append((link_rel, link_text, None))
+                links_11.append((link_rel, None, link_text))
             # get ioc_logic
             try:
                 ioc_logic = ioc_obj_11.root.xpath('.//criteria')[0]
