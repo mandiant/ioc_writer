@@ -777,7 +777,7 @@ def write_ioc(root, output_dir=None):
         fn = os.path.join(os.getcwd(),fn)
     try:
         fout = open(fn, 'wb')
-        fout.write(et.tostring(root, encoding=encoding, xml_declaration=True, pretty_print = True))
+        fout.write(et.tostring(tree, encoding=encoding, xml_declaration=True, pretty_print = True))
         fout.close()
     except (IOError, OSError), e:
         print 'Failed to write out IOC [%s]' % str(e)
@@ -805,4 +805,4 @@ def write_ioc_string(root):
     except:
         print 'Failed to get encoding from docinfo'
         encoding = default_encoding
-    return et.tostring(root, encoding=encoding, xml_declaration=True, pretty_print = True)
+    return et.tostring(tree, encoding=encoding, xml_declaration=True, pretty_print = True)
