@@ -22,7 +22,6 @@
 
 import sys
 import os
-import cStringIO as sio
 import optparse
 import logging
 import glob
@@ -59,6 +58,7 @@ class ioc_manager:
         self.pruned_11_iocs = set() # set representing pruned IOCs, used by ioc_manager.convert_to_10
         self.null_pruned_iocs = set() # set representing null IOCs, used by ioc_manager.convert_to_10
         self.openioc_11_only_conditions = ['starts-with', 'ends-with', 'greater-than', 'less-than', 'matches']
+        self.default_encoding = 'utf-8'
         
     def __len__(self):
         return len(self.iocs)
@@ -71,14 +71,14 @@ class ioc_manager:
         '''
         errors = []
         if os.path.isfile(filename):
-            logging.info('loading IOC from: %s' % (filename))
+            logging.info('loading IOC from: %s' % filename)
             try:
                 self.parse(ioc_api.IOC(filename))
             except ioc_api.IOCParseError,e:
                 logging.warning('Parse Error [%s]' % str(e))
-                errors.append(fn)
+                errors.append(filename)
         elif os.path.isdir(filename):
-            logging.info('loading IOCs from: %s' % (filename))
+            logging.info('loading IOCs from: %s' % filename)
             for fn in glob.glob(filename+os.path.sep+'*.ioc'):
                 if not os.path.isfile(fn):
                     continue
@@ -199,12 +199,12 @@ class ioc_manager:
             # walk up from each indicatoritem
             # to build set of ids to skip when downconverting
             for elem in indicatoritems_to_remove:
-                id = None
+                nid = None
                 current = elem
-                while id != tlo_id:
+                while nid != tlo_id:
                     parent = current.getparent()
-                    id = parent.get('id')
-                    if id == tlo_id:
+                    nid = parent.get('id')
+                    if nid == tlo_id:
                         current_id = current.get('id')
                         ids_to_skip.add(current_id)
                     else:
@@ -224,6 +224,13 @@ class ioc_manager:
                 self.null_pruned_iocs.add(iocid)
             elif pruned is True:
                 self.pruned_11_iocs.add(iocid)
+            # Check the original to see if there was a comment prior to the root node, and if so, copy it's content
+            comment_node = ioc_obj_11.root.getprevious()
+            while comment_node is not None:
+                logging.debug('found a comment node')
+                c = et.Comment(comment_node.text)
+                ioc_obj_10.root.addprevious(c)
+                comment_node = comment_node.getprevious()
             # Record the IOC
             #ioc_10 = et.ElementTree(root_10)
             self.iocs_10[iocid] = ioc_obj_10
@@ -324,7 +331,10 @@ class ioc_manager:
         for iocid in source_iocs:
             ioc_obj = source[iocid]
             tree = ioc_obj.root.getroottree()
-            ioc_encoding = tree.docinfo.encoding
+            try:
+                ioc_encoding = tree.docinfo.encoding
+            except:
+                ioc_encoding = self.default_encoding
             self.ioc_xml[iocid] = et.tostring(tree, encoding = ioc_encoding, pretty_print = True, xml_declaration = True)
         # write the iocs to disk
         for iocid in source_iocs:
@@ -356,7 +366,10 @@ class ioc_manager:
         for iocid in pruned_source:
             ioc_obj = self.iocs_10[iocid]
             tree = ioc_obj.root.getroottree()
-            ioc_encoding = tree.docinfo.encoding
+            try:
+                ioc_encoding = tree.docinfo.encoding
+            except:
+                ioc_encoding = self.default_encoding
             self.ioc_xml[iocid] = et.tostring(tree, encoding = ioc_encoding, pretty_print = True, xml_declaration = True)
         # write the iocs to disk
         for iocid in pruned_source:
@@ -378,8 +391,8 @@ def main(options):
     iocm.insert(options.iocs)
     errors = iocm.convert_to_10()
     if errors:
-        for id in errors:
-            logging.error('Failed to process: [%s]' % str(id))
+        for fn in errors:
+            logging.error('Failed to process: [%s]' % str(fn))
     if len(iocm.iocs_10) == 0:
         logging.error('No IOCs available to write out')
         sys.exit(1)
