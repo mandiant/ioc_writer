@@ -336,7 +336,7 @@ def make_fileitem_peinfo_sections_section_name(section_name, condition='is', neg
     IndicatorItem_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content, negate=negate, preserve_case=preserve_case)
     return IndicatorItem_node
     
-def make_fileitem_peinfo_type(type, condition='is', negate=False, preserve_case = False):
+def make_fileitem_peinfo_type(petype, condition='is', negate=False, preserve_case = False):
     """
     Create a node for FileItem/PEInfo/Type
     
@@ -345,7 +345,7 @@ def make_fileitem_peinfo_type(type, condition='is', negate=False, preserve_case 
     document = 'FileItem'
     search = 'FileItem/PEInfo/Type'
     content_type = 'string'
-    content = type
+    content = petype
     IndicatorItem_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content, negate=negate, preserve_case=preserve_case)
     return IndicatorItem_node
     

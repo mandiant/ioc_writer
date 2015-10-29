@@ -29,11 +29,11 @@ NSMAP = {'xsi' : 'http://www.w3.org/2001/XMLSchema-instance',
             'xsd' : 'http://www.w3.org/2001/XMLSchema', }
 
 
-def make_IOC_root(id=None):
+def make_IOC_root(iocid=None):
     root = et.Element('OpenIOC', nsmap = NSMAP)
     root.attrib['xmlns'] = 'http://openioc.org/schemas/OpenIOC_1.1'
-    if id:
-        root.attrib['id'] = id
+    if iocid:
+        root.attrib['id'] = iocid
     else:
         root.attrib['id'] = get_guid()
     # default dates
@@ -120,13 +120,13 @@ def make_parameters_node():
     parameters_node = et.Element('parameters')
     return parameters_node
     
-def make_param_node(id,  content, name='comment', type='string',):
+def make_param_node(nid,  content, name='comment', ptype='string',):
     param_node = et.Element('param')
     param_node.attrib['id'] = get_guid()
-    param_node.attrib['ref-id'] = id
+    param_node.attrib['ref-id'] = nid
     param_node.attrib['name'] = name
     value_node = et.Element('value')
-    value_node.attrib['type'] = type
+    value_node.attrib['type'] = ptype
     value_node.text = content
     param_node.append(value_node)
     return param_node
@@ -156,9 +156,9 @@ def make_context_node(document,search,context_type='mir'):
         context_node.attrib['type'] = context_type
     return context_node
     
-def make_content_node(type, content):
+def make_content_node(ctype, content):
     content_node = et.Element('Content')
-    content_node.attrib['type'] = type
+    content_node.attrib['type'] = ctype
     content_node.text = content
     return content_node
 

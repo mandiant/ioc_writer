@@ -66,7 +66,7 @@ class IOC():
                 author = 'IOC_api', 
                 links = None,
                 keywords = None,
-                id = None):
+                iocid = None):
         """
         creates an IOC class object, populating the class attributes from a
         file or by creating them.
@@ -81,7 +81,7 @@ class IOC():
                         (rel, href, value).
             keywords:   string.  This is normally a space delimited string of
                         values that may be used as keywords
-            id: GUID for the IOC.  This should not be specified under normal circumstances.
+            iocid: GUID for the IOC.  This should not be specified under normal circumstances.
         """
         self.root = None
         self.top_level_indicator = None
@@ -91,7 +91,7 @@ class IOC():
             ioc_parts = self.open_ioc(fn)
             self.root, self.metadata, self.top_level_indicator, self.parameters = ioc_parts
         else:
-            ioc_parts = self.make_ioc(name, description, author, links, keywords, id)
+            ioc_parts = self.make_ioc(name, description, author, links, keywords, iocid)
             self.root, self.metadata, self.top_level_indicator, self.parameters = ioc_parts
         self.iocid = self.root.get('id','NoID')
             
@@ -137,7 +137,7 @@ class IOC():
                 author = 'IOC_api', 
                 links = None,
                 keywords = None,
-                id = None):
+                iocid = None):
         """
         This generates all parts of an IOC, but without any definition.
 
@@ -154,7 +154,7 @@ class IOC():
                 (rel, href, value).
             keywords:   string.  This is normally a space delimited string of
                 values that may be used as keywords
-            id: GUID for the IOC.  This should not be specified under normal
+            iocid: GUID for the IOC.  This should not be specified under normal
                 circumstances.
 
         returns
@@ -166,7 +166,7 @@ class IOC():
                 parse the parameters.
 
         """
-        root = ioc_et.make_IOC_root(id)
+        root = ioc_et.make_IOC_root(iocid)
         root.append(ioc_et.make_metadata_node(name, description, author, links))
         metadata_node = root.find('metadata')
         top_level_indicator = make_Indicator_node('OR')
@@ -240,7 +240,7 @@ class IOC():
         ioc_et.set_root_created_date(self.root, date)
         return True
     
-    def add_parameter(self, indicator_id, content, name='comment', type='string'):
+    def add_parameter(self, indicator_id, content, name='comment', ptype='string'):
         """
         Add a a parameter to the IOC.
 
@@ -270,7 +270,7 @@ class IOC():
         elems = criteria_node.xpath('.//IndicatorItem[@id="{}"]|.//Indicator[@id="{}"]'.format(indicator_id,indicator_id))
         if len(elems) == 0:
             raise IOCParseError('ID does not exist in the IOC [{}][{}].'.format(str(indicator_id), str(content)))
-        parameters_node.append(ioc_et.make_param_node(indicator_id, content, name, type))
+        parameters_node.append(ioc_et.make_param_node(indicator_id, content, name, ptype))
         return True
     
     def add_link(self, rel, value, href=None):
@@ -499,7 +499,7 @@ class IOC():
                 counter = counter + 1
         return counter
         
-    def remove_indicator(self, id, prune=False):
+    def remove_indicator(self, nid, prune=False):
         """
         Removes a Indicator or IndicatorItem node from the IOC.  By default,
         if nodes are removed, any children nodes are inherited by the removed
@@ -524,13 +524,13 @@ class IOC():
             False if there are no nodes removed.
         """
         try:
-            node_to_remove = self.top_level_indicator.xpath('//IndicatorItem[@id="{}"]|//Indicator[@id="{}"]'.format(str(id),str(id)))[0]
+            node_to_remove = self.top_level_indicator.xpath('//IndicatorItem[@id="{}"]|//Indicator[@id="{}"]'.format(str(nid),str(nid)))[0]
         except IndexError as e:
-            log.warning('Node [{}] not present'.format(id))
+            log.warning('Node [{}] not present'.format(nid))
             return False
         if node_to_remove.tag == 'IndicatorItem':
             node_to_remove.getparent().remove(node_to_remove)
-            self.remove_parameter(ref_id=id)
+            self.remove_parameter(ref_id=nid)
             return True
         elif node_to_remove.tag == 'Indicator':
             if node_to_remove == self.top_level_indicator:
@@ -544,7 +544,7 @@ class IOC():
                 for child_node in node_to_remove.getchildren():
                     node_to_remove.getparent().append(child_node)
                 node_to_remove.getparent().remove(node_to_remove)
-                self.remove_parameter(ref_id=id)
+                self.remove_parameter(ref_id=nid)
             return True
         else:
             raise IOCParseError('Bad tag found.  Expected "IndicatorItem" or "Indicator", got [[}]'.format(node_to_remove.tag))
@@ -569,16 +569,16 @@ class IOC():
 
         May raise a IOCParseError
         """
-        input = []
+        l = []
         if param_id:
-            input.append('param_id')
+            l.append('param_id')
         if name:
-            input.append('name')
+            l.append('name')
         if ref_id:
-            input.append('ref_id')
-        if len(input) > 1:
-            raise IOCParseError('Must specify only param_id, name or ref_id.  Specified {}'.format(str(input)))
-        elif len(input) <1:
+            l.append('ref_id')
+        if len(l) > 1:
+            raise IOCParseError('Must specify only param_id, name or ref_id.  Specified {}'.format(str(l)))
+        elif len(l) <1:
             raise IOCParseError('Must specifiy an param_id, name or ref_id to remove a paramater')
 
         counter = 0
@@ -647,21 +647,21 @@ class IOC():
         """
         return write_ioc_string(self.root)
     
-def make_Indicator_node(operator, id = None):
+def make_Indicator_node(operator, nid = None):
     """
     This makes a Indicator node element.  These allow the construction of a
         logic tree within the IOC.
 
     input
         operator:   'AND' or 'OR'.
-        id: a string value.  This is used to provide a GUID for the Indicator.
+        nid: a string value.  This is used to provide a GUID for the Indicator.
             The ID should NOT be specified under normal circumstances.
 
     return: elementTree element
     """
     Indicator_node = et.Element('Indicator')
-    if id:
-        Indicator_node.attrib['id'] = id
+    if nid:
+        Indicator_node.attrib['id'] = nid
     else:
         Indicator_node.attrib['id'] = ioc_et.get_guid()
     if operator.upper() not in ['AND','OR']:
@@ -677,7 +677,7 @@ def make_IndicatorItem_node(condition,
                             preserve_case = False,
                             negate = False,
                             context_type = 'mir', 
-                            id = None):
+                            nid = None):
     """
     This makes a IndicatorItem element.  This contains the actual threat
     intelligence in the IOC.
@@ -700,7 +700,7 @@ def make_IndicatorItem_node(condition,
                 @condition = 'isnot' in OpenIOC 1.0.
         context_type: a string value, giving context to the document/search
             information.  This defaults to 'mir'.
-        id: a string value.  This is used to provide a GUID for the IndicatorItem
+        nid: a string value.  This is used to provide a GUID for the IndicatorItem
             The ID should NOT be specified under normal circumstances.
 
     returns
@@ -711,8 +711,8 @@ def make_IndicatorItem_node(condition,
     if condition not in valid_indicatoritem_conditions:
         raise ValueError('Invalid IndicatorItem condition [{}]'.format(condition))
     IndicatorItem_node = et.Element('IndicatorItem')
-    if id:
-        IndicatorItem_node.attrib['id'] = id
+    if nid:
+        IndicatorItem_node.attrib['id'] = nid
     else:
         IndicatorItem_node.attrib['id'] = ioc_et.get_guid()
     IndicatorItem_node.attrib['condition'] = condition
