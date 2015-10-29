@@ -28,6 +28,7 @@ import logging
 # logging config
 log = logging.getLogger(__name__)
 
+
 def read_xml(filename):
     """
     read_xml
@@ -36,7 +37,7 @@ def read_xml(filename):
     
     return: lxml._elementTree object or None
     """
-    parser = et.XMLParser(remove_blank_text = True)
+    parser = et.XMLParser(remove_blank_text=True)
     try:
         if os.path.exists(filename):
             return et.parse(filename, parser)
@@ -45,10 +46,11 @@ def read_xml(filename):
             return et.parse(d, parser)
     except IOError:
         log.exception('unable to open file [[}]'.format(filename))
-    except et.XMLSyntaxError as e:
+    except et.XMLSyntaxError:
         log.exception('unable to parse XML [{}]'.format(filename))
         return None
     return None
+
 
 def remove_namespace(doc, namespace):
     """
@@ -84,11 +86,12 @@ def remove_namespace(doc, namespace):
     """
     ns = u'{%s}' % namespace
     nsl = len(ns)
-    #print 'DEBUG: removing',ns
+    # print 'DEBUG: removing',ns
     for elem in doc.getiterator():
         if elem.tag.startswith(ns):
             elem.tag = elem.tag[nsl:]
     return doc
+
 
 def delete_namespace(parsedXML):
     """
@@ -105,6 +108,7 @@ def delete_namespace(parsedXML):
         remove_namespace(parsedXML, root[1:end_ns])
     return parsedXML
 
+
 def read_xml_no_ns(filename):
     """
     read_xml_lxml_no_ns_no_blanks
@@ -120,4 +124,3 @@ def read_xml_no_ns(filename):
     if parsedXML is None:
         return None
     return delete_namespace(parsedXML)
-    
