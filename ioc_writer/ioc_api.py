@@ -485,18 +485,18 @@ class IOC():
             if value and href:
                 if link.text == value and link.attrib['href'] == href:
                     links_node.remove(link)
-                    counter = counter + 1
+                    counter += 1
             elif value and not href:
                 if link.text == value:
                     links_node.remove(link)
-                    counter = counter + 1
+                    counter += 1
             elif not value and href:
                 if link.attrib['href'] == href:
                     links_node.remove(link)
-                    counter = counter + 1
+                    counter += 1
             else:
                 links_node.remove(link)
-                counter = counter + 1
+                counter += 1
         return counter
         
     def remove_indicator(self, nid, prune=False):
@@ -588,17 +588,17 @@ class IOC():
             params = parameters_node.xpath('//param[@id="{}"]'.format(param_id))
             for param in params:
                 parameters_node.remove(param)
-                counter = counter + 1
+                counter += 1
         elif name:
             params = parameters_node.xpath('//param[@name="{}"]'.format(name))
             for param in params:
                 parameters_node.remove(param)
-                counter = counter + 1
+                counter += 1
         elif ref_id:
             params = parameters_node.xpath('//param[@ref-id="{}"]'.format(ref_id))
             for param in params:
                 parameters_node.remove(param)
-                counter = counter + 1
+                counter += 1
         return counter
 
     def remove_name(self):
