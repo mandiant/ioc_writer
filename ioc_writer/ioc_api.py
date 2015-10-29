@@ -95,8 +95,8 @@ class IOC(object):
             self.root, self.metadata, self.top_level_indicator, self.parameters = ioc_parts
         self.iocid = self.root.get('id','NoID')
             
-    @classmethod
-    def open_ioc(self, fn):
+    @staticmethod
+    def open_ioc(fn):
         """
                 Opens an IOC file, or XML string.  Returns the root element, top level
                 indicator element, and parameters element.  If the IOC or string fails
@@ -130,9 +130,8 @@ class IOC(object):
             root.append(parameters_node)
         return root, metadata_node, top_level_indicator, parameters_node
     
-    @classmethod    
-    def make_ioc(self,
-                name = None, 
+    @staticmethod
+    def make_ioc(name = None,
                 description = 'Automatically generated IOC', 
                 author = 'IOC_api', 
                 links = None,
