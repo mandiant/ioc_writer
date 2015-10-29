@@ -262,12 +262,12 @@ class IOC():
         parameters_node = self.parameters
         criteria_node = self.top_level_indicator.getparent()
         # first check for duplicate id,name pairs    
-        elems = parameters_node.xpath('.//param[@ref-id="%s" and @name="%s"]' % (indicator_id, name))
+        elems = parameters_node.xpath('.//param[@ref-id="{}" and @name="{}"]'.format(indicator_id, name))
         if len(elems) > 0:
             # there is no actual restriction on duplicate parameters
             log.info('Duplicate (id,name) parameter pair will be inserted [{}][{}].'.format(indicator_id, name))
         # now check to make sure the id is present in the IOC logic
-        elems = criteria_node.xpath('.//IndicatorItem[@id="%s"]|.//Indicator[@id="%s"]' % (indicator_id,indicator_id))
+        elems = criteria_node.xpath('.//IndicatorItem[@id="{}"]|.//Indicator[@id="{}"]'.format(indicator_id,indicator_id))
         if len(elems) == 0:
             raise IOCParseError('ID does not exist in the IOC [{}][{}].'.format(str(indicator_id), str(content)))
         parameters_node.append(ioc_et.make_param_node(indicator_id, content, name, type))
@@ -362,7 +362,7 @@ class IOC():
         
         Returns True, unless there are no links with link[@rel='old_rel']
         '''
-        links = self.metadata.xpath('./links/link[@rel="%s"]' % old_rel)
+        links = self.metadata.xpath('./links/link[@rel="{}"]'.format(old_rel))
         if len(links) < 1:
             log.warning('No links with link/[@rel="{}"]'.format(str(old_rel)))
             return False
@@ -404,7 +404,7 @@ class IOC():
         
         Returns True, unless there are no links with link/[@rel='old_rel' and text()='old_text']
         '''
-        links = self.metadata.xpath('./links/link[@rel="%s" and text()="%s"]' % (old_rel, old_text))
+        links = self.metadata.xpath('./links/link[@rel="{}" and text()="{}"]'.format(old_rel, old_text))
         if len(links) < 1:
             log.warning('No links with link/[@rel="{}"and text()="{}"]'.format(str(old_rel),str(old_text)))
             return False
@@ -434,7 +434,7 @@ class IOC():
             log.warning('Must specify at least the value/text(), param/@name or the value/@type values to update.')
             return False
         parameters_node = self.parameters
-        elems = parameters_node.xpath('.//param[@id="%s"]' % str(parameter_id))
+        elems = parameters_node.xpath('.//param[@id="{}"]'.format(parameter_id))
         if len(elems) != 1:
             msg = 'Did not find a single parameter with the supplied ID[{}]. Found [{}] parameters'.format(parameter_id,
                                                                                                            len(elems))
@@ -480,7 +480,7 @@ class IOC():
             log.warning('No links node present')
             return False
         counter = 0
-        links = links_node.xpath('.//link[@rel="%s"]' % (rel))
+        links = links_node.xpath('.//link[@rel="{}"]'.format(rel))
         for link in links:
             if value and href:
                 if link.text == value and link.attrib['href'] == href:
@@ -524,7 +524,7 @@ class IOC():
             False if there are no nodes removed.
         '''
         try:
-            node_to_remove = self.top_level_indicator.xpath('//IndicatorItem[@id="%s"]|//Indicator[@id="%s"]' % (str(id),str(id)))[0]
+            node_to_remove = self.top_level_indicator.xpath('//IndicatorItem[@id="{}"]|//Indicator[@id="{}"]'.format(str(id),str(id)))[0]
         except IndexError as e:
             log.warning('Node [{}] not present'.format(id))
             return False
@@ -547,7 +547,7 @@ class IOC():
                 self.remove_parameter(ref_id=id)
             return True
         else:
-            raise IOCParseError('Bad tag found.  Expected "IndicatorItem" or "Indicator", got [%s]' % str(node_to_remove.tag))     
+            raise IOCParseError('Bad tag found.  Expected "IndicatorItem" or "Indicator", got [[}]'.format(node_to_remove.tag))
         
     def remove_parameter(self, param_id=None, name=None, ref_id=None,):
         '''
@@ -577,7 +577,7 @@ class IOC():
         if ref_id:
             input.append('ref_id')
         if len(input) > 1:
-            raise IOCParseError('Must specify only param_id, name or ref_id.  Specified %s' % str(input))
+            raise IOCParseError('Must specify only param_id, name or ref_id.  Specified {}'.format(str(input)))
         elif len(input) <1:
             raise IOCParseError('Must specifiy an param_id, name or ref_id to remove a paramater')
 
@@ -585,17 +585,17 @@ class IOC():
         parameters_node = self.parameters
         
         if param_id:
-            params = parameters_node.xpath('//param[@id="%s"]' % (param_id))
+            params = parameters_node.xpath('//param[@id="{}"]'.format(param_id))
             for param in params:
                 parameters_node.remove(param)
                 counter = counter + 1
         elif name:
-            params = parameters_node.xpath('//param[@name="%s"]' % (name))
+            params = parameters_node.xpath('//param[@name="{}"]'.format(name))
             for param in params:
                 parameters_node.remove(param)
                 counter = counter + 1
         elif ref_id:
-            params = parameters_node.xpath('//param[@ref-id="%s"]' % (ref_id))
+            params = parameters_node.xpath('//param[@ref-id="{}"]'.format(ref_id))
             for param in params:
                 parameters_node.remove(param)
                 counter = counter + 1
@@ -709,7 +709,7 @@ def make_IndicatorItem_node(condition,
     '''
     # validate condition
     if condition not in valid_indicatoritem_conditions:
-        raise ValueError('Invalid IndicatorItem condition [%s]' % str(condition))
+        raise ValueError('Invalid IndicatorItem condition [{}]'.format(condition))
     IndicatorItem_node = et.Element('IndicatorItem')
     if id:
         IndicatorItem_node.attrib['id'] = id
@@ -741,7 +741,7 @@ def get_top_level_indicator_node(root_node):
         The top level level In
     '''
     if root_node.tag != 'OpenIOC':
-        raise IOCParseError('Root tag is not "OpenIOC" [%s].' % str(root_node.tag))
+        raise IOCParseError('Root tag is not "OpenIOC" [{}].'.format(root_node.tag))
     elems = root_node.xpath('criteria/Indicator')
     if len(elems) == 0:
         log.warning('No top level Indicator node found.')
@@ -768,7 +768,7 @@ def write_ioc(root, output_dir=None):
     '''
     root_tag = 'OpenIOC'
     if root.tag != root_tag:
-        raise ValueError('Root tag is not "%s".' % str(root_tag))
+        raise ValueError('Root tag is not "{}".'.format(root_tag))
     default_encoding = 'utf-8'
     tree = root.getroottree()
     try:
@@ -804,7 +804,7 @@ def write_ioc_string(root):
     '''
     root_tag = 'OpenIOC'
     if root.tag != root_tag:
-        raise ValueError('Root tag is not "%s".' % str(root_tag))
+        raise ValueError('Root tag is not "{}".'.format(root_tag))
     default_encoding = 'utf-8'
     tree = root.getroottree()
     try:
