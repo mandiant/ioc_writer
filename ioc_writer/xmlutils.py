@@ -44,9 +44,9 @@ def read_xml(filename):
             d = sio.StringIO(filename)
             return et.parse(d, parser)
     except IOError:
-        log.exception('unable to open file [%s]' % (filename))
+        log.exception('unable to open file [[}]'.format(filename))
     except et.XMLSyntaxError as e:
-        log.exception('unable to parse XML [%s]' % (filename))
+        log.exception('unable to parse XML [{}]'.format(filename))
         return None
     return None
 

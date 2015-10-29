@@ -128,7 +128,7 @@ class IOC(object):
             # parameters node is not required by schema; but we add it if it is not present
             parameters_node = ioc_et.make_parameters_node()
             root.append(parameters_node)
-        return (root, metadata_node, top_level_indicator, parameters_node)
+        return root, metadata_node, top_level_indicator, parameters_node
     
     @classmethod    
     def make_ioc(self,
@@ -174,7 +174,7 @@ class IOC(object):
         root.append(ioc_et.make_criteria_node(top_level_indicator))
         root.append(parameters_node)
         ioc_et.set_root_lastmodified(root)
-        return (root, metadata_node, top_level_indicator, parameters_node)
+        return root, metadata_node, top_level_indicator, parameters_node
 
     def set_lastmodified_date(self, date=None):
         """
@@ -378,7 +378,7 @@ class IOC(object):
                 link.text = new_text
                 if single_link:
                     break
-        elif (new_rel and new_text):
+        elif new_rel and new_text:
             log.warning('Cannot update rel and text at the same time')
             return False
         else:
