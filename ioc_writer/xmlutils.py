@@ -26,7 +26,7 @@ from lxml import etree as et
 import logging
 
 # logging config
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s  [%(filename)s:%(funcName)s]')
+log = logging.getLogger(__name__)
 
 def read_xml(filename):
     '''
@@ -44,9 +44,9 @@ def read_xml(filename):
             d = sio.StringIO(filename)
             return et.parse(d, parser)
     except IOError:
-        logging.exception('unable to open file [%s]' % (filename))
+        log.exception('unable to open file [%s]' % (filename))
     except et.XMLSyntaxError as e:
-        logging.exception('unable to parse XML [%s]' % (filename))
+        log.exception('unable to parse XML [%s]' % (filename))
         return None
     return None
 
