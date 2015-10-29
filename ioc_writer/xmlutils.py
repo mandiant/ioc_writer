@@ -29,13 +29,13 @@ import logging
 log = logging.getLogger(__name__)
 
 def read_xml(filename):
-    '''
+    """
     read_xml
     
     Use et to read in a xml file, or string, into a Element object.
     
     return: lxml._elementTree object or None
-    '''
+    """
     parser = et.XMLParser(remove_blank_text = True)
     try:
         if os.path.exists(filename):
@@ -51,7 +51,7 @@ def read_xml(filename):
     return None
 
 def remove_namespace(doc, namespace):
-    '''
+    """
     XXX: http://homework.nwsnet.de/products/45be_remove-namespace-in-an-xml-document-using-elementtree
 
     Permission is hereby granted, free of charge, to any person obtaining
@@ -81,7 +81,7 @@ def remove_namespace(doc, namespace):
     This effectively removes the namespace from that document.
     
     Returns the source document.
-    '''
+    """
     ns = u'{%s}' % namespace
     nsl = len(ns)
     #print 'DEBUG: removing',ns
@@ -91,15 +91,14 @@ def remove_namespace(doc, namespace):
     return doc
 
 def delete_namespace(parsedXML):
-    '''
+    """
     delete_namespace
     
     Identifies the namespace associated with the root node of a XML document
     and removes that names from the document.
     
     Returns the sources document.
-    '''
-    #namespaces are lame, just nic it
+    """
     if parsedXML.getroot().tag.startswith('{'):
         root = parsedXML.getroot().tag
         end_ns = root.find('}')
@@ -107,7 +106,7 @@ def delete_namespace(parsedXML):
     return parsedXML
 
 def read_xml_no_ns(filename):
-    '''
+    """
     read_xml_lxml_no_ns_no_blanks
     
     read in the file or data, populating a lxml._elementTree object
@@ -116,7 +115,7 @@ def read_xml_no_ns(filename):
     input: filename representing a xml file or a string of xml data 
     
     return: lxml._elementTree object or None
-    '''
+    """
     parsedXML = read_xml(filename)
     if parsedXML is None:
         return None
