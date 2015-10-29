@@ -518,7 +518,7 @@ class IOC():
         '''
         try:
             node_to_remove = self.top_level_indicator.xpath('//IndicatorItem[@id="%s"]|//Indicator[@id="%s"]' % (str(id),str(id)))[0]
-        except IndexError, e:
+        except IndexError as e:
             print 'Node [%s] not present' % str(id)
             return False
         if node_to_remove.tag == 'IndicatorItem':
@@ -779,7 +779,7 @@ def write_ioc(root, output_dir=None):
         fout = open(fn, 'wb')
         fout.write(et.tostring(tree, encoding=encoding, xml_declaration=True, pretty_print = True))
         fout.close()
-    except (IOError, OSError), e:
+    except (IOError, OSError) as e:
         print 'Failed to write out IOC [%s]' % str(e)
         return False
     except:

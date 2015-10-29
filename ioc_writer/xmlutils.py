@@ -45,7 +45,7 @@ def read_xml(filename):
             return et.parse(d, parser)
     except IOError:
         logging.exception('unable to open file [%s]' % (filename))
-    except et.XMLSyntaxError, e:
+    except et.XMLSyntaxError as e:
         logging.exception('unable to parse XML [%s]' % (filename))
         return None
     return None
