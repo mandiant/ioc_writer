@@ -47,7 +47,7 @@ date_regex = r'^[12][9012][0-9]{2}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-6][0-9]:[
 class IOCParseError(Exception):
     pass
                                    
-class IOC():
+class IOC(object):
     """
     Class for easy creation and manipulation of IOCs.
 
