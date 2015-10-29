@@ -529,8 +529,8 @@ class IOC(object):
         try:
             node_to_remove = self.top_level_indicator.xpath(
                 '//IndicatorItem[@id="{}"]|//Indicator[@id="{}"]'.format(str(nid), str(nid)))[0]
-        except IndexError as e:
-            log.warning('Node [{}] not present'.format(nid))
+        except IndexError:
+            log.exception('Node [{}] not present'.format(nid))
             return False
         if node_to_remove.tag == 'IndicatorItem':
             node_to_remove.getparent().remove(node_to_remove)
