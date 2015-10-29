@@ -93,7 +93,7 @@ def remove_namespace(doc, namespace):
     return doc
 
 
-def delete_namespace(parsedXML):
+def delete_namespace(parsed_xml):
     """
     delete_namespace
     
@@ -102,11 +102,11 @@ def delete_namespace(parsedXML):
     
     Returns the sources document.
     """
-    if parsedXML.getroot().tag.startswith('{'):
-        root = parsedXML.getroot().tag
+    if parsed_xml.getroot().tag.startswith('{'):
+        root = parsed_xml.getroot().tag
         end_ns = root.find('}')
-        remove_namespace(parsedXML, root[1:end_ns])
-    return parsedXML
+        remove_namespace(parsed_xml, root[1:end_ns])
+    return parsed_xml
 
 
 def read_xml_no_ns(filename):
@@ -120,7 +120,7 @@ def read_xml_no_ns(filename):
     
     return: lxml._elementTree object or None
     """
-    parsedXML = read_xml(filename)
-    if parsedXML is None:
+    parsed_xml = read_xml(filename)
+    if parsed_xml is None:
         return None
-    return delete_namespace(parsedXML)
+    return delete_namespace(parsed_xml)
