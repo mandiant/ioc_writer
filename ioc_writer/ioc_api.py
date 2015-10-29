@@ -18,14 +18,17 @@
 #
 # Provides an API for creating OpenIOC 1.1 IOC objects.
 #
-
 import os
 import re
+import logging
 
 from lxml import etree as et
 
 import ioc_et
 import xmlutils
+
+log = logging.getLogger(__name__)
+
 
 #XXX: Consider changing this to a dictionary, with condition values that point
 # to the types of operators (string, datetime, etc) in order to do more 
@@ -262,11 +265,11 @@ class IOC():
         elems = parameters_node.xpath('.//param[@ref-id="%s" and @name="%s"]' % (indicator_id, name))
         if len(elems) > 0:
             # there is no actual restriction on duplicate parameters
-            print 'Duplicate (id,name) parameter pair will be inserted [%s][%s].' % (indicator_id, name)
+            log.info('Duplicate (id,name) parameter pair will be inserted [{}][{}].'.format(indicator_id, name))
         # now check to make sure the id is present in the IOC logic
         elems = criteria_node.xpath('.//IndicatorItem[@id="%s"]|.//Indicator[@id="%s"]' % (indicator_id,indicator_id))
         if len(elems) == 0:
-            raise IOCParseError('ID does not exist in the logic structure of the IOC [%s][%s].' % (str(indicator_id), str(content)))
+            raise IOCParseError('ID does not exist in the IOC [{}][{}].'.format(str(indicator_id), str(content)))
         parameters_node.append(ioc_et.make_param_node(indicator_id, content, name, type))
         return True
     
@@ -305,8 +308,8 @@ class IOC():
         '''
         short_desc_node = self.metadata.find('short_description')
         if short_desc_node is None:
-            print 'Could not find short description node for [%s]' % str(self.iocid)
-            print 'Creating & inserting the short description node'
+            log.debug('Could not find short description node for [{}].'.format(str(self.iocid)))
+            log.debug('Creating & inserting the short description node')
             short_desc_node = ioc_et.make_short_description_node(name)
             self.metadata.insert(0, short_desc_node)
         else:
@@ -326,8 +329,8 @@ class IOC():
         '''
         desc_node = self.metadata.find('description')
         if desc_node is None:
-            print 'Could not find short description node for [%s]' % str(self.iocid)
-            print 'Creating & inserting the short description node'
+            log.debug('Could not find short description node for [{}].'.format(str(self.iocid)))
+            log.debug('Creating & inserting the short description node')
             desc_node = ioc_et.make_description_node(description)
             insert_index = 0
             for child in self.metadata.getchildren():
@@ -361,7 +364,7 @@ class IOC():
         '''
         links = self.metadata.xpath('./links/link[@rel="%s"]' % old_rel)
         if len(links) < 1:
-            print 'No links with link/[@rel="%s"]' % (str(old_rel))
+            log.warning('No links with link/[@rel="{}"]'.format(str(old_rel)))
             return False
         if new_rel and not new_text:
             # update link/@rel value
@@ -376,10 +379,10 @@ class IOC():
                 if single_link:
                     break
         elif (new_rel and new_text):
-            print 'Cannot update rel and text at the same time'
+            log.warning('Cannot update rel and text at the same time')
             return False
         else:
-            print 'Must specify either new_rel or new_text arguments'
+            log.warning('Must specify either new_rel or new_text arguments')
             return False
         return True
         
@@ -403,7 +406,7 @@ class IOC():
         '''
         links = self.metadata.xpath('./links/link[@rel="%s" and text()="%s"]' % (old_rel, old_text))
         if len(links) < 1:
-            print 'No links with link/[@rel="%s"and text()="%s"]' % (str(old_rel),str(old_text))
+            log.warning('No links with link/[@rel="{}"and text()="{}"]'.format(str(old_rel),str(old_text)))
             return False
         for link in links:
             link.text = new_text
@@ -428,12 +431,14 @@ class IOC():
         Will raise a IOCParseError if the parameter id is not present
         '''
         if not (content or name or param_type):
-            print 'Must specify at least the value/text(), param/@name or the value/@type values to update. :)'
+            log.warning('Must specify at least the value/text(), param/@name or the value/@type values to update.')
             return False
         parameters_node = self.parameters
         elems = parameters_node.xpath('.//param[@id="%s"]' % str(parameter_id))
         if len(elems) != 1:
-            raise IOCParseError('Did not find a single parmater with the supplied ID[%s]. Found [%s] parameters' % (str(parameter_id), len(elems)))
+            msg = 'Did not find a single parameter with the supplied ID[{}]. Found [{}] parameters'.format(parameter_id,
+                                                                                                           len(elems))
+            raise IOCParseError(msg)
 
         param_node = elems[0]
         value_node = param_node.find('value')
@@ -442,7 +447,9 @@ class IOC():
             param_node.attrib['name'] = name
         
         if value_node is None:
-            print 'No value node is associated with param [%s].  Not updating value node with content or tupe.' % str(parameter_id)
+            msg = 'No value node is associated with param [{}].  Not updating value node with content or tuple.'\
+                .format(parameter_id)
+            log.warning(msg)
         else:
             if content:
                 value_node.text = content
@@ -470,7 +477,7 @@ class IOC():
         '''
         links_node = self.metadata.find('links')
         if links_node is None:
-            print 'No links node present'
+            log.warning('No links node present')
             return False
         counter = 0
         links = links_node.xpath('.//link[@rel="%s"]' % (rel))
@@ -519,7 +526,7 @@ class IOC():
         try:
             node_to_remove = self.top_level_indicator.xpath('//IndicatorItem[@id="%s"]|//Indicator[@id="%s"]' % (str(id),str(id)))[0]
         except IndexError as e:
-            print 'Node [%s] not present' % str(id)
+            log.warning('Node [{}] not present'.format(id))
             return False
         if node_to_remove.tag == 'IndicatorItem':
             node_to_remove.getparent().remove(node_to_remove)
@@ -737,15 +744,15 @@ def get_top_level_indicator_node(root_node):
         raise IOCParseError('Root tag is not "OpenIOC" [%s].' % str(root_node.tag))
     elems = root_node.xpath('criteria/Indicator')
     if len(elems) == 0:
-        print 'WARNING: No top level Indicator node found.'
+        log.warning('No top level Indicator node found.')
         return None
     elif len(elems) > 1:
-        print 'WARNING: Multiple top level Indicator nodes found.  This is not a valid MIR IOC.'
+        log.warning('Multiple top level Indicator nodes found.  This is not a valid MIR IOC.')
         return None
     else:
         top_level_indicator_node = elems[0]
     if top_level_indicator_node.get('operator').lower() != 'or':
-        print 'WARNING: Top level Indicator/@operator attribute is not "OR".  This is not a valid MIR IOC.'
+        log.warning('Top level Indicator/@operator attribute is not "OR".  This is not a valid MIR IOC.')
     return top_level_indicator_node
     
 def write_ioc(root, output_dir=None):
@@ -767,7 +774,7 @@ def write_ioc(root, output_dir=None):
     try:
         encoding = tree.docinfo.encoding
     except:
-        print 'Failed to get encoding from docinfo'
+        log.debug('Failed to get encoding from docinfo')
         encoding = default_encoding
     ioc_id = root.attrib['id']
     fn = ioc_id + '.ioc'
@@ -779,8 +786,8 @@ def write_ioc(root, output_dir=None):
         fout = open(fn, 'wb')
         fout.write(et.tostring(tree, encoding=encoding, xml_declaration=True, pretty_print = True))
         fout.close()
-    except (IOError, OSError) as e:
-        print 'Failed to write out IOC [%s]' % str(e)
+    except (IOError, OSError):
+        log.exception('Failed to write out IOC')
         return False
     except:
         raise
@@ -803,6 +810,6 @@ def write_ioc_string(root):
     try:
         encoding = tree.docinfo.encoding
     except:
-        print 'Failed to get encoding from docinfo'
+        log.debug('Failed to get encoding from docinfo')
         encoding = default_encoding
     return et.tostring(tree, encoding=encoding, xml_declaration=True, pretty_print = True)
