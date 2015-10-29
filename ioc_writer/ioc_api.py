@@ -568,7 +568,8 @@ class IOC(object):
             name:       The name of the parameter to remove.
             ref_id:     The IndicatorItem/Indicator id of the parameter to remove.
 
-            Each input is mutually exclusive.  Calling this function with multiple values set will cause  exception.  Calling this function without setting one value will throw cause exception.
+            Each input is mutually exclusive.  Calling this function with multiple values set will cause  exception.
+              Calling this function without setting one value will throw cause exception.
 
         Returns the number of parameters removed (may be 0).
 
