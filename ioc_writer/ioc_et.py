@@ -29,7 +29,7 @@ NSMAP = {'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
          'xsd': 'http://www.w3.org/2001/XMLSchema', }
 
 
-def make_IOC_root(iocid=None):
+def make_ioc_root(iocid=None):
     root = et.Element('OpenIOC', nsmap=NSMAP)
     root.attrib['xmlns'] = 'http://openioc.org/schemas/OpenIOC_1.1'
     if iocid:

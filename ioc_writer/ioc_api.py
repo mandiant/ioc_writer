@@ -168,10 +168,10 @@ class IOC(object):
                 parse the parameters.
 
         """
-        root = ioc_et.make_IOC_root(iocid)
+        root = ioc_et.make_ioc_root(iocid)
         root.append(ioc_et.make_metadata_node(name, description, author, links))
         metadata_node = root.find('metadata')
-        top_level_indicator = make_Indicator_node('OR')
+        top_level_indicator = make_indicator_node('OR')
         parameters_node = (ioc_et.make_parameters_node())
         root.append(ioc_et.make_criteria_node(top_level_indicator))
         root.append(parameters_node)
@@ -654,7 +654,7 @@ class IOC(object):
         return write_ioc_string(self.root)
 
 
-def make_Indicator_node(operator, nid=None):
+def make_indicator_node(operator, nid=None):
     """
     This makes a Indicator node element.  These allow the construction of a
         logic tree within the IOC.
@@ -666,18 +666,18 @@ def make_Indicator_node(operator, nid=None):
 
     return: elementTree element
     """
-    Indicator_node = et.Element('Indicator')
+    i_node = et.Element('Indicator')
     if nid:
-        Indicator_node.attrib['id'] = nid
+        i_node.attrib['id'] = nid
     else:
-        Indicator_node.attrib['id'] = ioc_et.get_guid()
+        i_node.attrib['id'] = ioc_et.get_guid()
     if operator.upper() not in ['AND', 'OR']:
         raise ValueError('Indicator operator must be "AND" or "OR".')
-    Indicator_node.attrib['operator'] = operator.upper()
-    return Indicator_node
+    i_node.attrib['operator'] = operator.upper()
+    return i_node
 
 
-def make_IndicatorItem_node(condition,
+def make_indicatoritem_node(condition,
                             document,
                             search,
                             content_type,
@@ -718,25 +718,25 @@ def make_IndicatorItem_node(condition,
     # validate condition
     if condition not in valid_indicatoritem_conditions:
         raise ValueError('Invalid IndicatorItem condition [{}]'.format(condition))
-    IndicatorItem_node = et.Element('IndicatorItem')
+    ii_node = et.Element('IndicatorItem')
     if nid:
-        IndicatorItem_node.attrib['id'] = nid
+        ii_node.attrib['id'] = nid
     else:
-        IndicatorItem_node.attrib['id'] = ioc_et.get_guid()
-    IndicatorItem_node.attrib['condition'] = condition
+        ii_node.attrib['id'] = ioc_et.get_guid()
+    ii_node.attrib['condition'] = condition
     if preserve_case:
-        IndicatorItem_node.attrib['preserve-case'] = 'true'
+        ii_node.attrib['preserve-case'] = 'true'
     else:
-        IndicatorItem_node.attrib['preserve-case'] = 'false'
+        ii_node.attrib['preserve-case'] = 'false'
     if negate:
-        IndicatorItem_node.attrib['negate'] = 'true'
+        ii_node.attrib['negate'] = 'true'
     else:
-        IndicatorItem_node.attrib['negate'] = 'false'
+        ii_node.attrib['negate'] = 'false'
     context_node = ioc_et.make_context_node(document, search, context_type)
     content_node = ioc_et.make_content_node(content_type, content)
-    IndicatorItem_node.append(context_node)
-    IndicatorItem_node.append(content_node)
-    return IndicatorItem_node
+    ii_node.append(context_node)
+    ii_node.append(content_node)
+    return ii_node
 
 
 def get_top_level_indicator_node(root_node):

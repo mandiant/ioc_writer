@@ -35,7 +35,7 @@ def make_dnsentryitem_recordname(dns_name, condition='contains', negate=False, p
     search = 'DnsEntryItem/RecordName'
     content_type = 'string'
     content = dns_name
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -50,7 +50,7 @@ def make_driveritem_deviceitem_devicename(device_name, condition='is', negate=Fa
     search = 'DriverItem/DeviceItem/DeviceName'
     content_type = 'string'
     content = device_name
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -65,7 +65,7 @@ def make_driveritem_drivername(driver_name, condition='contains', negate=False, 
     search = 'DriverItem/DriverName'
     content_type = 'string'
     content = driver_name
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -80,7 +80,7 @@ def make_eventlogitem_eid(eid, condition='is', negate=False):
     search = 'EventLogItem/EID'
     content_type = 'int'
     content = eid
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate)
     return ii_node
 
@@ -95,7 +95,7 @@ def make_eventlogitem_log(log, condition='is', negate=False, preserve_case=False
     search = 'EventLogItem/log'
     content_type = 'string'
     content = log
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -110,7 +110,7 @@ def make_eventlogitem_message(message, condition='contains', negate=False, prese
     search = 'EventLogItem/message'
     content_type = 'string'
     content = message
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -125,7 +125,7 @@ def make_fileitem_fileattributes(attributes, condition='contains', negate=False,
     search = 'FileItem/FileAttributes'
     content_type = 'string'
     content = attributes
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -140,7 +140,7 @@ def make_fileitem_fileextension(extension, condition='is', negate=False, preserv
     search = 'FileItem/FileExtension'
     content_type = 'string'
     content = extension
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -155,7 +155,7 @@ def make_fileitem_filename(filename, condition='is', negate=False, preserve_case
     search = 'FileItem/FileName'
     content_type = 'string'
     content = filename
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -170,7 +170,7 @@ def make_fileitem_filepath(filepath, condition='contains', negate=False, preserv
     search = 'FileItem/FilePath'
     content_type = 'string'
     content = filepath
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -185,7 +185,7 @@ def make_fileitem_fullpath(fullpath, condition='contains', negate=False, preserv
     search = 'FileItem/FullPath'
     content_type = 'string'
     content = fullpath
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -200,7 +200,7 @@ def make_fileitem_md5sum(md5, condition='is', negate=False):
     search = 'FileItem/Md5sum'
     content_type = 'md5'
     content = md5
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate)
     return ii_node
 
@@ -215,7 +215,7 @@ def make_fileitem_peinfo_detectedanomalies_string(anomaly, condition='is', negat
     search = 'FileItem/PEInfo/DetectedAnomalies/string'
     content_type = 'string'
     content = anomaly
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -231,7 +231,7 @@ def make_fileitem_peinfo_detectedentrypointsignature_name(entrypoint_name, condi
     search = 'FileItem/PEInfo/DetectedEntryPointSignature/Name'
     content_type = 'string'
     content = entrypoint_name
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -246,7 +246,7 @@ def make_fileitem_peinfo_digitalsignature_signatureexists(sig_exists, condition=
     search = 'FileItem/PEInfo/DigitalSignature/SignatureExists'
     content_type = 'bool'
     content = sig_exists
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate)
     return ii_node
 
@@ -261,7 +261,7 @@ def make_fileitem_peinfo_digitalsignature_signatureverified(sig_verified, condit
     search = 'FileItem/PEInfo/DigitalSignature/SignatureVerified'
     content_type = 'bool'
     content = sig_verified
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate)
     return ii_node
 
@@ -276,7 +276,7 @@ def make_fileitem_peinfo_exports_dllname(dll_name, condition='is', negate=False,
     search = 'FileItem/PEInfo/Exports/DllName'
     content_type = 'string'
     content = dll_name
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -292,7 +292,7 @@ def make_fileitem_peinfo_exports_exportedfunctions_string(export_function, condi
     search = 'FileItem/PEInfo/Exports/ExportedFunctions/string'
     content_type = 'string'
     content = export_function
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -307,7 +307,7 @@ def make_fileitem_peinfo_exports_numberoffunctions(function_count, condition='is
     search = 'FileItem/PEInfo/Exports/NumberOfFunctions'
     content_type = 'int'
     content = function_count
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate)
     return ii_node
 
@@ -323,7 +323,7 @@ def make_fileitem_peinfo_importedmodules_module_importedfunctions_string(importe
     search = 'FileItem/PEInfo/ImportedModules/Module/ImportedFunctions/string'
     content_type = 'string'
     content = imported_function
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -339,7 +339,7 @@ def make_fileitem_peinfo_importedmodules_module_name(imported_module, condition=
     search = 'FileItem/PEInfo/ImportedModules/Module/Name'
     content_type = 'string'
     content = imported_module
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -354,7 +354,7 @@ def make_fileitem_peinfo_petimestamp(compile_time, condition='is', negate=False)
     search = 'FileItem/PEInfo/PETimeStamp'
     content_type = 'date'
     content = compile_time
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate)
     return ii_node
 
@@ -370,7 +370,7 @@ def make_fileitem_peinfo_resourceinfolist_resourceinfoitem_name(resource_name, c
     search = 'FileItem/PEInfo/ResourceInfoList/ResourceInfoItem/Name'
     content_type = 'string'
     content = resource_name
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -385,7 +385,7 @@ def make_fileitem_peinfo_sections_section_name(section_name, condition='is', neg
     search = 'FileItem/PEInfo/Sections/Section/Name'
     content_type = 'string'
     content = section_name
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -400,7 +400,7 @@ def make_fileitem_peinfo_type(petype, condition='is', negate=False, preserve_cas
     search = 'FileItem/PEInfo/Type'
     content_type = 'string'
     content = petype
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -415,7 +415,7 @@ def make_fileitem_sizeinbytes(filesize, condition='is', negate=False):
     search = 'FileItem/SizeInBytes'
     content_type = 'int'
     content = filesize
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate)
     return ii_node
 
@@ -430,7 +430,7 @@ def make_fileitem_streamlist_stream_name(stream_name, condition='is', negate=Fal
     search = 'FileItem/StreamList/Stream/Name'
     content_type = 'string'
     content = stream_name
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -445,7 +445,7 @@ def make_fileitem_stringlist_string(file_string, condition='contains', negate=Fa
     search = 'FileItem/StringList/string'
     content_type = 'string'
     content = file_string
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -460,7 +460,7 @@ def make_fileitem_username(file_owner, condition='is', negate=False, preserve_ca
     search = 'FileItem/Username'
     content_type = 'string'
     content = file_owner
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -475,7 +475,7 @@ def make_hookitem_hookedfunction(hooked_function, condition='is', negate=False, 
     search = 'HookItem/HookedFunction'
     content_type = 'string'
     content = hooked_function
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -490,7 +490,7 @@ def make_hookitem_hookingmodule(hooking_module, condition='contains', negate=Fal
     search = 'HookItem/HookingModule'
     content_type = 'string'
     content = hooking_module
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -505,7 +505,7 @@ def make_portitem_remoteip(remote_ip, condition='is', negate=False):
     search = 'PortItem/remoteIP'
     content_type = 'IP'
     content = remote_ip
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate)
     return ii_node
 
@@ -520,7 +520,7 @@ def make_portitem_remoteport(remote_port, condition='is', negate=False):
     search = 'PortItem/remotePort'
     content_type = 'int'
     content = remote_port
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate)
     return ii_node
 
@@ -536,7 +536,7 @@ def make_prefetchitem_accessedfilelist_accessedfile(accessed_file, condition='co
     search = 'PrefetchItem/AccessedFileList/AccessedFile'
     content_type = 'string'
     content = accessed_file
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -551,7 +551,7 @@ def make_prefetchitem_applicationfilename(application_filename, condition='is', 
     search = 'PrefetchItem/ApplicationFileName'
     content_type = 'string'
     content = application_filename
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -567,7 +567,7 @@ def make_prefetchitem_applicationfullpath(application_fullpath, condition='conta
     search = 'PrefetchItem/ApplicationFullPath'
     content_type = 'string'
     content = application_fullpath
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -582,7 +582,7 @@ def make_processitem_handlelist_handle_name(handle_name, condition='contains', n
     search = 'ProcessItem/HandleList/Handle/Name'
     content_type = 'string'
     content = handle_name
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -597,7 +597,7 @@ def make_processitem_portlist_portitem_remoteip(remote_ip, condition='is', negat
     search = 'ProcessItem/PortList/PortItem/remoteIP'
     content_type = 'IP'
     content = remote_ip
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate)
     return ii_node
 
@@ -613,7 +613,7 @@ def make_processitem_sectionlist_memorysection_name(section_name, condition='con
     search = 'ProcessItem/SectionList/MemorySection/Name'
     content_type = 'string'
     content = section_name
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -630,7 +630,7 @@ def make_processitem_sectionlist_memorysection_peinfo_exports_exportedfunctions_
     search = 'ProcessItem/SectionList/MemorySection/PEInfo/Exports/ExportedFunctions/string'
     content_type = 'string'
     content = export_function
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -645,7 +645,7 @@ def make_processitem_stringlist_string(string, condition='contains', negate=Fals
     search = 'ProcessItem/StringList/string'
     content_type = 'string'
     content = string
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -660,7 +660,7 @@ def make_processitem_username(username, condition='contains', negate=False, pres
     search = 'ProcessItem/Username'
     content_type = 'string'
     content = username
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -675,7 +675,7 @@ def make_processitem_arguments(arguments, condition='contains', negate=False, pr
     search = 'ProcessItem/arguments'
     content_type = 'string'
     content = arguments
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -690,7 +690,7 @@ def make_processitem_name(name, condition='is', negate=False, preserve_case=Fals
     search = 'ProcessItem/name'
     content_type = 'string'
     content = name
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -705,7 +705,7 @@ def make_processitem_path(path, condition='contains', negate=False, preserve_cas
     search = 'ProcessItem/path'
     content_type = 'string'
     content = path
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -720,7 +720,7 @@ def make_registryitem_keypath(keypath, condition='contains', negate=False, prese
     search = 'RegistryItem/KeyPath'
     content_type = 'string'
     content = keypath
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -735,7 +735,7 @@ def make_registryitem_path(path, condition='contains', negate=False, preserve_ca
     search = 'RegistryItem/Path'
     content_type = 'string'
     content = path
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -750,7 +750,7 @@ def make_registryitem_text(text, condition='contains', negate=False, preserve_ca
     search = 'RegistryItem/Text'
     content_type = 'string'
     content = text
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -765,7 +765,7 @@ def make_registryitem_valuename(valuename, condition='is', negate=False, preserv
     search = 'RegistryItem/ValueName'
     content_type = 'string'
     content = valuename
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -780,7 +780,7 @@ def make_serviceitem_description(description, condition='contains', negate=False
     search = 'ServiceItem/description'
     content_type = 'string'
     content = description
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -795,7 +795,7 @@ def make_serviceitem_descriptivename(descriptive_name, condition='is', negate=Fa
     search = 'ServiceItem/descriptiveName'
     content_type = 'string'
     content = descriptive_name
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -810,7 +810,7 @@ def make_serviceitem_name(name, condition='is', negate=False, preserve_case=Fals
     search = 'ServiceItem/name'
     content_type = 'string'
     content = name
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -825,7 +825,7 @@ def make_serviceitem_path(path, condition='contains', negate=False, preserve_cas
     search = 'ServiceItem/path'
     content_type = 'string'
     content = path
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -840,7 +840,7 @@ def make_serviceitem_pathmd5sum(path_md5, condition='is', negate=False):
     search = 'ServiceItem/pathmd5sum'
     content_type = 'md5'
     content = path_md5
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate)
     return ii_node
 
@@ -855,7 +855,7 @@ def make_serviceitem_servicedll(servicedll, condition='contains', negate=False, 
     search = 'ServiceItem/serviceDLL'
     content_type = 'string'
     content = servicedll
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -870,7 +870,7 @@ def make_serviceitem_servicedllsignatureexists(dll_sig_exists, condition='is', n
     search = 'ServiceItem/serviceDLLSignatureExists'
     content_type = 'bool'
     content = dll_sig_exists
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate)
     return ii_node
 
@@ -885,7 +885,7 @@ def make_serviceitem_servicedllsignatureverified(dll_sig_verified, condition='is
     search = 'ServiceItem/serviceDLLSignatureVerified'
     content_type = 'bool'
     content = dll_sig_verified
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate)
     return ii_node
 
@@ -900,7 +900,7 @@ def make_serviceitem_servicedllmd5sum(servicedll_md5, condition='is', negate=Fal
     search = 'ServiceItem/serviceDLLmd5sum'
     content_type = 'md5'
     content = servicedll_md5
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate)
     return ii_node
 
@@ -915,7 +915,7 @@ def make_systeminfoitem_hostname(hostname, condition='contains', negate=False, p
     search = 'SystemInfoItem/hostname'
     content_type = 'string'
     content = hostname
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -930,7 +930,7 @@ def make_systemrestoreitem_originalfilename(original_filename, condition='contai
     search = 'SystemRestoreItem/OriginalFileName'
     content_type = 'string'
     content = original_filename
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -945,7 +945,7 @@ def make_taskitem_name(name, condition='is', negate=False, preserve_case=False):
     search = 'TaskItem/Name'
     content_type = 'string'
     content = name
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
 
@@ -962,6 +962,6 @@ def make_fileitem_peinfo_versioninfoitem(key, value, condition='is', negate=Fals
     search = 'FileItem/PEInfo/VersionInfoList/VersionInfoItem/' + key  # XXX: No validation of key done.
     content_type = 'string'
     content = value
-    ii_node = ioc_api.make_IndicatorItem_node(condition, document, search, content_type, content,
+    ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content,
                                               negate=negate, preserve_case=preserve_case)
     return ii_node
