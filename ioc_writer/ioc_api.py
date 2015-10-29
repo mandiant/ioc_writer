@@ -30,23 +30,25 @@ import xmlutils
 log = logging.getLogger(__name__)
 
 
-#XXX: Consider changing this to a dictionary, with condition values that point
+# XXX: Consider changing this to a dictionary, with condition values that point
 # to the types of operators (string, datetime, etc) in order to do more 
 # validation
 valid_indicatoritem_conditions = ['is',
-                                   'contains',
-                                   'matches',
-                                   'starts-with',
-                                   'ends-with',
-                                   'greater-than',
-                                   'less-than',
-                                   ]
+                                  'contains',
+                                  'matches',
+                                  'starts-with',
+                                  'ends-with',
+                                  'greater-than',
+                                  'less-than',
+                                  ]
 
 date_regex = r'^[12][9012][0-9]{2}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-6][0-9]:[0-6][0-9]$'
-                                   
+
+
 class IOCParseError(Exception):
     pass
-                                   
+
+
 class IOC(object):
     """
     Class for easy creation and manipulation of IOCs.
@@ -59,14 +61,15 @@ class IOC(object):
                                 OR node for a valid MIR IOC.
         root:                   Root node of the IOC (OpenIOC element)
     """
+
     def __init__(self,
-                fn=None,
-                name = None, 
-                description = 'Automatically generated IOC', 
-                author = 'IOC_api', 
-                links = None,
-                keywords = None,
-                iocid = None):
+                 fn=None,
+                 name=None,
+                 description='Automatically generated IOC',
+                 author='IOC_api',
+                 links=None,
+                 keywords=None,
+                 iocid=None):
         """
         creates an IOC class object, populating the class attributes from a
         file or by creating them.
@@ -93,8 +96,8 @@ class IOC(object):
         else:
             ioc_parts = self.make_ioc(name, description, author, links, keywords, iocid)
             self.root, self.metadata, self.top_level_indicator, self.parameters = ioc_parts
-        self.iocid = self.root.get('id','NoID')
-            
+        self.iocid = self.root.get('id', 'NoID')
+
     @staticmethod
     def open_ioc(fn):
         """
@@ -129,14 +132,14 @@ class IOC(object):
             parameters_node = ioc_et.make_parameters_node()
             root.append(parameters_node)
         return root, metadata_node, top_level_indicator, parameters_node
-    
+
     @staticmethod
-    def make_ioc(name = None,
-                description = 'Automatically generated IOC', 
-                author = 'IOC_api', 
-                links = None,
-                keywords = None,
-                iocid = None):
+    def make_ioc(name=None,
+                 description='Automatically generated IOC',
+                 author='IOC_api',
+                 links=None,
+                 keywords=None,
+                 iocid=None):
         """
         This generates all parts of an IOC, but without any definition.
 
@@ -195,7 +198,7 @@ class IOC(object):
                 raise IOCParseError('last-modified date is not valid.  Must be in the form YYYY-MM-DDTHH:MM:SS')
         ioc_et.set_root_lastmodified(self.root, date)
         return True
-    
+
     def set_published_date(self, date=None):
         """
         Set the published date of a IOC to the current date.
@@ -214,7 +217,7 @@ class IOC(object):
                 raise IOCParseError('Published date is not valid.  Must be in the form YYYY-MM-DDTHH:MM:SS')
         ioc_et.set_root_published_date(self.root, date)
         return True
-    
+
     def set_created_date(self, date=None):
         """
         Set the created date of a IOC to the current date.
@@ -235,10 +238,10 @@ class IOC(object):
             match = re.match(date_regex, date)
             if not match:
                 raise IOCParseError('Created date is not valid.  Must be in the form YYYY-MM-DDTHH:MM:SS')
-        #XXX can this use self.metadata?
+        # XXX can this use self.metadata?
         ioc_et.set_root_created_date(self.root, date)
         return True
-    
+
     def add_parameter(self, indicator_id, content, name='comment', ptype='string'):
         """
         Add a a parameter to the IOC.
@@ -266,12 +269,13 @@ class IOC(object):
             # there is no actual restriction on duplicate parameters
             log.info('Duplicate (id,name) parameter pair will be inserted [{}][{}].'.format(indicator_id, name))
         # now check to make sure the id is present in the IOC logic
-        elems = criteria_node.xpath('.//IndicatorItem[@id="{}"]|.//Indicator[@id="{}"]'.format(indicator_id,indicator_id))
+        elems = criteria_node.xpath(
+            './/IndicatorItem[@id="{}"]|.//Indicator[@id="{}"]'.format(indicator_id, indicator_id))
         if len(elems) == 0:
             raise IOCParseError('ID does not exist in the IOC [{}][{}].'.format(str(indicator_id), str(content)))
         parameters_node.append(ioc_et.make_param_node(indicator_id, content, name, ptype))
         return True
-    
+
     def add_link(self, rel, value, href=None):
         """
         Add a Link metadata element to the IOC, with the
@@ -290,10 +294,10 @@ class IOC(object):
         if links_node is None:
             links_node = ioc_et.make_links_node()
             self.metadata.append(links_node)
-        link_node = ioc_et.make_link_node(rel,value,href)
+        link_node = ioc_et.make_link_node(rel, value, href)
         links_node.append(link_node)
         return True
-    
+
     def update_name(self, name):
         """
         Update the name (short description) of an IOC
@@ -314,7 +318,7 @@ class IOC(object):
         else:
             short_desc_node.text = name
         return True
-        
+
     def update_description(self, description):
         """
         Update the description) of an IOC
@@ -339,9 +343,9 @@ class IOC(object):
                     break
             self.metadata.insert(insert_index, desc_node)
         else:
-            desc_node.text = description 
+            desc_node.text = description
         return True
-    
+
     def update_link_rel_based(self, old_rel, new_rel=None, new_text=None, single_link=False):
         """
         Update link nodes, based on the existing link/@rel values.
@@ -384,7 +388,7 @@ class IOC(object):
             log.warning('Must specify either new_rel or new_text arguments')
             return False
         return True
-        
+
     def update_link_rewrite(self, old_rel, old_text, new_text, single_link=False):
         """
         Rewrite the text() value of a link based on the link/@rel and link/text() value.
@@ -405,14 +409,14 @@ class IOC(object):
         """
         links = self.metadata.xpath('./links/link[@rel="{}" and text()="{}"]'.format(old_rel, old_text))
         if len(links) < 1:
-            log.warning('No links with link/[@rel="{}"and text()="{}"]'.format(str(old_rel),str(old_text)))
+            log.warning('No links with link/[@rel="{}"and text()="{}"]'.format(str(old_rel), str(old_text)))
             return False
         for link in links:
             link.text = new_text
             if single_link:
                 break
         return True
-        
+
     def update_parameter(self, parameter_id, content=None, name=None, param_type=None):
         """
         Updates the parameter attached to an Indicator or IndicatorItem node.
@@ -441,12 +445,12 @@ class IOC(object):
 
         param_node = elems[0]
         value_node = param_node.find('value')
-        
+
         if name:
             param_node.attrib['name'] = name
-        
+
         if value_node is None:
-            msg = 'No value node is associated with param [{}].  Not updating value node with content or tuple.'\
+            msg = 'No value node is associated with param [{}].  Not updating value node with content or tuple.' \
                 .format(parameter_id)
             log.warning(msg)
         else:
@@ -455,7 +459,7 @@ class IOC(object):
             if param_type:
                 value_node.attrib['type'] = param_type
         return True
-    
+
     def remove_link(self, rel, value=None, href=None):
         """
 
@@ -497,7 +501,7 @@ class IOC(object):
                 links_node.remove(link)
                 counter += 1
         return counter
-        
+
     def remove_indicator(self, nid, prune=False):
         """
         Removes a Indicator or IndicatorItem node from the IOC.  By default,
@@ -523,7 +527,8 @@ class IOC(object):
             False if there are no nodes removed.
         """
         try:
-            node_to_remove = self.top_level_indicator.xpath('//IndicatorItem[@id="{}"]|//Indicator[@id="{}"]'.format(str(nid),str(nid)))[0]
+            node_to_remove = self.top_level_indicator.xpath(
+                '//IndicatorItem[@id="{}"]|//Indicator[@id="{}"]'.format(str(nid), str(nid)))[0]
         except IndexError as e:
             log.warning('Node [{}] not present'.format(nid))
             return False
@@ -546,9 +551,10 @@ class IOC(object):
                 self.remove_parameter(ref_id=nid)
             return True
         else:
-            raise IOCParseError('Bad tag found.  Expected "IndicatorItem" or "Indicator", got [[}]'.format(node_to_remove.tag))
-        
-    def remove_parameter(self, param_id=None, name=None, ref_id=None,):
+            raise IOCParseError(
+                'Bad tag found.  Expected "IndicatorItem" or "Indicator", got [[}]'.format(node_to_remove.tag))
+
+    def remove_parameter(self, param_id=None, name=None, ref_id=None, ):
         """
         Removes parameters based on function arguments.
 
@@ -577,12 +583,12 @@ class IOC(object):
             l.append('ref_id')
         if len(l) > 1:
             raise IOCParseError('Must specify only param_id, name or ref_id.  Specified {}'.format(str(l)))
-        elif len(l) <1:
+        elif len(l) < 1:
             raise IOCParseError('Must specifiy an param_id, name or ref_id to remove a paramater')
 
         counter = 0
         parameters_node = self.parameters
-        
+
         if param_id:
             params = parameters_node.xpath('//param[@id="{}"]'.format(param_id))
             for param in params:
@@ -625,7 +631,7 @@ class IOC(object):
             return True
         else:
             return False
-            
+
     def write_ioc_to_file(self, output_dir=None):
         """
         Writes the IOC to a .ioc file.
@@ -637,7 +643,7 @@ class IOC(object):
         output: return True, unless an error occurs while writing the IOC.
         """
         return write_ioc(self.root, output_dir)
-    
+
     def write_ioc_to_string(self):
         """
         Writes the IOC to a string.
@@ -645,8 +651,9 @@ class IOC(object):
         output: returns a string, which is the XML representation of the IOC.
         """
         return write_ioc_string(self.root)
-    
-def make_Indicator_node(operator, nid = None):
+
+
+def make_Indicator_node(operator, nid=None):
     """
     This makes a Indicator node element.  These allow the construction of a
         logic tree within the IOC.
@@ -663,20 +670,21 @@ def make_Indicator_node(operator, nid = None):
         Indicator_node.attrib['id'] = nid
     else:
         Indicator_node.attrib['id'] = ioc_et.get_guid()
-    if operator.upper() not in ['AND','OR']:
+    if operator.upper() not in ['AND', 'OR']:
         raise ValueError('Indicator operator must be "AND" or "OR".')
     Indicator_node.attrib['operator'] = operator.upper()
     return Indicator_node
 
+
 def make_IndicatorItem_node(condition,
-                            document, 
-                            search, 
-                            content_type, 
-                            content, 
-                            preserve_case = False,
-                            negate = False,
-                            context_type = 'mir', 
-                            nid = None):
+                            document,
+                            search,
+                            content_type,
+                            content,
+                            preserve_case=False,
+                            negate=False,
+                            context_type='mir',
+                            nid=None):
     """
     This makes a IndicatorItem element.  This contains the actual threat
     intelligence in the IOC.
@@ -729,6 +737,7 @@ def make_IndicatorItem_node(condition,
     IndicatorItem_node.append(content_node)
     return IndicatorItem_node
 
+
 def get_top_level_indicator_node(root_node):
     """
     This returns the first top level Indicator node under the criteria node.
@@ -753,7 +762,8 @@ def get_top_level_indicator_node(root_node):
     if top_level_indicator_node.get('operator').lower() != 'or':
         log.warning('Top level Indicator/@operator attribute is not "OR".  This is not a valid MIR IOC.')
     return top_level_indicator_node
-    
+
+
 def write_ioc(root, output_dir=None):
     """
     writes an IOC, as defined by a set of etree Elements, to a .IOC file.
@@ -780,10 +790,10 @@ def write_ioc(root, output_dir=None):
     if output_dir:
         fn = os.path.join(output_dir, fn)
     else:
-        fn = os.path.join(os.getcwd(),fn)
+        fn = os.path.join(os.getcwd(), fn)
     try:
         fout = open(fn, 'wb')
-        fout.write(et.tostring(tree, encoding=encoding, xml_declaration=True, pretty_print = True))
+        fout.write(et.tostring(tree, encoding=encoding, xml_declaration=True, pretty_print=True))
         fout.close()
     except (IOError, OSError):
         log.exception('Failed to write out IOC')
@@ -791,6 +801,7 @@ def write_ioc(root, output_dir=None):
     except:
         raise
     return True
+
 
 def write_ioc_string(root):
     """
@@ -811,4 +822,4 @@ def write_ioc_string(root):
     except:
         log.debug('Failed to get encoding from docinfo')
         encoding = default_encoding
-    return et.tostring(tree, encoding=encoding, xml_declaration=True, pretty_print = True)
+    return et.tostring(tree, encoding=encoding, xml_declaration=True, pretty_print=True)
