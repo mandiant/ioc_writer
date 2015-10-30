@@ -482,13 +482,13 @@ def has_siblings(node):
     else:
         return False
         
-def safe_makedirs(dir):
-    if os.path.isdir(dir):
+def safe_makedirs(fdir):
+    if os.path.isdir(fdir):
         pass
         #print 'dir already exists: %s' % str(dir)
     else:
         try:
-            os.makedirs(dir)
+            os.makedirs(fdir)
         except WindowsError, e:
             if 'Cannot create a file when that file already exists' in e:
                 logging.debug('relevant dir already exists')

@@ -227,13 +227,13 @@ class iocmanager():
             f.close()
         return True
 
-def safe_makedirs(dir):
-    if os.path.isdir(dir):
+def safe_makedirs(fdir):
+    if os.path.isdir(fdir):
         pass
         #print 'dir already exists: %s' % str(dir)
     else:
         try:
-            os.makedirs(dir)
+            os.makedirs(fdir)
         except WindowsError, e:
             if 'Cannot create a file when that file already exists' in e:
                 logging.debug('relevant dir already exists')
@@ -251,8 +251,8 @@ def main(options):
     iocm.insert(options.iocs)
     errors = iocm.convert_to_11()
     if errors:
-        for id in errors:
-            logging.error('Failed to process: [%s]' % str(id))
+        for iocid in errors:
+            logging.error('Failed to process: [%s]' % str(iocid))
     if len(iocm.iocs_11) == 0:
         logging.error('No IOCs available to write out')
         sys.exit(1)

@@ -32,13 +32,13 @@ from ioc_writer import ioc_api
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s  [%(filename)s:%(funcName)s]')
 
-def safe_makedirs(dir):
-    if os.path.isdir(dir):
+def safe_makedirs(fdir):
+    if os.path.isdir(fdir):
         pass
         #print 'dir already exists: %s' % str(dir)
     else:
         try:
-            os.makedirs(dir)
+            os.makedirs(fdir)
         except WindowsError, e:
             if 'Cannot create a file when that file already exists' in e:
                 print 'relevant dir already exists'

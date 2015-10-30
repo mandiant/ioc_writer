@@ -76,14 +76,13 @@ def create_ioc_object(ioc_name,items,and_or=True):
     
 def process_file(filename):
     rows = []
-    file = open(filename, 'r')
-    reader = csv.reader(file)
-    for row in reader:
-        if len(row) < 5:
-            print 'row length less than 5 encountered'
-            return None
-        #print row
-        rows.append(row)
+    with open(filename, 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            if len(row) < 5:
+                print 'row length less than 5 encountered'
+                return None
+            rows.append(row)
     return rows
 
 def main(options):
