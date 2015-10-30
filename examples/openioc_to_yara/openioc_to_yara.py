@@ -39,7 +39,7 @@ class IOCParseError(Exception):
     pass
 
 
-class YaraIOCManager:
+class YaraIOCManager(object):
     def __init__(self):
         self.iocs = {}  # elementTree representing the IOC
         self.ioc_name = {}  # guid -> name mapping
