@@ -36,7 +36,7 @@ log = logging.getLogger(__name__)
 def safe_makedirs(fdir):
     if os.path.isdir(fdir):
         pass
-        #print 'dir already exists: %s' % str(dir)
+        # print 'dir already exists: %s' % str(dir)
     else:
         try:
             os.makedirs(fdir)
@@ -47,40 +47,42 @@ def safe_makedirs(fdir):
                 raise WindowsError(e)
     return True
 
+
 class IOCParseError(Exception):
     pass
-    
-class ioc_manager:
+
+
+class DowngradeIOCManager(object):
     def __init__(self):
-        self.iocs = {} # elementTree representing the IOC
-        self.ioc_name = {} # guid -> name mapping
+        self.iocs = {}  # elementTree representing the IOC
+        self.ioc_name = {}  # guid -> name mapping
         self.ioc_xml = {}
-        self.iocs_10 = {} # elementTree representing the IOC, used by ioc_manager.convert_to_10
-        self.pruned_11_iocs = set() # set representing pruned IOCs, used by ioc_manager.convert_to_10
-        self.null_pruned_iocs = set() # set representing null IOCs, used by ioc_manager.convert_to_10
+        self.iocs_10 = {}  # elementTree representing the IOC, used by ioc_manager.convert_to_10
+        self.pruned_11_iocs = set()  # set representing pruned IOCs, used by ioc_manager.convert_to_10
+        self.null_pruned_iocs = set()  # set representing null IOCs, used by ioc_manager.convert_to_10
         self.openioc_11_only_conditions = ['starts-with', 'ends-with', 'greater-than', 'less-than', 'matches']
         self.default_encoding = 'utf-8'
-        
+
     def __len__(self):
         return len(self.iocs)
-        
+
     def insert(self, filename):
-        '''
+        """
         insert(filedir)
 
         import [all] IOC(s) from a file or directory
-        '''
+        """
         errors = []
         if os.path.isfile(filename):
-            log.info('loading IOC from: %s' % filename)
+            log.info('loading IOC from: {}'.format(filename))
             try:
                 self.parse(ioc_api.IOC(filename))
             except ioc_api.IOCParseError:
                 log.exception('Parse Error')
                 errors.append(filename)
         elif os.path.isdir(filename):
-            log.info('loading IOCs from: %s' % filename)
-            for fn in glob.glob(filename+os.path.sep+'*.ioc'):
+            log.info('loading IOCs from: {}'.format(filename))
+            for fn in glob.glob(filename + os.path.sep + '*.ioc'):
                 if not os.path.isfile(fn):
                     continue
                 else:
@@ -91,32 +93,36 @@ class ioc_manager:
                         errors.append(fn)
         else:
             pass
-        log.info('Parsed [%s] IOCs' % str(len(self)))
+        log.info('Parsed [{}] IOCs'.format(len(self)))
         return errors
 
     def parse(self, ioc_obj):
-        '''
+        """
         parse
-        
+
         input: lxml.etree._ElementTree object, representing a OpenIOC 1.1 IOC.
-        
-        parses an ioc to populate 
-        '''
+
+        parses an ioc to populate
+        """
         if ioc_obj is None:
             return
         iocid = ioc_obj.root.get('id')
         if iocid in self.iocs:
-            log.warning('duplicate IOC UUID [%s] [orig_shortName: %s][new_shortName: %s]' % (iocid, self.ioc_name[iocid], ioc_obj.metadata('.//short_description') or 'NoName'))
+            sd = ioc_obj.metadata('.//short_description') or 'NoName'
+            msg = 'duplicate IOC UUID [{}] [orig_shortName: {}][new_shortName: {}]'.format(iocid,
+                                                                                           self.ioc_name[iocid],
+                                                                                           sd)
+            log.warning(msg)
         self.iocs[iocid] = ioc_obj
         return True
 
     def convert_to_10(self):
-        '''
+        """
         convert_to_10
-        
+
         converts the iocs in self.iocs from openioc 1.1 to openioc 1.0 format.
         the converted iocs are stored in the dictionary self.iocs_10
-        '''
+        """
         if len(self) < 1:
             log.error('no iocs available to modify')
             return False
@@ -142,13 +148,16 @@ class ioc_manager:
             try:
                 ioc_logic = ioc_obj_11.root.xpath('.//criteria')[0]
             except IndexError:
-                log.exception('Could not find criteria nodes for IOC [{}].  Did you attempt to convert OpenIOC 1.0 iocs?'.format(iocid))
+                log.exception(
+                    'Could not find criteria nodes for IOC [{}].  Did you attempt to convert OpenIOC 1.0 iocs?'.format(
+                        iocid))
                 errors.append(iocid)
                 continue
             try:
                 tlo_11 = ioc_logic.getchildren()[0]
             except IndexError:
-                log.exception('Could not find children for the top level criteria/children nodes for IOC [{}]'.format(iocid))
+                log.exception(
+                    'Could not find children for the top level criteria/children nodes for IOC [{}]'.format(iocid))
                 errors.append(iocid)
                 continue
             tlo_id = tlo_11.get('id')
@@ -160,8 +169,8 @@ class ioc_manager:
                 comment_dict[param_id] = param_text
             # create a 1.1 indicator and populate it with the metadata from the existing 1.1
             # we will then modify this new IOC to conform to 1.1 schema
-            ioc_obj_10 = ioc_api.IOC(name = name_11, description = description_11, author=author_11, links = links_11, keywords = keywords_11, iocid=iocid)
-            #root_10, tlo_10 = ioc_api.IOC(name = name_11, description = description_11, author=author_11, links = links_11, keywords = keywords_11, id=iocid)
+            ioc_obj_10 = ioc_api.IOC(name=name_11, description=description_11, author=author_11, links=links_11,
+                                     keywords=keywords_11, iocid=iocid)
             ioc_obj_10.root.attrib['last-modified'] = last_modified_date_11
             authored_date_node = ioc_obj_10.metadata.find('authored_date')
             authored_date_node.text = created_date_11
@@ -184,7 +193,7 @@ class ioc_manager:
             ioc_obj_10.root.remove(criteria_node)
             criteria_node.tag = 'definition'
             ioc_obj_10.root.append(criteria_node)
-            
+
             ioc_obj_10.top_level_indicator.attrib['id'] = tlo_id
             # identify indicator items with 1.1 specific operators
             # we will skip them when converting IOC from 1.1 to 1.0.
@@ -233,16 +242,16 @@ class ioc_manager:
                 ioc_obj_10.root.addprevious(c)
                 comment_node = comment_node.getprevious()
             # Record the IOC
-            #ioc_10 = et.ElementTree(root_10)
+            # ioc_10 = et.ElementTree(root_10)
             self.iocs_10[iocid] = ioc_obj_10
         return errors
- 
-    def convert_branch(self, old_node, new_node, ids_to_skip, comment_dict = None):
-        '''
+
+    def convert_branch(self, old_node, new_node, ids_to_skip, comment_dict=None):
+        """
         convert_branch
             recursively walk a indicator logic tree, starting from a Indicator node.
             converts OpenIOC 1.1 Indicator/IndicatorItems to Openioc 1.0 and preserves order.
-            
+
         input
             old_node: old node, an Indicator node, which we walk down to convert
             new_node: new node, an Indicator node, which we add new IndicatorItem and Indicator nodes too
@@ -251,7 +260,7 @@ class ioc_manager:
         return
             returns True upon completiong
             may raise ValueError
-        '''
+        """
         expected_tag = 'Indicator'
         if old_node.tag != expected_tag:
             raise ValueError('old_node expected tag is [%s]' % expected_tag)
@@ -271,44 +280,44 @@ class ioc_manager:
                 content_type = node.xpath('Content/@type')[0]
                 content = node.findtext('Content')
                 context_type = node.xpath('Context/@type')[0]
-                new_II_node = ioc_api.make_indicatoritem_node(condition = condition,
-                                                            document = document,
-                                                            search = search,
-                                                            content_type = content_type, 
-                                                            content = content, 
-                                                            context_type = context_type,
-                                                            nid= node_id)
+                new_ii_node = ioc_api.make_indicatoritem_node(condition=condition,
+                                                              document=document,
+                                                              search=search,
+                                                              content_type=content_type,
+                                                              content=content,
+                                                              context_type=context_type,
+                                                              nid=node_id)
                 # set condition
-                new_II_node.attrib['condition'] = new_condition
+                new_ii_node.attrib['condition'] = new_condition
                 # set comment
                 if node_id in comment_dict:
                     comment = comment_dict[node_id]
                     comment_node = et.Element('Comment')
                     comment_node.text = comment
-                    new_II_node.append(comment_node)
+                    new_ii_node.append(comment_node)
                 # remove preserver-case and negate
-                del new_II_node.attrib['negate']
-                del new_II_node.attrib['preserve-case']
-                new_node.append(new_II_node)
+                del new_ii_node.attrib['negate']
+                del new_ii_node.attrib['preserve-case']
+                new_node.append(new_ii_node)
             elif node.tag == 'Indicator':
                 operator = node.get('operator')
                 if operator.upper() not in ['OR', 'AND']:
-                    raise IOCParseError('Indicator@operator is not AND/OR. [%s] has [%s]' % (node_id, operator) )
-                new_I_node = ioc_api.make_indicator_node(operator, node_id)
-                new_node.append(new_I_node)
-                self.convert_branch(node, new_I_node, ids_to_skip, comment_dict)                    
+                    raise IOCParseError('Indicator@operator is not AND/OR. [%s] has [%s]' % (node_id, operator))
+                new_i_node = ioc_api.make_indicator_node(operator, node_id)
+                new_node.append(new_i_node)
+                self.convert_branch(node, new_i_node, ids_to_skip, comment_dict)
             else:
                 # should never get here
                 raise IOCParseError('node is not a Indicator/IndicatorItem')
         return True
-        
-    def write_iocs(self, directory=None, source = None):
-        '''
+
+    def write_iocs(self, directory=None, source=None):
+        """
         write iocs from self.iocxml to a directory
-        
+
         if directory is None, write the iocs to the current working directory
         source: allows specifying a different dictionry of elmentTree ioc objects
-        '''
+        """
         if not source:
             source = self.iocs
         if len(source) < 1:
@@ -336,7 +345,7 @@ class ioc_manager:
                 ioc_encoding = tree.docinfo.encoding
             except:
                 ioc_encoding = self.default_encoding
-            self.ioc_xml[iocid] = et.tostring(tree, encoding = ioc_encoding, pretty_print = True, xml_declaration = True)
+            self.ioc_xml[iocid] = et.tostring(tree, encoding=ioc_encoding, pretty_print=True, xml_declaration=True)
         # write the iocs to disk
         for iocid in source_iocs:
             fn = os.path.join(output_dir, iocid + '.ioc')
@@ -344,14 +353,14 @@ class ioc_manager:
             f.write(self.ioc_xml[iocid])
             f.close()
         return True
-        
-    def write_pruned_iocs(self, directory=None, pruned_source = None):
-        '''
+
+    def write_pruned_iocs(self, directory=None, pruned_source=None):
+        """
         write_pruned_iocs to a directory
-        
+
         if directory is None, write the iocs to the current working directory
-        '''
-        if pruned_source == None:
+        """
+        if pruned_source is None:
             pruned_source = self.pruned_11_iocs
         if len(pruned_source) < 1:
             log.error('no iocs available to write out')
@@ -371,7 +380,7 @@ class ioc_manager:
                 ioc_encoding = tree.docinfo.encoding
             except:
                 ioc_encoding = self.default_encoding
-            self.ioc_xml[iocid] = et.tostring(tree, encoding = ioc_encoding, pretty_print = True, xml_declaration = True)
+            self.ioc_xml[iocid] = et.tostring(tree, encoding=ioc_encoding, pretty_print=True, xml_declaration=True)
         # write the iocs to disk
         for iocid in pruned_source:
             fn = os.path.join(output_dir, iocid + '.ioc')
@@ -379,17 +388,19 @@ class ioc_manager:
             f.write(self.ioc_xml[iocid])
             f.close()
         return True
-    
+
+
 def main(options):
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s  [%(filename)s:%(funcName)s]')
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s %(levelname)s: %(message)s  [%(filename)s:%(funcName)s]')
     # validate output dir
     if os.path.isfile(options.output):
         log.error('Cannot set output directory to a file')
         sys.exit(1)
     else:
-        output_dir = os.path.join(options.output,'unpruned')
+        output_dir = os.path.join(options.output, 'unpruned')
     # read in and convert iocs
-    iocm = ioc_manager()
+    iocm = DowngradeIOCManager()
     iocm.insert(options.iocs)
     errors = iocm.convert_to_10()
     if errors:
@@ -404,25 +415,30 @@ def main(options):
     else:
         log.error('failed to write unpruned iocs out')
     # write pruned 1.0 iocs
-    output_dir = os.path.join(options.output,'pruned')
+    output_dir = os.path.join(options.output, 'pruned')
     if iocm.write_pruned_iocs(output_dir, iocm.pruned_11_iocs):
         log.info('Wrote pruned iocs out to %s' % output_dir)
     else:
         log.error('failed to write pruned iocs out')
     # write null 1.0 iocs
-    output_dir = os.path.join(options.output,'null')
+    output_dir = os.path.join(options.output, 'null')
     if iocm.write_pruned_iocs(output_dir, iocm.null_pruned_iocs):
         log.info('Wrote null iocs out to %s' % output_dir)
     else:
         log.error('failed to write null iocs out')
     sys.exit(0)
-    
+
+
 def downgrade_options():
     opts = []
-    opts.append(optparse.make_option('--iocs', '-i', dest='iocs', help='Directory to iocs or the ioc to process', default = None))
-    opts.append(optparse.make_option('--output', '-o', dest='output', help='Directory to write iocs out too.  There will be three folders created in this directory.', default = None))
+    opts.append(
+        optparse.make_option('--iocs', '-i', dest='iocs', help='Directory to iocs or the ioc to process', default=None))
+    opts.append(optparse.make_option('--output', '-o', dest='output',
+                                     help='Directory to write iocs out too.  There will be three folders created in this directory.',
+                                     default=None))
     return opts
-        
+
+
 if __name__ == "__main__":
     usage_str = "usage: %prog [options]"
     parser = optparse.OptionParser(usage=usage_str, option_list=downgrade_options())
@@ -434,4 +450,4 @@ if __name__ == "__main__":
     if not options.output:
         log.error('Must specify a output directory.')
         sys.exit(1)
-    main(options)       
+    main(options)

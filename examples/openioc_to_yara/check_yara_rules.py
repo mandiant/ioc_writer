@@ -26,13 +26,13 @@ import optparse
 
 log = logging.getLogger(__name__)
 
-
 try:
     import yara
 except ImportError:
     log.exception('Could not import yara')
     sys.exit(1)
-    
+
+
 def check_rules(rules, fp):
     matches = rules.match(fp)
     if matches:
@@ -41,22 +41,24 @@ def check_rules(rules, fp):
     else:
         log.debug('No match for [%s]' % os.path.basename(fp))
         return False
-    
+
+
 def main(options):
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s  [%(filename)s:%(funcName)s]')
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s %(levelname)s: %(message)s  [%(filename)s:%(funcName)s]')
     if not options.verbose:
         logging.disable(logging.DEBUG)
-    
+
     if not os.path.isfile(options.yara):
         log.error('Yara rules file is not a file')
         sys.exit(1)
-    
+
     try:
         rules = yara.compile(options.yara)
     except yara.SyntaxError:
         log.exception('Failed to process rules.')
         sys.exit(1)
-        
+
     path = options.fp
     if os.path.isfile(path):
         check_rules(rules, path)
@@ -69,17 +71,21 @@ def main(options):
         log.error('input is not a file or a directory')
         sys.exit(1)
     sys.exit(0)
-    
+
+
 def options():
     opts = []
-    opts.append(optparse.make_option('--yara', '-y', dest = 'yara', 
-                                    help = 'File of yara rules to process.', default = None))
-    opts.append(optparse.make_option('--input', '-i', dest = 'fp', 
-                                    help = 'Path of file or directory to check for yara matches.  Will not recurse the directory."', default = None))
-    opts.append(optparse.make_option('--verbose', '-v', dest = 'verbose', action = 'store_true',
-                                    help = 'Verbose output', default = None))
+    opts.append(optparse.make_option('--yara', '-y', dest='yara',
+                                     help='File of yara rules to process.', default=None))
+    opts.append(optparse.make_option('--input', '-i', dest='fp',
+                                     help='Path of file or directory to check for yara matches.'
+                                          '  Will not recurse the directory."',
+                                     default=None))
+    opts.append(optparse.make_option('--verbose', '-v', dest='verbose', action='store_true',
+                                     help='Verbose output', default=None))
     return opts
-    
+
+
 if __name__ == "__main__":
     usage_str = """usage: %prog [options]
 Test a yara rule against a set of files, or file."""

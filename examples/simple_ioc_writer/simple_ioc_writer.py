@@ -52,27 +52,27 @@ from ioc_writer import ioc_api
 
 log = logging.getLogger(__name__)
 
-    
-def create_ioc_object(ioc_name,items,and_or=True):
-    IOC = ioc_api.IOC(name=ioc_name)
-    top_level_or_node = IOC.top_level_indicator
+
+def create_ioc_object(ioc_name, items, and_or=True):
+    ioc = ioc_api.IOC(name=ioc_name)
+    top_level_or_node = ioc.top_level_indicator
     # build the definition
     if and_or:
         second_level_and_node = ioc_api.make_indicator_node('AND')
         top_level_or_node.append(second_level_and_node)
     for item in items:
         condition, document, search, content_type, content = tuple(item)
-        #print condition, document, search, content_type, content
-        IndicatorItem_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content)
+        # print condition, document, search, content_type, content
+        ii_node = ioc_api.make_indicatoritem_node(condition, document, search, content_type, content)
         if and_or:
-            second_level_and_node.append(IndicatorItem_node)
+            second_level_and_node.append(ii_node)
         else:
-            top_level_or_node.append(IndicatorItem_node)
+            top_level_or_node.append(ii_node)
     # update the last modified time
-    IOC.set_lastmodified_date()
-    return IOC
-    
-    
+    ioc.set_lastmodified_date()
+    return ioc
+
+
 def process_file(filename):
     rows = []
     with open(filename, 'r') as f:
@@ -84,8 +84,10 @@ def process_file(filename):
             rows.append(row)
     return rows
 
+
 def main(options):
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s  [%(filename)s:%(funcName)s]')
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s %(levelname)s: %(message)s  [%(filename)s:%(funcName)s]')
     items = process_file(options.src_file)
     if not items:
         log.error('Could not process items')
@@ -94,34 +96,40 @@ def main(options):
     or_only = options.or_format
     # create IOC
     if or_only:
-        IOC = create_ioc_object(options.name, items, and_or = False)
+        ioc = create_ioc_object(options.name, items, and_or=False)
     else:
-        IOC = create_ioc_object(options.name, items)
+        ioc = create_ioc_object(options.name, items)
     # Write out the IOC to a file
-    ioc_api.write_ioc(IOC.root, options.output_dir)
+    ioc.write_ioc_to_file(options.output_dir)
     sys.exit(0)
-    
+
+
 def writer_options():
     opts = []
-    opts.append(optparse.make_option('-s','--source', dest='src_file', help='source file (CSV) containing IOC data', default=None))  # argument
-    opts.append(optparse.make_option('-n','--name', dest='name', help='ioc name', default=None))  # argument
-    opts.append(optparse.make_option('--or', dest='or_format', action = 'store_true', help='Write out all terms under a OR statemet.  By default, terms are put under a OR-AND structure.', default=False))  # argument
-    opts.append(optparse.make_option('-o', '--output_dir', dest='output_dir', help='location to write IOC to. default is current working directory', default=None))
+    opts.append(optparse.make_option('-s', '--source', dest='src_file', help='source file (CSV) containing IOC data',
+                                     default=None))  # argument
+    opts.append(optparse.make_option('-n', '--name', dest='name', help='ioc name', default=None))  # argument
+    opts.append(optparse.make_option('--or', dest='or_format', action='store_true',
+                                     help='Write out all terms under a OR statemet.  By default, terms are put under a OR-AND structure.',
+                                     default=False))  # argument
+    opts.append(optparse.make_option('-o', '--output_dir', dest='output_dir',
+                                     help='location to write IOC to. default is current working directory',
+                                     default=None))
     return opts
-    
+
+
 if __name__ == "__main__":
     usage_str = "usage: %prog [options]"
     parser = optparse.OptionParser(usage=usage_str, option_list=writer_options())
     options, args = parser.parse_args()
-    
+
     if not options.src_file:
         log.error('must specify source file')
         parser.print_help()
         sys.exit(-1)
-        
+
     if not options.name:
         log.error('must specify an ioc name')
         parser.print_help()
         sys.exit(-1)
     main(options)
-    
