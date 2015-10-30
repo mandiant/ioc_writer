@@ -18,11 +18,10 @@
 #
 # Script to quickly check a YARA signature file against a set of files.
 #
-
+import argparse
+import logging
 import os
 import sys
-import logging
-import optparse
 
 log = logging.getLogger(__name__)
 
@@ -73,33 +72,18 @@ def main(options):
     sys.exit(0)
 
 
-def options():
-    opts = []
-    opts.append(optparse.make_option('--yara', '-y', dest='yara',
-                                     help='File of yara rules to process.', default=None))
-    opts.append(optparse.make_option('--input', '-i', dest='fp',
-                                     help='Path of file or directory to check for yara matches.'
-                                          '  Will not recurse the directory."',
-                                     default=None))
-    opts.append(optparse.make_option('--verbose', '-v', dest='verbose', action='store_true',
-                                     help='Verbose output', default=None))
-    return opts
+def makeargpaser():
+    parser = argparse.ArgumentParser(description='Test a yara rule against a set of files, or file.')
+    parser.add_argument('-y', '--yara', dest='yara', required=True, type=str,
+                        help='File of yara rules to process.')
+    parser.add_argument('-i', '--input', dest='fp', required=True, type=str,
+                        help='Path of file or directory to check for yara matches. Will not recurse the directory."')
+    parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', default=False,
+                        help='Verbose output')
+    return parser
 
 
 if __name__ == "__main__":
-    usage_str = """usage: %prog [options]
-Test a yara rule against a set of files, or file."""
-    parser = optparse.OptionParser(usage=usage_str, option_list=options())
-    options, args = parser.parse_args()
-
-    if not options.yara:
-        log.error('Must specify a yara rules file to process.')
-        parser.print_help()
-        sys.exit(1)
-
-    if not options.fp:
-        log.error('Must specify a file or directory to process.')
-        parser.print_help()
-        sys.exit(1)
-
-    main(options)
+    p = makeargpaser()
+    opts = p.parse_args()
+    main(opts)

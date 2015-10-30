@@ -18,13 +18,11 @@
 #
 # Allows for the downgrade of OpenIOC 1.1 IOCs to OpenIOC 1.0 format
 #
-
-
-import sys
-import os
-import optparse
-import logging
+import argparse
 import glob
+import logging
+import os
+import sys
 
 from lxml import etree as et
 
@@ -429,25 +427,16 @@ def main(options):
     sys.exit(0)
 
 
-def downgrade_options():
-    opts = []
-    opts.append(
-        optparse.make_option('--iocs', '-i', dest='iocs', help='Directory to iocs or the ioc to process', default=None))
-    opts.append(optparse.make_option('--output', '-o', dest='output',
-                                     help='Directory to write iocs out too.  There will be three folders created in this directory.',
-                                     default=None))
-    return opts
+def makeargpaser():
+    parser = argparse.ArgumentParser(description='Downgrade IOCs from 1.1 to 1.0')
+    parser.add_argument('-i', '--iocs', dest='iocs', required=True, type=str,
+                        help='Directory to iocs or the ioc to process.')
+    parser.add_argument('-o', '--output', dest='output', required=True, type=str,
+                        help='Dictory to write IOCs too. There will be three folders created in this directory.')
+    return parser
 
 
 if __name__ == "__main__":
-    usage_str = "usage: %prog [options]"
-    parser = optparse.OptionParser(usage=usage_str, option_list=downgrade_options())
-    options, args = parser.parse_args()
-
-    if not options.iocs:
-        log.error('Must specify a directory of iocs or an ioc to process.')
-        sys.exit(1)
-    if not options.output:
-        log.error('Must specify a output directory.')
-        sys.exit(1)
-    main(options)
+    p = makeargpaser()
+    opts = p.parse_args()
+    main(opts)

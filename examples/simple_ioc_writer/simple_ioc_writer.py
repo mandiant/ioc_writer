@@ -42,11 +42,10 @@
 # The structure of the CSV is expected to be rows of data shaped like:
 # condition, document, search, content_type, content
 #
-
+import argparse
 import csv
 import logging
 import sys
-import optparse
 
 from ioc_writer import ioc_api
 
@@ -104,32 +103,20 @@ def main(options):
     sys.exit(0)
 
 
-def writer_options():
-    opts = []
-    opts.append(optparse.make_option('-s', '--source', dest='src_file', help='source file (CSV) containing IOC data',
-                                     default=None))  # argument
-    opts.append(optparse.make_option('-n', '--name', dest='name', help='ioc name', default=None))  # argument
-    opts.append(optparse.make_option('--or', dest='or_format', action='store_true',
-                                     help='Write out all terms under a OR statemet.  By default, terms are put under a OR-AND structure.',
-                                     default=False))  # argument
-    opts.append(optparse.make_option('-o', '--output_dir', dest='output_dir',
-                                     help='location to write IOC to. default is current working directory',
-                                     default=None))
-    return opts
+def makeargpaser():
+    parser = argparse.ArgumentParser(description='Create a simple IOC.')
+    parser.add_argument('-s', '--source', dest='src_file', required=True, type=str,
+                        help='source file (CSV) containing IOC data')
+    parser.add_argument('-n', '--name', dest='name', help='ioc name', required=True, type=str)
+    parser.add_argument('--or', dest='or_format', action='store_true', default=False,
+                        help='Write out all terms under a OR statement.'
+                             ' By default, terms are put under a OR-AND structure.')
+    parser.add_argument('-o', '--output_dir', dest='output_dir', default=None,
+                        help='location to write IOC to. default is current working directory')
+    return parser
 
 
 if __name__ == "__main__":
-    usage_str = "usage: %prog [options]"
-    parser = optparse.OptionParser(usage=usage_str, option_list=writer_options())
-    options, args = parser.parse_args()
-
-    if not options.src_file:
-        log.error('must specify source file')
-        parser.print_help()
-        sys.exit(-1)
-
-    if not options.name:
-        log.error('must specify an ioc name')
-        parser.print_help()
-        sys.exit(-1)
-    main(options)
+    p = makeargpaser()
+    opts = p.parse_args()
+    main(opts)

@@ -19,12 +19,11 @@
 # Converts YARA signatures embedded into OpenIOC objects into a .yara file.
 # See README for more information.
 #
-
+import argparse
+import glob
+import logging
 import os
 import sys
-import logging
-import glob
-import optparse
 
 log = logging.getLogger(__name__)
 
@@ -548,26 +547,19 @@ def main(options):
     sys.exit(0)
 
 
-def oty_options():
-    opts = []
-    opts.append(optparse.make_option('--iocs', '-i', dest='iocs',
-                                     help='Directory to iocs or the ioc to process.', default=None))
-    opts.append(optparse.make_option('--output', '-o', dest='output',
-                                     help='File to write yara signatures too.  This will overwrite an existing file.  By default, this is "iocs.yara"',
-                                     default=None))
-    opts.append(optparse.make_option('--verbose', '-v', dest='verbose', action='store_true',
-                                     help='Verbose output', default=None))
-    return opts
+def makeargpaser():
+    parser = argparse.ArgumentParser(description='Convert .ioc files with YARA signatures embedded in them into'
+                                                 ' .yara files.')
+    parser.add_argument('-i', '--iocs', dest='iocs', required=True, type=str,
+                        help='Directory to iocs or the ioc to process.')
+    parser.add_argument('-o', '--output', dest='output', default=None,
+                        help='File to write yara signatures too.  This will overwrite an existing file.  By default, '
+                             'this is "iocs.yara"')
+    parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='Verbose output', default=None)
+    return parser
 
 
 if __name__ == "__main__":
-    usage_str = """usage: %prog [options]
-Convert .ioc files with YARA signatures embedded in them into .yara files."""
-    parser = optparse.OptionParser(usage=usage_str, option_list=oty_options())
-    options, args = parser.parse_args()
-
-    if not options.iocs:
-        log.error('Must specify a directory of iocs or an ioc to process.')
-        parser.print_help()
-        sys.exit(1)
-    main(options)
+    p = makeargpaser()
+    opts = p.parse_args()
+    main(opts)

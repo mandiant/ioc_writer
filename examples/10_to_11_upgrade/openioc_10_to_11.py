@@ -18,11 +18,10 @@
 #
 # Allows for the upgrade of OpenIOC 1.0 IOCs to OpenIOC 1.1 format
 #
-
+import argparse
 import glob
 import logging
 import os
-import optparse
 import sys
 from lxml import etree as et
 from ioc_writer import ioc_api, xmlutils
@@ -269,25 +268,16 @@ def main(options):
     sys.exit(0)
 
 
-def upgrade_options():
-    opts = []
-    opts.append(optparse.make_option('--iocs', '-i', dest='iocs', help='Directory of iocs or the ioc to process',
-                                     action='store', default=None))
-    opts.append(
-        optparse.make_option('--output', '-o', dest='output', help='Directory to write iocs out too.', action='store',
-                             default=None))
-    return opts
+def makeargpaser():
+    parser = argparse.ArgumentParser(description='Upgrade IOCs from 1.0 to 1.1')
+    parser.add_argument('-i', '--iocs', dest='iocs', required=True, type=str,
+                        help='Directory to iocs or the ioc to process.')
+    parser.add_argument('-o', '--output', dest='output', required=True, type=str,
+                        help='Dictory to write IOCs too.')
+    return parser
 
 
 if __name__ == "__main__":
-    usage_str = "usage: %prog [options]"
-    parser = optparse.OptionParser(usage=usage_str, option_list=upgrade_options())
-    options, args = parser.parse_args()
-
-    if not options.iocs:
-        log.error('Must specify a directory of iocs or an ioc to process.')
-        sys.exit(1)
-    if not options.output:
-        log.error('Must specify a output directory.')
-        sys.exit(1)
-    main(options)
+    p = makeargpaser()
+    opts = p.parse_args()
+    main(opts)
