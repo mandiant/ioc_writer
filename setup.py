@@ -9,7 +9,7 @@ def read(fname):
 setup(name="ioc_writer",
       version="0.2.1",
       author="William Gibb",
-      author_email="william.gibb@mandiant.com",
+      author_email="william.gibb@fireeye.com",
       url="http://www.github.com/mandiant/ioc_writer/",
       packages=['ioc_writer'],
       description="""API providing a limited CRUD for manipulating OpenIOC formatted Indicators of Compromise.""",
