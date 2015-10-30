@@ -40,9 +40,9 @@ def safe_makedirs(fdir):
     else:
         try:
             os.makedirs(fdir)
-        except WindowsError, e:
+        except WindowsError as e:
             if 'Cannot create a file when that file already exists' in e:
-                print 'relevant dir already exists'
+                log.debug('relevant dir already exists')
             else:
                 raise WindowsError(e)
     return True
@@ -75,8 +75,8 @@ class ioc_manager:
             log.info('loading IOC from: %s' % filename)
             try:
                 self.parse(ioc_api.IOC(filename))
-            except ioc_api.IOCParseError,e:
-                log.warning('Parse Error [%s]' % str(e))
+            except ioc_api.IOCParseError:
+                log.exception('Parse Error')
                 errors.append(filename)
         elif os.path.isdir(filename):
             log.info('loading IOCs from: %s' % filename)
@@ -86,8 +86,8 @@ class ioc_manager:
                 else:
                     try:
                         self.parse(ioc_api.IOC(fn))
-                    except ioc_api.IOCParseError,e:
-                        log.warning('Parse Error [%s]' % str(e))
+                    except ioc_api.IOCParseError:
+                        log.exception('Parse Error')
                         errors.append(fn)
         else:
             pass
@@ -141,14 +141,14 @@ class ioc_manager:
             # get ioc_logic
             try:
                 ioc_logic = ioc_obj_11.root.xpath('.//criteria')[0]
-            except IndexError, e:
-                log.error('Could not find criteria nodes for IOC [%s].  Did you attempt to convert OpenIOC 1.0 iocs?' % str(iocid))
+            except IndexError:
+                log.exception('Could not find criteria nodes for IOC [{}].  Did you attempt to convert OpenIOC 1.0 iocs?'.format(iocid))
                 errors.append(iocid)
                 continue
             try:
                 tlo_11 = ioc_logic.getchildren()[0]
-            except IndexError, e:
-                log.error('Could not find children for the top level criteria/children nodes for IOC [%s]' % str(iocid))
+            except IndexError:
+                log.exception('Could not find children for the top level criteria/children nodes for IOC [{}]'.format(iocid))
                 errors.append(iocid)
                 continue
             tlo_id = tlo_11.get('id')
@@ -213,12 +213,12 @@ class ioc_manager:
             # walk the 1.1 IOC to convert it into a 1.0 IOC
             try:
                 self.convert_branch(tlo_11, ioc_obj_10.top_level_indicator, ids_to_skip, comment_dict)
-            except IOCParseError, e:
-                log.warning('Problem converting IOC [%s]:[%s]' % (iocid, e))
+            except IOCParseError:
+                log.exception('Problem converting IOC [{}]'.format(iocid))
                 errors.append(iocid)
                 continue
-            except Exception, e:
-                log.error('Uknown error occured while converting [%s]:[%s]' % (iocid, e))
+            except Exception:
+                log.exception('Unknown error occured while converting [{}]'.format(iocid))
                 errors.append(iocid)
             # bucket pruned iocs / null iocs
             if not ioc_obj_10.top_level_indicator.getchildren():

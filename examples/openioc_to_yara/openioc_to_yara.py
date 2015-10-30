@@ -31,8 +31,8 @@ log = logging.getLogger(__name__)
 # third party - custom
 try:
     from ioc_writer import ioc_api
-except ImportError, e:
-    log.error('Could not import ioc_writer.  Make sure you have ioc_writer installed.')
+except ImportError:
+    log.exception('Could not import ioc_writer.  Make sure you have ioc_writer installed.')
     sys.exit(1)
 
 class IOCParseError(Exception):
@@ -134,9 +134,8 @@ class ioc_manager:
                 metadata_string = self.get_yara_metadata(iocid)
                 strings_list = self.get_yara_stringlist(iocid)
                 condition_string = self.get_yara_condition(iocid)
-            except IOCParseError, e:
-                log.error('Failed to parse [%s]' % str(iocid))
-                log.error('%s' % str(e))
+            except IOCParseError:
+                log.exception('Failed to parse [[}]'.format(iocid))
                 continue
             # extract an entire yara signatures embedded in Yara/Yara nodes
             embedded_signatures = self.get_embedded_yara(iocid)
@@ -244,7 +243,7 @@ class ioc_manager:
                         raise IOCParseError('yara/set parameter value was less than 1')
                     if temp > len(indicator_node.getchildren()):
                         raise IOCParseError('yara/set value is greater than the number of children of Indicator node [%s]' % str(indicator_node_id))
-                except ValueError, e:
+                except ValueError:
                     raise IOCParseError('yara/set parameter was not a integer')
                 set_dict = {'set_count':set_count,'set_ids':[]}
         
@@ -487,7 +486,7 @@ def safe_makedirs(fdir):
     else:
         try:
             os.makedirs(fdir)
-        except WindowsError, e:
+        except WindowsError as e:
             if 'Cannot create a file when that file already exists' in e:
                 log.debug('relevant dir already exists')
             else:

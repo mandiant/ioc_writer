@@ -115,12 +115,12 @@ if __name__ == "__main__":
     options, args = parser.parse_args()
     
     if not options.src_file:
-        print 'must specify source file'
+        log.error('must specify source file')
         parser.print_help()
         sys.exit(-1)
         
     if not options.name:
-        print 'must specify an ioc name'
+        log.error('must specify an ioc name')
         parser.print_help()
         sys.exit(-1)
     main(options)

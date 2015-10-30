@@ -231,7 +231,7 @@ def safe_makedirs(fdir):
     else:
         try:
             os.makedirs(fdir)
-        except WindowsError, e:
+        except WindowsError as e:
             if 'Cannot create a file when that file already exists' in e:
                 log.debug('relevant dir already exists')
             else:
