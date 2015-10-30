@@ -43,15 +43,14 @@
 # condition, document, search, content_type, content
 #
 
-import os
-import sys
-import uuid
-import xml.etree.ElementTree as et
 import csv
-import datetime
+import logging
+import sys
 import optparse
 
 from ioc_writer import ioc_api
+
+log = logging.getLogger(__name__)
 
     
 def create_ioc_object(ioc_name,items,and_or=True):
@@ -80,16 +79,17 @@ def process_file(filename):
         reader = csv.reader(f)
         for row in reader:
             if len(row) < 5:
-                print 'row length less than 5 encountered'
+                log.error('row length less than 5 encountered')
                 return None
             rows.append(row)
     return rows
 
 def main(options):
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s  [%(filename)s:%(funcName)s]')
     items = process_file(options.src_file)
     if not items:
-        print 'Could not process items'
-        print 'Make sure the input is a CSV file containing condition, document, search, type, content fields'
+        log.error('Could not process items')
+        log.error('Make sure the input is a CSV file containing condition, document, search, type, content fields')
         sys.exit(-1)
     or_only = options.or_format
     # create IOC

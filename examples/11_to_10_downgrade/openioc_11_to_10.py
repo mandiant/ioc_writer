@@ -30,7 +30,8 @@ from lxml import etree as et
 
 from ioc_writer import ioc_api
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s  [%(filename)s:%(funcName)s]')
+log = logging.getLogger(__name__)
+
 
 def safe_makedirs(fdir):
     if os.path.isdir(fdir):
@@ -71,14 +72,14 @@ class ioc_manager:
         '''
         errors = []
         if os.path.isfile(filename):
-            logging.info('loading IOC from: %s' % filename)
+            log.info('loading IOC from: %s' % filename)
             try:
                 self.parse(ioc_api.IOC(filename))
             except ioc_api.IOCParseError,e:
-                logging.warning('Parse Error [%s]' % str(e))
+                log.warning('Parse Error [%s]' % str(e))
                 errors.append(filename)
         elif os.path.isdir(filename):
-            logging.info('loading IOCs from: %s' % filename)
+            log.info('loading IOCs from: %s' % filename)
             for fn in glob.glob(filename+os.path.sep+'*.ioc'):
                 if not os.path.isfile(fn):
                     continue
@@ -86,11 +87,11 @@ class ioc_manager:
                     try:
                         self.parse(ioc_api.IOC(fn))
                     except ioc_api.IOCParseError,e:
-                        logging.warning('Parse Error [%s]' % str(e))
+                        log.warning('Parse Error [%s]' % str(e))
                         errors.append(fn)
         else:
             pass
-        logging.info('Parsed [%s] IOCs' % str(len(self)))
+        log.info('Parsed [%s] IOCs' % str(len(self)))
         return errors
 
     def parse(self, ioc_obj):
@@ -105,7 +106,7 @@ class ioc_manager:
             return
         iocid = ioc_obj.root.get('id')
         if iocid in self.iocs:
-            logging.warning('duplicate IOC UUID [%s] [orig_shortName: %s][new_shortName: %s]' % (iocid, self.ioc_name[iocid], ioc_obj.metadata('.//short_description') or 'NoName'))
+            log.warning('duplicate IOC UUID [%s] [orig_shortName: %s][new_shortName: %s]' % (iocid, self.ioc_name[iocid], ioc_obj.metadata('.//short_description') or 'NoName'))
         self.iocs[iocid] = ioc_obj
         return True
 
@@ -117,9 +118,9 @@ class ioc_manager:
         the converted iocs are stored in the dictionary self.iocs_10
         '''
         if len(self) < 1:
-            logging.error('no iocs available to modify')
+            log.error('no iocs available to modify')
             return False
-        logging.info('Converting IOCs from 1.1 to 1.0.')
+        log.info('Converting IOCs from 1.1 to 1.0.')
         errors = []
         for iocid in self.iocs:
             pruned = False
@@ -141,13 +142,13 @@ class ioc_manager:
             try:
                 ioc_logic = ioc_obj_11.root.xpath('.//criteria')[0]
             except IndexError, e:
-                logging.error('Could not find criteria nodes for IOC [%s].  Did you attempt to convert OpenIOC 1.0 iocs?' % str(iocid))
+                log.error('Could not find criteria nodes for IOC [%s].  Did you attempt to convert OpenIOC 1.0 iocs?' % str(iocid))
                 errors.append(iocid)
                 continue
             try:
                 tlo_11 = ioc_logic.getchildren()[0]
             except IndexError, e:
-                logging.error('Could not find children for the top level criteria/children nodes for IOC [%s]' % str(iocid))
+                log.error('Could not find children for the top level criteria/children nodes for IOC [%s]' % str(iocid))
                 errors.append(iocid)
                 continue
             tlo_id = tlo_11.get('id')
@@ -213,11 +214,11 @@ class ioc_manager:
             try:
                 self.convert_branch(tlo_11, ioc_obj_10.top_level_indicator, ids_to_skip, comment_dict)
             except IOCParseError, e:
-                logging.warning('Problem converting IOC [%s]:[%s]' % (iocid, e))
+                log.warning('Problem converting IOC [%s]:[%s]' % (iocid, e))
                 errors.append(iocid)
                 continue
             except Exception, e:
-                logging.error('Uknown error occured while converting [%s]:[%s]' % (iocid, e))
+                log.error('Uknown error occured while converting [%s]:[%s]' % (iocid, e))
                 errors.append(iocid)
             # bucket pruned iocs / null iocs
             if not ioc_obj_10.top_level_indicator.getchildren():
@@ -227,7 +228,7 @@ class ioc_manager:
             # Check the original to see if there was a comment prior to the root node, and if so, copy it's content
             comment_node = ioc_obj_11.root.getprevious()
             while comment_node is not None:
-                logging.debug('found a comment node')
+                log.debug('found a comment node')
                 c = et.Comment(comment_node.text)
                 ioc_obj_10.root.addprevious(c)
                 comment_node = comment_node.getprevious()
@@ -311,22 +312,22 @@ class ioc_manager:
         if not source:
             source = self.iocs
         if len(source) < 1:
-            logging.error('no iocs available to write out')
+            log.error('no iocs available to write out')
             return False
         if not directory:
             directory = os.getcwd()
         if os.path.isfile(directory):
-            logging.error('cannot writes iocs to a directory')
+            log.error('cannot writes iocs to a directory')
             return False
         source_iocs = set(source.keys())
         source_iocs = source_iocs.difference(self.pruned_11_iocs)
         source_iocs = source_iocs.difference(self.null_pruned_iocs)
         if not source_iocs:
-            logging.error('no iocs available to write out after removing pruned/null iocs')
+            log.error('no iocs available to write out after removing pruned/null iocs')
             return False
         safe_makedirs(directory)
         output_dir = os.path.abspath(directory)
-        logging.info('Writing IOCs to %s' % (str(output_dir)))
+        log.info('Writing IOCs to %s' % (str(output_dir)))
         # serialize the iocs
         for iocid in source_iocs:
             ioc_obj = source[iocid]
@@ -353,12 +354,12 @@ class ioc_manager:
         if pruned_source == None:
             pruned_source = self.pruned_11_iocs
         if len(pruned_source) < 1:
-            logging.error('no iocs available to write out')
+            log.error('no iocs available to write out')
             return False
         if not directory:
             directory = os.getcwd()
         if os.path.isfile(directory):
-            logging.error('cannot writes iocs to a directory')
+            log.error('cannot writes iocs to a directory')
             return False
         safe_makedirs(directory)
         output_dir = os.path.abspath(directory)
@@ -380,9 +381,10 @@ class ioc_manager:
         return True
     
 def main(options):
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s  [%(filename)s:%(funcName)s]')
     # validate output dir
     if os.path.isfile(options.output):
-        logging.error('Cannot set output directory to a file')
+        log.error('Cannot set output directory to a file')
         sys.exit(1)
     else:
         output_dir = os.path.join(options.output,'unpruned')
@@ -392,27 +394,27 @@ def main(options):
     errors = iocm.convert_to_10()
     if errors:
         for fn in errors:
-            logging.error('Failed to process: [%s]' % str(fn))
+            log.error('Failed to process: [%s]' % str(fn))
     if len(iocm.iocs_10) == 0:
-        logging.error('No IOCs available to write out')
+        log.error('No IOCs available to write out')
         sys.exit(1)
     # write 1.0 iocs
     if iocm.write_iocs(output_dir, iocm.iocs_10):
-        logging.info('Wrote unpruned iocs out to %s' % output_dir)
+        log.info('Wrote unpruned iocs out to %s' % output_dir)
     else:
-        logging.error('failed to write unpruned iocs out')
+        log.error('failed to write unpruned iocs out')
     # write pruned 1.0 iocs
     output_dir = os.path.join(options.output,'pruned')
     if iocm.write_pruned_iocs(output_dir, iocm.pruned_11_iocs):
-        logging.info('Wrote pruned iocs out to %s' % output_dir)
+        log.info('Wrote pruned iocs out to %s' % output_dir)
     else:
-        logging.error('failed to write pruned iocs out')
+        log.error('failed to write pruned iocs out')
     # write null 1.0 iocs
     output_dir = os.path.join(options.output,'null')
     if iocm.write_pruned_iocs(output_dir, iocm.null_pruned_iocs):
-        logging.info('Wrote null iocs out to %s' % output_dir)
+        log.info('Wrote null iocs out to %s' % output_dir)
     else:
-        logging.error('failed to write null iocs out')
+        log.error('failed to write null iocs out')
     sys.exit(0)
     
 def downgrade_options():
@@ -427,9 +429,9 @@ if __name__ == "__main__":
     options, args = parser.parse_args()
 
     if not options.iocs:
-        logging.error('Must specify a directory of iocs or an ioc to process.')
+        log.error('Must specify a directory of iocs or an ioc to process.')
         sys.exit(1)
     if not options.output:
-        logging.error('Must specify a output directory.')
+        log.error('Must specify a output directory.')
         sys.exit(1)
     main(options)       

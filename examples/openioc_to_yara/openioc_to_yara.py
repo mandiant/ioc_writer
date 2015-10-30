@@ -26,15 +26,13 @@ import logging
 import glob
 import optparse
 
-
-# logging config
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s  [%(filename)s:%(funcName)s]')
+log = logging.getLogger(__name__)
 
 # third party - custom
 try:
     from ioc_writer import ioc_api
 except ImportError, e:
-    logging.error('Could not import ioc_writer.  Make sure you have ioc_writer installed.')
+    log.error('Could not import ioc_writer.  Make sure you have ioc_writer installed.')
     sys.exit(1)
 
 class IOCParseError(Exception):
@@ -84,24 +82,24 @@ class ioc_manager:
 %(strings)s'''
         self.YARA_CONDITION_TEMPLATE = '''condition:
         %(condition)s'''
-        
+
     def __len__(self):
         return len(self.iocs)
-    
+
     def insert(self, filename):
         '''
         insert(filedir)
-        
+
         import [all] IOC(s) from a file or directory
         '''
         errors = []
         count = 0
         if os.path.isfile(filename):
-            logging.info('loading IOC from: %s' % (filename))
+            log.info('loading IOC from: %s' % (filename))
             self.parse(ioc_api.IOC(filename))
             count = count + 1
         elif os.path.isdir(filename):
-            logging.info('loading IOCs from: %s' % (filename))
+            log.info('loading IOCs from: %s' % (filename))
             for fn in glob.glob(filename+os.path.sep+'*.ioc'):
                 if not os.path.isfile(fn):
                     continue
@@ -110,24 +108,24 @@ class ioc_manager:
                     count = count + 1
         else:
             pass
-        logging.info('Inserted [%s] IOCs into ioc_manager.' % str(count))
+        log.info('Inserted [%s] IOCs into ioc_manager.' % str(count))
         return errors
-    
+
     def parse(self, IOC_obj):
         if IOC_obj is None:
             return
         iocid = IOC_obj.iocid
         if iocid in self.iocs:
-            logging.warning('duplicate IOC UUID [%s] [orig_shortName: %s][new_shortName: %s]' % (iocid, self.ioc_name[iocid], IOC_obj.root.findtext('.//short_description') or 'NoName'))
+            log.warning('duplicate IOC UUID [%s] [orig_shortName: %s][new_shortName: %s]' % (iocid, self.ioc_name[iocid], IOC_obj.root.findtext('.//short_description') or 'NoName'))
         self.ioc_name[iocid] = IOC_obj.root.findtext('.//short_description') or 'NoName'
         self.ioc_names_set.add(self.ioc_name[iocid])
         self.ioc_names_mangaled_set.add(mangle_name(self.ioc_name[iocid]))
         self.iocs[iocid] = IOC_obj
-        
-    
+
+
     def emit_yara(self):
         if len(self) < 1:
-            logging.error('No IOCs to convert')
+            log.error('No IOCs to convert')
         for iocid in self.iocs:
             name = self.ioc_name[iocid]
             name = mangle_name(name)
@@ -137,13 +135,13 @@ class ioc_manager:
                 strings_list = self.get_yara_stringlist(iocid)
                 condition_string = self.get_yara_condition(iocid)
             except IOCParseError, e:
-                logging.error('Failed to parse [%s]' % str(iocid))
-                logging.error('%s' % str(e))
+                log.error('Failed to parse [%s]' % str(iocid))
+                log.error('%s' % str(e))
                 continue
             # extract an entire yara signatures embedded in Yara/Yara nodes
             embedded_signatures = self.get_embedded_yara(iocid)
             if embedded_signatures:
-                logging.debug('Additional embedded signatures found in [%s]' % iocid)
+                log.debug('Additional embedded signatures found in [%s]' % iocid)
             yara_signature = ''
             if (not condition_string) and (not embedded_signatures):
                 continue
@@ -184,7 +182,7 @@ class ioc_manager:
             current = elem
             elem_id = current.get('id')
             if elem_id in ids_to_process:
-                #logging.debug('Skipping id checking of [%s]' % str(elem_id))
+                #log.debug('Skipping id checking of [%s]' % str(elem_id))
                 continue
             parent = current.getparent()
             parent_id = parent.get('id')
@@ -289,10 +287,10 @@ class ioc_manager:
                     elif search == 'Yara/RuleName':
                         if content not in self.ioc_names_set:
                             if mangle_name(content) in self.ioc_names_mangled_set:
-                                logging.warning('Yara/RuleName is present as a mangled name.[%s][%s]' % (str(mangle_name(content)),str(node_id)))
+                                log.warning('Yara/RuleName is present as a mangled name.[%s][%s]' % (str(mangle_name(content)),str(node_id)))
                                 content = mangle_name(content)
                             else:
-                                logging.warning('Yara/RuleName points to a name [%s] that is not in the set of IOCs being processed [%s]' % (str(content),str(node_id)))
+                                log.warning('Yara/RuleName points to a name [%s] that is not in the set of IOCs being processed [%s]' % (str(content),str(node_id)))
                         if mangle_name(content) != content:
                             raise IOCParseError('Yara/RuleName contains invalid characters which would cause libyara errors [%s]' % node_id)
                         mapping['prefix'] = ''
@@ -305,20 +303,20 @@ class ioc_manager:
                         for param in params:
                             param_name = param.get('name', None)
                             if param_name == 'yara/count':
-                                logging.debug('Found [%s] attached to [%s]' % (param.attrib['name'], node_id))
+                                log.debug('Found [%s] attached to [%s]' % (param.attrib['name'], node_id))
                                 mapping['prefix'] = '#'
                                 mapping['postfix'] = ' ' + param.findtext('value')
                                 mapping['condition'] = yara_condition
                                 use_condition_template = True
                                 break
                             elif param_name == 'yara/offset/at':
-                                logging.debug('Found [%s] attached to [%s]' % (param.attrib['name'], node_id))
+                                log.debug('Found [%s] attached to [%s]' % (param.attrib['name'], node_id))
                                 mapping['condition'] = 'at'
                                 mapping['postfix'] = ' ' + param.findtext('value')
                                 use_condition_template = True
                                 break
                             elif param_name == 'yara/offset/in':
-                                logging.debug('Found [%s] attached to [%s]' % (param.attrib['name'], node_id))
+                                log.debug('Found [%s] attached to [%s]' % (param.attrib['name'], node_id))
                                 mapping['condition'] = 'in'
                                 mapping['postfix'] = ' ' + param.findtext('value')
                                 use_condition_template = True
@@ -357,11 +355,11 @@ class ioc_manager:
                 raise IOCParseError('node.tag is not a Indicator/IndicatorItem [%s]' % str(id))
                 
         if is_set:
-            logging.debug('Building set expression for [%s]' % indicator_node_id)
+            log.debug('Building set expression for [%s]' % indicator_node_id)
             if len(set_dict['set_ids']) == 0:
                 raise IOCParseError('yara/set processing did not yield any set ids')
             elif len(set_dict['set_ids']) == 1:
-                logging.warning('yara/set with 1 id found for node [%s]' % node_id)
+                log.warning('yara/set with 1 id found for node [%s]' % node_id)
                 set_ids = ''.join(set_dict['set_ids'])
             else:
                 set_ids = ','.join(set_dict['set_ids'])
@@ -491,30 +489,31 @@ def safe_makedirs(fdir):
             os.makedirs(fdir)
         except WindowsError, e:
             if 'Cannot create a file when that file already exists' in e:
-                logging.debug('relevant dir already exists')
+                log.debug('relevant dir already exists')
             else:
                 raise WindowsError(e)
     return True
 
 def main(options):
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s  [%(filename)s:%(funcName)s]')
     if not options.verbose:
         logging.disable(logging.DEBUG)
         
     output_file = os.path.abspath(options.output)
     if output_file:
         if os.path.isdir(output_file):
-            logging.error('cannot specify a directory as the output location')
+            log.error('cannot specify a directory as the output location')
             sys.exit(1)
         elif not os.path.isfile(output_file):
             safe_makedirs(os.path.split(output_file)[0])
     else:
         output_file = os.path.join(os.getcwd(), 'iocs.yara')
-        logging.info('Output not specified. Writing output to [%s]' % (output_file))
-    
+        log.info('Output not specified. Writing output to [%s]' % (output_file))
+
     iocm = ioc_manager()
     iocm.insert(options.iocs)
     if len(iocm) < 0:
-        logging.error('No IOCs inserted into ioc_manager')
+        log.error('No IOCs inserted into ioc_manager')
         sys.exit(1)
     iocm.emit_yara()
     iocm.write_yara(output_file)
@@ -537,7 +536,7 @@ Convert .ioc files with YARA signatures embedded in them into .yara files."""
     options, args = parser.parse_args()
 
     if not options.iocs:
-        logging.error('Must specify a directory of iocs or an ioc to process.')
+        log.error('Must specify a directory of iocs or an ioc to process.')
         parser.print_help()
         sys.exit(1)
     main(options)

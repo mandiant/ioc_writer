@@ -24,13 +24,10 @@ import logging
 import os
 import optparse
 import sys
-
-# logging config
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s  [%(filename)s:%(funcName)s]')
-
 from lxml import etree as et
-
 from ioc_writer import ioc_api, xmlutils
+
+log = logging.getLogger(__name__)
 
 
 class IOCParseError(Exception):
@@ -53,22 +50,22 @@ class iocmanager():
         '''
         errors = []
         if os.path.isfile(filename):
-            logging.info('loading IOC from: %s' % (filename))
+            log.info('loading IOC from: %s' % (filename))
             if not self.parse(filename):
-                logging.warning('Failed to prase [%s]' % str(filename))
+                log.warning('Failed to prase [%s]' % str(filename))
                 errors.append(filename)
         elif os.path.isdir(filename):
-            logging.info('loading IOCs from: %s' % (filename))
+            log.info('loading IOCs from: %s' % (filename))
             for fn in glob.glob(filename+os.path.sep+'*.ioc'):
                 if not os.path.isfile(fn):
                     continue
                 else:
                     if not self.parse(fn):
-                        logging.warning('Failed to prase [%s]' % str(filename))
+                        log.warning('Failed to prase [%s]' % str(filename))
                         errors.append(fn)        
         else:
             pass
-        logging.info('Parsed [%s] IOCs' % str(len(self)))
+        log.info('Parsed [%s] IOCs' % str(len(self)))
         return errors
             
     def parse(self, fn):
@@ -88,15 +85,15 @@ class iocmanager():
         the converted iocs are stored in the dictionary self.iocs_11
         '''
         if len(self) < 1:
-            logging.error('No iocs available to modify.')
+            log.error('No iocs available to modify.')
             return False
-        logging.info('Converting IOCs from 1.0 to 1.1')
+        log.info('Converting IOCs from 1.0 to 1.1')
         errors = []
         for iocid in self.iocs:
             ioc_xml = self.iocs[iocid]
             root = ioc_xml.getroot()
             if root.tag != 'ioc':
-                logging.error('IOC root is not "ioc" [%s].' % str(iocid))
+                log.error('IOC root is not "ioc" [%s].' % str(iocid))
                 errors.append(iocid)
                 continue
             name_10 = root.findtext('.//short_description')
@@ -116,8 +113,8 @@ class iocmanager():
             # get ioc_logic
             try:
                 ioc_logic = root.xpath('.//definition')[0]
-            except IndexError, e:
-                logging.error('Could not find definition nodes for IOC [%s].  Did you attempt to convert OpenIOC 1.1 iocs?' % str(iocid))
+            except IndexError:
+                log.exception('Could not find definition nodes for IOC [%s].  Did you attempt to convert OpenIOC 1.1 iocs?' % str(iocid))
                 errors.append(iocid)
                 continue
             # create 1.1 ioc obj
@@ -129,8 +126,8 @@ class iocmanager():
             tlo_10 = ioc_logic.getchildren()[0]
             try:
                 self.convert_branch(tlo_10, ioc_obj.top_level_indicator, comment_dict)
-            except IOCParseError, e:
-                logging.warning('Problem converting IOC [%s]:[%s]' % (iocid, e))
+            except IOCParseError:
+                log.exception('Problem converting IOC [%s]:[%s]' % (iocid, e))
                 errors.append(iocid)
                 continue
             for node_id in comment_dict:
@@ -203,16 +200,16 @@ class iocmanager():
         if not source:
             source = self.iocs
         if len(source) < 1:
-            logging.error('no iocs available to write out')
+            log.error('no iocs available to write out')
             return False
         if not directory:
             directory = os.getcwd()
         if os.path.isfile(directory):
-            logging.error('cannot writes iocs to a directory')
+            log.error('cannot writes iocs to a directory')
             return False
         safe_makedirs(directory)
         output_dir = os.path.abspath(directory)
-        logging.info('Writing IOCs to %s' % (str(output_dir)))
+        log.info('Writing IOCs to %s' % (str(output_dir)))
         # serialize the iocs
         for iocid in source:
             ioc_obj = source[iocid]
@@ -236,15 +233,16 @@ def safe_makedirs(fdir):
             os.makedirs(fdir)
         except WindowsError, e:
             if 'Cannot create a file when that file already exists' in e:
-                logging.debug('relevant dir already exists')
+                log.debug('relevant dir already exists')
             else:
                 raise WindowsError(e)
     return True
         
 def main(options):
     # validate output dir
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s  [%(filename)s:%(funcName)s]')
     if os.path.isfile(options.output):
-        logging.error('Cannot set output directory to a file')
+        log.error('Cannot set output directory to a file')
         sys.exit(1)
     # read in and convert iocs
     iocm = iocmanager()
@@ -252,15 +250,15 @@ def main(options):
     errors = iocm.convert_to_11()
     if errors:
         for iocid in errors:
-            logging.error('Failed to process: [%s]' % str(iocid))
+            log.error('Failed to process: [%s]' % str(iocid))
     if len(iocm.iocs_11) == 0:
-        logging.error('No IOCs available to write out')
+        log.error('No IOCs available to write out')
         sys.exit(1)
     # write 1.1 iocs
     if iocm.write_iocs(options.output, iocm.iocs_11):
-        logging.info('Wrote iocs out to %s' % options.output)
+        log.info('Wrote iocs out to %s' % options.output)
     else:
-        logging.error('failed to write iocs out')
+        log.error('failed to write iocs out')
     sys.exit(0)
         
 def upgrade_options():
@@ -275,9 +273,9 @@ if __name__ == "__main__":
     options, args = parser.parse_args()
 
     if not options.iocs:
-        logging.error('Must specify a directory of iocs or an ioc to process.')
+        log.error('Must specify a directory of iocs or an ioc to process.')
         sys.exit(1)
     if not options.output:
-        logging.error('Must specify a output directory.')
+        log.error('Must specify a output directory.')
         sys.exit(1)
     main(options)      
