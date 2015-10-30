@@ -1,7 +1,5 @@
-# ioc_et.py
-#
-# Copyright 2013 Mandiant Corporation.  
-# Licensed under the Apache 2.0 license.  Developed for Mandiant by William 
+# Copyright 2013 Mandiant Corporation.
+# Licensed under the Apache 2.0 license.  Developed for Mandiant by William
 # Gibb.
 #
 # Mandiant licenses this file to you under the Apache License, Version
@@ -15,9 +13,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.  See the License for the specific language governing
 # permissions and limitations under the License.
-#
-# Provides support for ioc_api.
-#
+"""
+ioc_et.py
+
+Provides support for ioc_api.
+"""
 
 import uuid
 import datetime
@@ -30,6 +30,12 @@ NSMAP = {'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
 
 
 def make_ioc_root(iocid=None):
+    """
+    Make the base of an OpenIOC object
+
+    :param iocid: Optional guid will be used as the root iocid.
+    :return:
+    """
     root = et.Element('OpenIOC', nsmap=NSMAP)
     root.attrib['xmlns'] = 'http://openioc.org/schemas/OpenIOC_1.1'
     if iocid:
@@ -46,6 +52,15 @@ def make_metadata_node(name=None,
                        description='Automatically generated IOC',
                        author='IOC_et',
                        links=None, ):
+    """
+    Make the metadata note and required children
+
+    :param name:
+    :param description:
+    :param author:
+    :param links:
+    :return:
+    """
     metadata_node = et.Element('metadata')
     metadata_node.append(make_short_description_node(name))
     metadata_node.append(make_description_node(description))
@@ -57,6 +72,12 @@ def make_metadata_node(name=None,
 
 
 def make_keywords_node(keywords=None):
+    """
+    Make the keywords node
+
+    :param keywords:
+    :return:
+    """
     keywords_node = et.Element('keywords')
     if keywords:
         keywords_node.text = keywords
@@ -64,29 +85,60 @@ def make_keywords_node(keywords=None):
 
 
 def make_short_description_node(name):
+    """
+    Make the short descritpion node
+
+    :param name:
+    :return:
+    """
     description_node = et.Element('short_description')
     description_node.text = name
     return description_node
 
 
 def update_node_text(node, text):
+    """
+    Update the text of a node.
+
+    :param node:
+    :param text:
+    :return:
+    """
     node.text = text
     return node
 
 
 def make_description_node(text):
+    """
+    Make the description node
+
+    :param text:
+    :return:
+    """
     description_node = et.Element('description')
     description_node.text = text
     return description_node
 
 
 def make_authored_by_node(author='ioc_et'):
+    """
+    Make the authored_by node
+
+    :param author:
+    :return:
+    """
     authored_node = et.Element('authored_by')
     authored_node.text = author
     return authored_node
 
 
 def make_links_node(links=None):
+    """
+    Make the links node
+
+    :param links:
+    :return:
+    """
     links_node = et.Element('links')
     if links:
         for rel, href, value in links:
@@ -95,6 +147,13 @@ def make_links_node(links=None):
 
 
 def set_root_lastmodified(root_node, date=None):
+    """
+    Set the last modified date
+
+    :param root_node:
+    :param date:
+    :return:
+    """
     if date:
         root_node.attrib['last-modified'] = date
     else:
@@ -102,6 +161,13 @@ def set_root_lastmodified(root_node, date=None):
 
 
 def set_root_published_date(root_node, date=None):
+    """
+    Set the publised date
+
+    :param root_node:
+    :param date:
+    :return:
+    """
     if date:
         root_node.attrib['published-date'] = date
     else:
@@ -109,6 +175,13 @@ def set_root_published_date(root_node, date=None):
 
 
 def set_root_created_date(root_node, date=None):
+    """
+    Set the created date
+
+    :param root_node:
+    :param date:
+    :return:
+    """
     date_node = root_node.find('.//authored_date')
     if date_node is None:
         raise ValueError('authored_date node does not exist.  IOC is not schema compliant.')
@@ -119,6 +192,12 @@ def set_root_created_date(root_node, date=None):
 
 
 def make_criteria_node(indicator_node=None):
+    """
+    Make the criteria node.  This will also append the Indicator node if provided.
+
+    :param indicator_node:
+    :return:
+    """
     definition_node = et.Element('criteria')
     if indicator_node is not None:
         if indicator_node.tag != 'Indicator':
@@ -128,11 +207,25 @@ def make_criteria_node(indicator_node=None):
 
 
 def make_parameters_node():
+    """
+    Make the parameters node
+
+    :return:
+    """
     parameters_node = et.Element('parameters')
     return parameters_node
 
 
 def make_param_node(nid, content, name='comment', ptype='string', ):
+    """
+    Make a param node
+
+    :param nid:
+    :param content:
+    :param name:
+    :param ptype:
+    :return:
+    """
     param_node = et.Element('param')
     param_node.attrib['id'] = get_guid()
     param_node.attrib['ref-id'] = nid
@@ -147,12 +240,25 @@ def make_param_node(nid, content, name='comment', ptype='string', ):
 ##############################################
 
 def make_authored_date_node():
+    """
+    Make the authored_date node
+
+    :return:
+    """
     authored_node = et.Element('authored_date')
     authored_node.text = get_current_date()
     return authored_node
 
 
 def make_link_node(rel, value, href=None):
+    """
+    Make a link node
+
+    :param rel:
+    :param value:
+    :param href:
+    :return:
+    """
     link_node = et.Element('link')
     link_node.attrib['rel'] = rel
     if href:
@@ -162,6 +268,14 @@ def make_link_node(rel, value, href=None):
 
 
 def make_context_node(document, search, context_type='mir'):
+    """
+    Make a context node
+
+    :param document:
+    :param search:
+    :param context_type:
+    :return:
+    """
     context_node = et.Element('Context')
     context_node.attrib['document'] = document
     context_node.attrib['search'] = search
@@ -171,6 +285,13 @@ def make_context_node(document, search, context_type='mir'):
 
 
 def make_content_node(ctype, content):
+    """
+    Make a content node
+
+    :param ctype:
+    :param content:
+    :return:
+    """
     content_node = et.Element('Content')
     content_node.attrib['type'] = ctype
     content_node.text = content
@@ -180,11 +301,19 @@ def make_content_node(ctype, content):
 ##############################################
 
 def get_guid():
+    """
+    Get a random guid as string.
+
+    :return:
+    """
     return str(uuid.uuid4())
 
 
 def get_current_date():
-    # xsdDate format.  not TZ format.
+    """
+    Get the current date in xsdDate format.
+    :return:
+    """
     time = datetime.datetime.utcnow()
     timestring = time.strftime('%Y-%m-%dT%H:%M:%S')
     return timestring
