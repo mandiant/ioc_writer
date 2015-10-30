@@ -7,7 +7,7 @@ def read(fname):
 
 
 setup(name="ioc_writer",
-      version="0.2.1",
+      version="0.2.2",
       author="William Gibb",
       author_email="william.gibb@fireeye.com",
       url="http://www.github.com/mandiant/ioc_writer/",
