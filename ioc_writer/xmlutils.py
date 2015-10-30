@@ -21,11 +21,9 @@
 
 
 import os.path
-import cStringIO as sio
-from lxml import etree as et
 import logging
+from lxml import etree as et
 
-# logging config
 log = logging.getLogger(__name__)
 
 
@@ -38,12 +36,20 @@ def read_xml(filename):
     return: lxml._elementTree object or None
     """
     parser = et.XMLParser(remove_blank_text=True)
+    isfile=False
     try:
-        if os.path.exists(filename):
+        isfile = os.path.exists(filename)
+    except ValueError:
+        if 'path too long for Windows' in str(e):
+            pass
+        else:
+            raise
+    try:
+        if isfile:
             return et.parse(filename, parser)
         else:
-            d = sio.StringIO(filename)
-            return et.parse(d, parser)
+            r = et.fromstring(filename, parser)
+            return r.getroottree()
     except IOError:
         log.exception('unable to open file [[}]'.format(filename))
     except et.XMLSyntaxError:
