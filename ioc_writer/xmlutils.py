@@ -90,7 +90,7 @@ def remove_namespace(doc, namespace):
     
     Returns the source document.
     """
-    ns = u'{%s}' % namespace
+    ns = '{{{}}}'.format(namespace)
     nsl = len(ns)
     # print 'DEBUG: removing',ns
     for elem in doc.getiterator():
