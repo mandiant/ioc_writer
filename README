@@ -8,7 +8,7 @@ Apache License , Version 2.0. See the "LICENSE " file for more information.
 ===============================================================================
 Author:
 William Gibb
-william.gibb at mandiant dot com
+william.gibb at fireeye dot com
 
 ===============================================================================
 Purpose:
@@ -80,5 +80,5 @@ examples/simple_ioc_writer
   
 ===============================================================================
 Bug reports / questions / feedback / feature requests:
-william.gibb at mandiant dot com
+william.gibb at fireeye dot com
 
