@@ -44,7 +44,7 @@ class YaraIOCManager:
         self.iocs = {}  # elementTree representing the IOC
         self.ioc_name = {}  # guid -> name mapping
         self.ioc_names_set = set([])  # allows for quickly checking if a ioc name is present
-        self.ioc_names_mangaled_set = set([])  # set containing mangled names
+        self.ioc_names_mangled_set = set([])  # set containing mangled names
         self.yara_signatures = {}  # guid -> yara string mapping
 
         self.metadata_fields = ['short_description', 'description', 'keywords', 'authored_by', 'authored_date']
@@ -124,7 +124,7 @@ class YaraIOCManager:
             log.warning(msg)
         self.ioc_name[iocid] = ioc_obj.root.findtext('.//short_description') or 'NoName'
         self.ioc_names_set.add(self.ioc_name[iocid])
-        self.ioc_names_mangaled_set.add(mangle_name(self.ioc_name[iocid]))
+        self.ioc_names_mangled_set.add(mangle_name(self.ioc_name[iocid]))
         self.iocs[iocid] = ioc_obj
 
     def emit_yara(self):
