@@ -56,12 +56,11 @@ class IOC(object):
     """
     Class for easy creation and manipulation of IOCs.
 
-    class attributes
-        id:                     Unique identifier for the ioc
+    Class instance attributes
+        iocid:                  Unique identifier for the ioc
         metadata:               The metadata node
         parameters:             The Parameters node
-        top_level_indicator:    Top level Indicator node, typically a toplevel
-                                OR node for a valid MIR IOC.
+        top_level_indicator:    Top level Indicator node, typically a toplevel OR node for a valid MIR IOC.
         root:                   Root node of the IOC (OpenIOC element)
     """
 
@@ -74,20 +73,18 @@ class IOC(object):
                  keywords=None,
                  iocid=None):
         """
-        creates an IOC class object, populating the class attributes from a
-        file or by creating them.
-
-        Input
-            fn: This is a path to a file to open, or a string containing XML
-                representing an IOC.
-            name:       string, Name of the ioc
-            description:    string, description of the ioc
-            author:     string, author name/email address
-            links:      list of tuples.  Each tuple should be in the form
-                        (rel, href, value).
-            keywords:   string.  This is normally a space delimited string of
-                        values that may be used as keywords
-            iocid: GUID for the IOC.  This should not be specified under normal circumstances.
+        creates an IOC class object, populating the class attributes from a file or by creating them.
+        :param fn: This is a path to a file to open, or a string containing XML representing an IOC.  If it is provided
+         if will be read into memory to populate the IOC.  If this is not provided, the object is still created but
+         the user must construct the IOC manually.
+        :param name: string, Name of the ioc
+        :param description: string, description of the ioc
+        :param author: string, author name/email address
+        :param links: list of tuples.  Each tuple should be in the form (rel, href, value).
+        :param keywords: string.  This is normally a space delimited string of values that may be used as keywords
+        :param iocid: GUID for the IOC.  This should not be specified under normal circumstances.
+        :return: IOC object.
+        :raises: IOCParseError: Raised if the provided XML cannot be parsed.
         """
         self.root = None
         self.top_level_indicator = None
