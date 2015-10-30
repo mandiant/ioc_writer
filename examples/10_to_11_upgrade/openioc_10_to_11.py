@@ -121,7 +121,7 @@ class iocmanager():
                 errors.append(iocid)
                 continue
             # create 1.1 ioc obj
-            ioc_obj = ioc_api.IOC(name = name_10, description = description_10, author=author_10, links = links_10, keywords = keywords_10, id=iocid)
+            ioc_obj = ioc_api.IOC(name = name_10, description = description_10, author=author_10, links = links_10, keywords = keywords_10, iocid=iocid)
             ioc_obj.set_lastmodified_date(last_modified_date_10)
             ioc_obj.set_created_date(created_date_10)
             
@@ -168,14 +168,14 @@ class iocmanager():
                 content_type = node.xpath('Content/@type')[0]
                 content = node.findtext('Content')
                 context_type = node.xpath('Context/@type')[0]
-                new_II_node = ioc_api.make_IndicatorItem_node(condition = condition, 
+                new_II_node = ioc_api.make_indicatoritem_node(condition = condition,
                                                             document = document,
                                                             search = search,
                                                             content_type = content_type, 
                                                             content = content, 
                                                             context_type = context_type,
                                                             negate=negation,
-                                                            id = node_id)
+                                                            nid= node_id)
                 # set comment
                 comment = node.find('Comment')
                 if comment is not None:
@@ -185,7 +185,7 @@ class iocmanager():
                 operator = node.get('operator')
                 if operator.upper() not in ['OR', 'AND']:
                     raise IOCParseError('Indicator@operator is not AND/OR. [%s] has [%s]' % (node_id, operator) )
-                new_I_node = ioc_api.make_Indicator_node(operator, node_id)
+                new_I_node = ioc_api.make_indicator_node(operator, node_id)
                 new_node.append(new_I_node)
                 self.convert_branch(node, new_I_node, comment_dict)                    
             else:

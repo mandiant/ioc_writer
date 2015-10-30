@@ -159,7 +159,7 @@ class ioc_manager:
                 comment_dict[param_id] = param_text
             # create a 1.1 indicator and populate it with the metadata from the existing 1.1
             # we will then modify this new IOC to conform to 1.1 schema
-            ioc_obj_10 = ioc_api.IOC(name = name_11, description = description_11, author=author_11, links = links_11, keywords = keywords_11, id=iocid)
+            ioc_obj_10 = ioc_api.IOC(name = name_11, description = description_11, author=author_11, links = links_11, keywords = keywords_11, iocid=iocid)
             #root_10, tlo_10 = ioc_api.IOC(name = name_11, description = description_11, author=author_11, links = links_11, keywords = keywords_11, id=iocid)
             ioc_obj_10.root.attrib['last-modified'] = last_modified_date_11
             authored_date_node = ioc_obj_10.metadata.find('authored_date')
@@ -270,13 +270,13 @@ class ioc_manager:
                 content_type = node.xpath('Content/@type')[0]
                 content = node.findtext('Content')
                 context_type = node.xpath('Context/@type')[0]
-                new_II_node = ioc_api.make_IndicatorItem_node(condition = condition, 
+                new_II_node = ioc_api.make_indicatoritem_node(condition = condition,
                                                             document = document,
                                                             search = search,
                                                             content_type = content_type, 
                                                             content = content, 
                                                             context_type = context_type,
-                                                            id = node_id)
+                                                            nid= node_id)
                 # set condition
                 new_II_node.attrib['condition'] = new_condition
                 # set comment
@@ -293,7 +293,7 @@ class ioc_manager:
                 operator = node.get('operator')
                 if operator.upper() not in ['OR', 'AND']:
                     raise IOCParseError('Indicator@operator is not AND/OR. [%s] has [%s]' % (node_id, operator) )
-                new_I_node = ioc_api.make_Indicator_node(operator, node_id)
+                new_I_node = ioc_api.make_indicator_node(operator, node_id)
                 new_node.append(new_I_node)
                 self.convert_branch(node, new_I_node, ids_to_skip, comment_dict)                    
             else:
