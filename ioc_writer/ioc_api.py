@@ -633,25 +633,29 @@ class IOC(object):
         else:
             return False
 
-    def write_ioc_to_file(self, output_dir=None):
+    def write_ioc_to_file(self, output_dir=None, force=False):
         """
         Writes the IOC to a .ioc file.
 
         input
             output_dir: directory to write the ioc out to.  default is the current
             working directory.
+            force: Boolean - will skip the root node tag check.
 
         output: return True, unless an error occurs while writing the IOC.
         """
-        return write_ioc(self.root, output_dir)
+        return write_ioc(self.root, output_dir, force=force)
 
-    def write_ioc_to_string(self):
+    def write_ioc_to_string(self, force=False):
         """
         Writes the IOC to a string.
 
+        input:
+            force: Boolean - will skip the root node tag check.
+
         output: returns a string, which is the XML representation of the IOC.
         """
-        return write_ioc_string(self.root)
+        return write_ioc_string(self.root, force=force)
 
 
 def make_indicator_node(operator, nid=None):
@@ -765,7 +769,7 @@ def get_top_level_indicator_node(root_node):
     return top_level_indicator_node
 
 
-def write_ioc(root, output_dir=None):
+def write_ioc(root, output_dir=None, force=False):
     """
     writes an IOC, as defined by a set of etree Elements, to a .IOC file.
 
@@ -773,11 +777,12 @@ def write_ioc(root, output_dir=None):
         root: etree Element to write out.  Should have the tag 'OpenIOC'
         output_dir: directory to write the ioc out to.  default is current
         working directory.
+        force: Boolean - will skip the root node tag check.
 
     output: return True, unless an error occurs while writing the IOC.
     """
     root_tag = 'OpenIOC'
-    if root.tag != root_tag:
+    if not force and root.tag != root_tag:
         raise ValueError('Root tag is not "{}".'.format(root_tag))
     default_encoding = 'utf-8'
     tree = root.getroottree()
@@ -804,17 +809,18 @@ def write_ioc(root, output_dir=None):
     return True
 
 
-def write_ioc_string(root):
+def write_ioc_string(root, force=False):
     """
     writes an IOC, as defined by a set of etree Elements, to a String.
 
     input
         root: etree Element to write out.  Should have the tag 'OpenIOC'
+        force: Boolean - will skip the root node tag check.
 
     output: return the XML as String.
     """
     root_tag = 'OpenIOC'
-    if root.tag != root_tag:
+    if not force and root.tag != root_tag:
         raise ValueError('Root tag is not "{}".'.format(root_tag))
     default_encoding = 'utf-8'
     tree = root.getroottree()
