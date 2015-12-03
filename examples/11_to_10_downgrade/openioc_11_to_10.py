@@ -338,18 +338,7 @@ class DowngradeIOCManager(object):
         # serialize the iocs
         for iocid in source_iocs:
             ioc_obj = source[iocid]
-            tree = ioc_obj.root.getroottree()
-            try:
-                ioc_encoding = tree.docinfo.encoding
-            except:
-                ioc_encoding = self.default_encoding
-            self.ioc_xml[iocid] = et.tostring(tree, encoding=ioc_encoding, pretty_print=True, xml_declaration=True)
-        # write the iocs to disk
-        for iocid in source_iocs:
-            fn = os.path.join(output_dir, iocid + '.ioc')
-            f = open(fn, 'wb')
-            f.write(self.ioc_xml[iocid])
-            f.close()
+            ioc_obj.write_ioc_to_file(output_dir=output_dir, force=True)
         return True
 
     def write_pruned_iocs(self, directory=None, pruned_source=None):
@@ -373,18 +362,7 @@ class DowngradeIOCManager(object):
         # serialize the iocs
         for iocid in pruned_source:
             ioc_obj = self.iocs_10[iocid]
-            tree = ioc_obj.root.getroottree()
-            try:
-                ioc_encoding = tree.docinfo.encoding
-            except:
-                ioc_encoding = self.default_encoding
-            self.ioc_xml[iocid] = et.tostring(tree, encoding=ioc_encoding, pretty_print=True, xml_declaration=True)
-        # write the iocs to disk
-        for iocid in pruned_source:
-            fn = os.path.join(output_dir, iocid + '.ioc')
-            f = open(fn, 'wb')
-            f.write(self.ioc_xml[iocid])
-            f.close()
+            ioc_obj.write_ioc_to_file(output_dir=output_dir, force=True)
         return True
 
 
