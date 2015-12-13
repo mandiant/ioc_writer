@@ -670,13 +670,13 @@ def make_indicator_node(operator, nid=None):
 
     return: elementTree element
     """
+    if operator.upper() not in ['AND', 'OR']:
+        raise ValueError('Indicator operator must be "AND" or "OR".')
     i_node = et.Element('Indicator')
     if nid:
         i_node.attrib['id'] = nid
     else:
         i_node.attrib['id'] = ioc_et.get_guid()
-    if operator.upper() not in ['AND', 'OR']:
-        raise ValueError('Indicator operator must be "AND" or "OR".')
     i_node.attrib['operator'] = operator.upper()
     return i_node
 
