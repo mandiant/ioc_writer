@@ -39,7 +39,7 @@ def read_xml(filename):
     isfile=False
     try:
         isfile = os.path.exists(filename)
-    except ValueError:
+    except ValueError as e:
         if 'path too long for Windows' in str(e):
             pass
         else:
