@@ -1,5 +1,5 @@
 """
-iocmanager.py from ioc_writer
+__init__.py.py from ioc_writer
 Created: 12/17/15
 
 Purpose: Provide a generic IOC management class for parsing a large set of IOCs into memory.
@@ -23,6 +23,7 @@ class IOCManager(object):
      files into memory.  This is designed to be subclassed.  The parsing can be extended by a subclass which just needs
      to have a callback function registered which will consume a IOC object.
     """
+
     def __init__(self):
         self.iocs = {}  # iocid -> ioc_api.IOC object
         self.ioc_name = {}  # guid -> name mapping
