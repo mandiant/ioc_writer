@@ -314,8 +314,8 @@ class DowngradeManager(IOCManager):
         """
         Writes IOCs to a directory that have been pruned of some or all IOCs.
 
-        :param directory:
-        :param pruned_source:
+        :param directory: Directory to write IOCs to.  If not provided, the current working directory is used.
+        :param pruned_source: Iterable containing a set of iocids.  Defaults to self.iocs_10.
         :return:
         """
         """
