@@ -24,8 +24,8 @@ import logging
 
 from lxml import etree as et
 
-from . import ioc_et
-from . import xmlutils
+from ioc_writer import ioc_et
+from ioc_writer.utils import xmlutils
 
 log = logging.getLogger(__name__)
 

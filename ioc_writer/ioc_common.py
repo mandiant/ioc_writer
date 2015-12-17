@@ -22,7 +22,7 @@
 # any specific iocterm information that would otherwise be neccesary for 
 # creating indicatorItem nodes.
 
-from . import ioc_api
+from ioc_writer import ioc_api
 
 
 def make_dnsentryitem_recordname(dns_name, condition='contains', negate=False, preserve_case=False):
