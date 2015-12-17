@@ -169,7 +169,7 @@ class IOC(object):
 
         """
         root = ioc_et.make_ioc_root(iocid)
-        root.append(ioc_et.make_metadata_node(name, description, author, links))
+        root.append(ioc_et.make_metadata_node(name, description, author, links, keywords))
         metadata_node = root.find('metadata')
         top_level_indicator = make_indicator_node('OR')
         parameters_node = (ioc_et.make_parameters_node())

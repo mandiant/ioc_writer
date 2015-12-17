@@ -45,11 +45,12 @@ def make_ioc_root(iocid=None):
 def make_metadata_node(name=None,
                        description='Automatically generated IOC',
                        author='IOC_et',
-                       links=None, ):
+                       links=None,
+                       keywords=None):
     metadata_node = et.Element('metadata')
     metadata_node.append(make_short_description_node(name))
     metadata_node.append(make_description_node(description))
-    metadata_node.append(make_keywords_node())
+    metadata_node.append(make_keywords_node(keywords))
     metadata_node.append(make_authored_by_node(author))
     metadata_node.append(make_authored_date_node())
     metadata_node.append(make_links_node(links))
