@@ -18,12 +18,18 @@ import unittest
 # Third Party code
 from lxml import etree as et
 # Custom Code
-from ioc_writer import ioc_api
-from ioc_writer import ioc_et
+import ioc_writer.ioc_api as ioc_api
+import ioc_writer.ioc_et as ioc_et
+import ioc_writer.managers as managers
+import ioc_writer.managers.downgrade_11 as downgrade_11
+
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(message)s [%(filename)s:%(funcName)s]')
 log = logging.getLogger(__name__)
+
+
+OPENIOC_11_ASSETS = os.path.join(os.path.split(__file__)[0], 'assets/openioc_11_assets')
 
 
 class TestIocEt(unittest.TestCase):
@@ -330,6 +336,66 @@ class TestIOCAPIFuncs(unittest.TestCase):
                                                       search=self.context_search,
                                                       content_type=self.content_type,
                                                       content=self.content)
+
+
+class IOCTestManager(managers.IOCManager):
+    """
+    Test class for testing the parser callback functionality.
+    """
+    def __init__(self):
+        managers.IOCManager.__init__(self)
+        self.child_count = {}
+        self.register_parser_callback(self.parse_callback)
+
+    def parse_callback(self, ioc_obj):
+        c = ioc_obj.top_level_indicator.getchildren()
+        self.child_count[ioc_obj.iocid] = len(c)
+
+
+class TestIOCManager(unittest.TestCase):
+    def setUp(self):
+        self.iocm = managers.IOCManager()
+        self.test_iocm = IOCTestManager()
+
+
+    def test_iocm(self):
+        iocids = {'378f0cce-b8df-41d5-8189-3d7ec102e52f',
+                  '55075e99-273a-4b81-b92b-672be6666474',
+                  'c158ef8c-e664-43c5-b71d-3488a3325fcb'}
+        self.iocm.insert(OPENIOC_11_ASSETS)
+        self.assertEqual(len(self.iocm), 3)
+        self.assertEqual(set(self.iocm.iocs.keys()), iocids)
+
+    def test_custom_iocm(self):
+        expected_dict = {'378f0cce-b8df-41d5-8189-3d7ec102e52f': 7,
+                         '55075e99-273a-4b81-b92b-672be6666474': 1,
+                         'c158ef8c-e664-43c5-b71d-3488a3325fcb': 2}
+        self.test_iocm.insert(OPENIOC_11_ASSETS)
+        self.assertDictEqual(self.test_iocm.child_count, expected_dict)
+
+    def test_custom_iocm_fail(self):
+        with self.assertRaises(TypeError):
+            self.test_iocm.register_parser_callback('1234')
+
+
+class TestDowngrade(unittest.TestCase):
+    def setUp(self):
+        self.iocm = managers.downgrade_11.DowngradeManager()
+
+    def test_downgrade(self):
+        self.iocm.insert(OPENIOC_11_ASSETS)
+        self.iocm.convert_to_10()
+        self.assertEqual(set(self.iocm.iocs_10.keys())-(self.iocm.pruned_11_iocs.union(self.iocm.null_pruned_iocs)),
+                         {'c158ef8c-e664-43c5-b71d-3488a3325fcb'})
+        self.assertEqual(self.iocm.pruned_11_iocs, {'378f0cce-b8df-41d5-8189-3d7ec102e52f'})
+        self.assertEqual(self.iocm.null_pruned_iocs, {'55075e99-273a-4b81-b92b-672be6666474'})
+        expected_dict = {'378f0cce-b8df-41d5-8189-3d7ec102e52f': 1,
+                         '55075e99-273a-4b81-b92b-672be6666474': 0,
+                         'c158ef8c-e664-43c5-b71d-3488a3325fcb': 2}
+        for iocid, num_children in expected_dict.items():
+            ioc_obj = self.iocm.iocs_10.get(iocid)
+            self.assertEqual(len(ioc_obj.top_level_indicator.getchildren()), num_children)
+
 
 
 if __name__ == '__main__':
