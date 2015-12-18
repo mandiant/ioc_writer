@@ -21,29 +21,35 @@
 import os
 import re
 import logging
-
 from lxml import etree as et
-
 from ioc_writer import ioc_et
 from ioc_writer.utils import xmlutils
 
 log = logging.getLogger(__name__)
 
-
 # XXX: Consider changing this to a dictionary, with condition values that point
 # to the types of operators (string, datetime, etc) in order to do more 
 # validation
-valid_indicatoritem_conditions = ['is',
-                                  'contains',
-                                  'matches',
-                                  'starts-with',
-                                  'ends-with',
-                                  'greater-than',
-                                  'less-than',
-                                  ]
+DATE_REGEX = r'^[12][9012][0-9]{2}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-6][0-9]:[0-6][0-9]$'
 
-date_regex = r'^[12][9012][0-9]{2}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-6][0-9]:[0-6][0-9]$'
+IS = 'is'
+CONTAINS = 'contains'
+MATCHES = 'matches'
+STARTS_WITH = 'starts-with'
+ENDS_WITH = 'ends-with'
+GREATER_THAN = 'greater-than'
+LESS_THAN = 'less-than'
+VALID_INDICATORITEM_CONDITIONS = [IS,
+                                  CONTAINS,
+                                  MATCHES,
+                                  STARTS_WITH,
+                                  ENDS_WITH,
+                                  GREATER_THAN,
+                                  LESS_THAN]
 
+AND = 'AND'
+OR = 'OR'
+VALID_INDICATOR_OPERATORS = [AND, OR]
 
 class IOCParseError(Exception):
     pass
@@ -74,17 +80,14 @@ class IOC(object):
         creates an IOC class object, populating the class attributes from a
         file or by creating them.
 
-        Input
-            fn: This is a path to a file to open, or a string containing XML
-                representing an IOC.
-            name:       string, Name of the ioc
-            description:    string, description of the ioc
-            author:     string, author name/email address
-            links:      list of tuples.  Each tuple should be in the form
-                        (rel, href, value).
-            keywords:   string.  This is normally a space delimited string of
-                        values that may be used as keywords
-            iocid: GUID for the IOC.  This should not be specified under normal circumstances.
+        :param fn: This is a path to a file to open, or a string containing XML representing an IOC.
+        :param name: string, Name of the ioc
+        :param description: string, description of the ioc
+        :param author: string, author name/email address
+        :param links: ist of tuples.  Each tuple should be in the form (rel, href, value).
+        :param keywords: string.  This is normally a space delimited string of values that may be used as keywords
+        :param iocid: GUID for the IOC.  This should not be specified under normal circumstances.
+        :return:
         """
         self.root = None
         self.top_level_indicator = None
@@ -101,25 +104,20 @@ class IOC(object):
     @staticmethod
     def open_ioc(fn):
         """
-                Opens an IOC file, or XML string.  Returns the root element, top level
-                indicator element, and parameters element.  If the IOC or string fails
-                to parse, an IOCParseError is raised.
+        Opens an IOC file, or XML string.  Returns the root element, top level
+        indicator element, and parameters element.  If the IOC or string fails
+        to parse, an IOCParseError is raised.
 
-                This does not need to be called if using the IOC class to open an IOC
-                file.
+        This is a helper function used by __init__.
 
-                input
-                    fn: This is a path to a file to open, or a string containing XML
-                        representing an IOC.
-
-                returns
-                    a tuple containing three elementTree Element objects
-                    The first element, the root, contains the entire IOC itself.
-                    The second element, the top level OR indicator, allows the user to add
-                        additional IndicatorItem or Indicator nodes to the IOC easily.
-                    The third element, the parameters node, allows the user to quickly
-                        parse the parameters.
-                """
+        :param fn: This is a path to a file to open, or a string containing XML representing an IOC.
+        :return: a tuple containing three elementTree Element objects
+         The first element, the root, contains the entire IOC itself.
+         The second element, the top level OR indicator, allows the user to add
+          additional IndicatorItem or Indicator nodes to the IOC easily.
+         The third element, the parameters node, allows the user to quickly
+          parse the parameters.
+        """
         parsed_xml = xmlutils.read_xml_no_ns(fn)
         if not parsed_xml:
             raise IOCParseError('Error occured parsing XML')
@@ -143,30 +141,20 @@ class IOC(object):
         """
         This generates all parts of an IOC, but without any definition.
 
-        It allows the caller to then add IndicatorItems/Indicator nodes to the
-        top level OR statement.
+        This is a helper function used by __init__.
 
-        This does not need to be called if using the IOC class to create an IOC
-
-        input
-            name:   string, Name of the ioc
-            description:    string, description of the iocs
-            author: string, author name/email address
-            links:  list of tuples.  Each tuple should be in the form
-                (rel, href, value).
-            keywords:   string.  This is normally a space delimited string of
-                values that may be used as keywords
-            iocid: GUID for the IOC.  This should not be specified under normal
-                circumstances.
-
-        returns
-            a tuple containing three elementTree Element objects
-            The first element, the root, contains the entire IOC itself.
-            The second element, the top level OR indicator, allows the user to add
-                additional IndicatorItem or Indicator nodes to the IOC easily.
-            The third element, the parameters node, allows the user to quickly
-                parse the parameters.
-
+        :param name: string, Name of the ioc
+        :param description: string, description of the ioc
+        :param author: string, author name/email address
+        :param links: ist of tuples.  Each tuple should be in the form (rel, href, value).
+        :param keywords: string.  This is normally a space delimited string of values that may be used as keywords
+        :param iocid: GUID for the IOC.  This should not be specified under normal circumstances.
+        :return: a tuple containing three elementTree Element objects
+         The first element, the root, contains the entire IOC itself.
+         The second element, the top level OR indicator, allows the user to add
+          additional IndicatorItem or Indicator nodes to the IOC easily.
+         The third element, the parameters node, allows the user to quickly
+          parse the parameters.
         """
         root = ioc_et.make_ioc_root(iocid)
         root.append(ioc_et.make_metadata_node(name, description, author, links, keywords))
@@ -183,17 +171,14 @@ class IOC(object):
         Set the last modified date of a IOC to the current date.
         User may specify the date they want to set as well.
 
-        input
-            date:   Date value to set the last modified date to.  This should be
-                in the xsdDate form.
-                This defaults to the current date if it is not provided.
-                xsdDate Form: YYYY-MM-DDTHH:MM:SS
-
-        output:
-            returns True
+        :param date: Date value to set the last modified date to.  This should be in the xsdDate form.
+         This defaults to the current date if it is not provided.
+         xsdDate Form: YYYY-MM-DDTHH:MM:SS
+        :return: True
+        :raises: IOCParseError if date format is not valid.
         """
         if date:
-            match = re.match(date_regex, date)
+            match = re.match(DATE_REGEX, date)
             if not match:
                 raise IOCParseError('last-modified date is not valid.  Must be in the form YYYY-MM-DDTHH:MM:SS')
         ioc_et.set_root_lastmodified(self.root, date)
@@ -204,15 +189,14 @@ class IOC(object):
         Set the published date of a IOC to the current date.
         User may specify the date they want to set as well.
 
-        input
-            date:   Date value to set the published date to.  This should be in the xsdDate form.
-                    This defaults to the current date if it is not provided.
-                    xsdDate Form: YYYY-MM-DDTHH:MM:SS
-        output:
-            returns True
+        :param date: Date value to set the published date to.  This should be in the xsdDate form.
+         This defaults to the current date if it is not provided.
+         xsdDate Form: YYYY-MM-DDTHH:MM:SS
+        :return: True
+        :raises: IOCParseError if date format is not valid.
         """
         if date:
-            match = re.match(date_regex, date)
+            match = re.match(DATE_REGEX, date)
             if not match:
                 raise IOCParseError('Published date is not valid.  Must be in the form YYYY-MM-DDTHH:MM:SS')
         ioc_et.set_root_published_date(self.root, date)
@@ -223,19 +207,14 @@ class IOC(object):
         Set the created date of a IOC to the current date.
         User may specify the date they want to set as well.
 
-        input
-            date:   Date value to set the created date to.  This should be in the xsdDate form.
-                    This defaults to the current date if it is not provided.
-                    xsdDate form: YYYY-MM-DDTHH:MM:SS
-        output:
-            returns True
-
-        exception:
-            will raise a ValueError if the authored_date node does not exist.
-
+        :param date: Date value to set the created date to.  This should be in the xsdDate form.
+         This defaults to the current date if it is not provided.
+         xsdDate form: YYYY-MM-DDTHH:MM:SS
+        :return: True
+        :raises: IOCParseError if date format is not valid.
         """
         if date:
-            match = re.match(date_regex, date)
+            match = re.match(DATE_REGEX, date)
             if not match:
                 raise IOCParseError('Created date is not valid.  Must be in the form YYYY-MM-DDTHH:MM:SS')
         # XXX can this use self.metadata?
@@ -246,20 +225,12 @@ class IOC(object):
         """
         Add a a parameter to the IOC.
 
-        input
-            id:         The unique Indicator/IndicatorItem id the parameter is
-                        associated with.
-            content:    The value of the parameter.
-            name:       The name of the parameter.  This defaults to 'comment'.
-            type:       The type of the parameter content.  This defaults to
-                        'string'.
-
-            All input values must be string or unicode objects.
-
-        returns True
-
-        Will raise a IOCParseError if the id is not associated with a Indicator
-        or IndicatorItem id.
+        :param indicator_id: The unique Indicator/IndicatorItem id the parameter is associated with.
+        :param content: The value of the parameter.
+        :param name: The name of the parameter.
+        :param ptype: The type of the parameter content.
+        :return: True
+        :raises: IOCParseError if the indicator_id is not associated with a Indicator or IndicatorItem in the IOC.
         """
         parameters_node = self.parameters
         criteria_node = self.top_level_indicator.getparent()
@@ -278,17 +249,12 @@ class IOC(object):
 
     def add_link(self, rel, value, href=None):
         """
-        Add a Link metadata element to the IOC, with the
+        Add a Link metadata element to the IOC.
 
-        input
-            rel:    The type of link
-            value:  The content of the link
-            href:   An href value for the link.  This defaults to None
-            rel:    The link/@rel value
-            value:  The link/text() value
-            href:   A uri or url value
-
-        returns True
+        :param rel: Type of the link.
+        :param value: Value of the link text.
+        :param href: A href value assigned to the link.
+        :return: True
         """
         links_node = self.metadata.find('links')
         if links_node is None:
@@ -304,10 +270,8 @@ class IOC(object):
 
         This creates the short description node if it is not present.
 
-        input
-            name:   Value to set the short description too
-
-        returns True.
+        :param name: Value to set the short description too
+        :return:
         """
         short_desc_node = self.metadata.find('short_description')
         if short_desc_node is None:
@@ -324,11 +288,8 @@ class IOC(object):
         Update the description) of an IOC
 
         This creates the description node if it is not present.
-
-        input
-            description:   Value to set the description too
-
-        returns True.
+        :param description: Value to set the description too
+        :return: True
         """
         desc_node = self.metadata.find('description')
         if desc_node is None:
@@ -355,15 +316,11 @@ class IOC(object):
         the link/@rel value.  Optionally, only the first link which matches the
         link/@rel value will be modified.
 
-        input
-            old_rel:        The link/@rel value used to select link nodes to
-                            update.
-            new_rel:        The new link/@rel value
-            new_text:       The new link/text() value
-            single_link:    Determine if only the first, or multiple, linkes
-                            are modified.
-
-        Returns True, unless there are no links with link[@rel='old_rel']
+        :param old_rel: The link/@rel value used to select link nodes to update
+        :param new_rel: The new link/@rel value
+        :param new_text: The new link/text() value
+        :param single_link: Determine if only the first, or multiple, linkes are modified.
+        :return: True, unless there are no links with link[@rel='old_rel']
         """
         links = self.metadata.xpath('./links/link[@rel="{}"]'.format(old_rel))
         if len(links) < 1:
@@ -396,16 +353,11 @@ class IOC(object):
         This is similar to update_link_rel_based but users link/@rel AND link/text() values
         to determine which links have their link/@text() values updated.
 
-        input
-            old_rel:        The link/@rel value used to select link nodes to
-                            update.
-            old_text:       The link/text() value used to select link nodes to
-                            update.
-            new_text:       The new link/text() value to set on link nodes.
-            single_link:    Determine if only the first, or multiple, linkes
-                            are modified.
-
-        Returns True, unless there are no links with link/[@rel='old_rel' and text()='old_text']
+        :param old_rel: The link/@rel value used to select link nodes to update.
+        :param old_text: The link/text() value used to select link nodes to update.
+        :param new_text: The new link/text() value to set on link nodes.
+        :param single_link: Determine if only the first, or multiple, linkes are modified.
+        :return: True, unless there are no links with link/[@rel='old_rel' and text()='old_text']
         """
         links = self.metadata.xpath('./links/link[@rel="{}" and text()="{}"]'.format(old_rel, old_text))
         if len(links) < 1:
@@ -421,17 +373,14 @@ class IOC(object):
         """
         Updates the parameter attached to an Indicator or IndicatorItem node.
 
-        Input
-            parameter_id:   The unique id of the parameter to modify
-            content:        The value of the parameter.
-            name:           The name of the parameter.
-            param_type:     The type of the parameter content.
+        All inputs must be strings or unicode objects.
 
-            All inputs must be strings or unicode objects.
-
-        Returns True, unless no arguments are supplied.
-
-        Will raise a IOCParseError if the parameter id is not present
+        :param parameter_id: The unique id of the parameter to modify
+        :param content: The value of the parameter.
+        :param name: The name of the parameter.
+        :param param_type: The type of the parameter content.
+        :return: True, unless none of the optional arguments are supplied
+        :raises: IOCParseError if the parameter id is not present in the IOC.
         """
         if not (content or name or param_type):
             log.warning('Must specify at least the value/text(), param/@name or the value/@type values to update.')
@@ -462,7 +411,6 @@ class IOC(object):
 
     def remove_link(self, rel, value=None, href=None):
         """
-
         Removes link nodes based on the function arguments.
 
         This can remove link nodes based on the following combinations of arguments:
@@ -471,12 +419,10 @@ class IOC(object):
             link/@rel & link/@href
             link/@rel & link/text() & link/@href
 
-        Input
-            rel:    link/@rel value to remove.  Required.
-            value   link/text() value to remove. This is used in conjunction with link/@rel.  Optional.
-            href   link/@href value to remove. This is used in conjunction with link/@rel.  Optional.
-
-        Returns False, or the number of link nodes removed.
+        :param rel: link/@rel value to remove.  Required.
+        :param value: link/text() value to remove. This is used in conjunction with link/@rel.
+        :param href: link/@href value to remove. This is used in conjunction with link/@rel.
+        :return: Return the number of link nodes removed, or False if no nodes are removed.
         """
         links_node = self.metadata.find('links')
         if links_node is None:
@@ -517,14 +463,10 @@ class IOC(object):
         This also removes any parameters associated with any nodes that are
         removed.
 
-        inputs
-            id:     The Indicator/@id or IndicatorItem/@id value indicating a
-                    specific node to remove.
-            prune:  Remove all children of the deleted node.
-
-        Returns
-            True if nodes are removed
-            False if there are no nodes removed.
+        :param nid: The Indicator/@id or IndicatorItem/@id value indicating a specific node to remove.
+        :param prune: Remove all children of the deleted node. If a Indicator node is removed and prune is set to
+         False, the children nodes will be promoted to be children of the removed nodes' parent.
+        :return: True if nodes are removed, False otherwise.
         """
         try:
             node_to_remove = self.top_level_indicator.xpath(
@@ -563,17 +505,13 @@ class IOC(object):
             param/@name
             param/@ref_id
 
-        input:
-            param_id:   The id of the parameter to remove.
-            name:       The name of the parameter to remove.
-            ref_id:     The IndicatorItem/Indicator id of the parameter to remove.
+        Each input is mutually exclusive.  Calling this function with multiple values set will cause an IOCParseError
+         exception. Calling this function without setting one value will raise an exception.
 
-            Each input is mutually exclusive.  Calling this function with multiple values set will cause  exception.
-              Calling this function without setting one value will throw cause exception.
-
-        Returns the number of parameters removed (may be 0).
-
-        May raise a IOCParseError
+        :param param_id: The id of the parameter to remove.
+        :param name: The name of the parameter to remove.
+        :param ref_id: The IndicatorItem/Indicator id of the parameter to remove.
+        :return: Number of parameters removed.
         """
         l = []
         if param_id:
@@ -611,67 +549,56 @@ class IOC(object):
         """
         Removes the name (short_description node) from the metadata node, if present.
 
-        Returns True if the short_description node is removed.  Returns False if the node is not present.
+        :return: True if the node is removed.  False is the node is node is not present.
         """
         short_description_node = self.metadata.find('short_description')
         if short_description_node is not None:
             self.metadata.remove(short_description_node)
             return True
-        else:
-            return False
+        return False
 
     def remove_description(self):
         """
         Removes the description node from the metadata node, if present.
 
-        Returns True if the description node is present.  Returns False if the node is not present.
+        :return: Returns True if the description node is removed. Returns False if the node is not present.
         """
         description_node = self.metadata.find('description')
         if description_node is not None:
             self.metadata.remove(description_node)
             return True
-        else:
-            return False
+        return False
 
     def write_ioc_to_file(self, output_dir=None, force=False):
         """
-        Writes the IOC to a .ioc file.
+        Serialize the IOC to a .ioc file.
 
-        input
-            output_dir: directory to write the ioc out to.  default is the current
-            working directory.
-            force: Boolean - will skip the root node tag check.
-
-        output: return True, unless an error occurs while writing the IOC.
+        :param output_dir: Directory to write the ioc out to.  default is the current working directory.
+        :param force: If specified, will not validate the root node of the IOC is 'OpenIOC'.
+        :return:
         """
         return write_ioc(self.root, output_dir, force=force)
 
     def write_ioc_to_string(self, force=False):
         """
-        Writes the IOC to a string.
+        Serialize the IOC to a string.
 
-        input:
-            force: Boolean - will skip the root node tag check.
-
-        output: returns a string, which is the XML representation of the IOC.
+        :param force: If specified, will not validate the root node of the IOC is 'OpenIOC'.
+        :return: XML String.
         """
         return write_ioc_string(self.root, force=force)
 
 
 def make_indicator_node(operator, nid=None):
     """
-    This makes a Indicator node element.  These allow the construction of a
-        logic tree within the IOC.
-
-    input
-        operator:   'AND' or 'OR'.
-        nid: a string value.  This is used to provide a GUID for the Indicator.
-            The ID should NOT be specified under normal circumstances.
-
-    return: elementTree element
+    This makes a Indicator node element.  These allow the construction of a logic tree within the IOC.
+    :param operator: String 'AND' or 'OR'.  The constants ioc_api.OR and ioc_api.AND may be used as well.
+    :param nid: This is used to provide a GUID for the Indicator. The ID should NOT be specified under normal
+     circumstances.
+    :return: elementTree element
     """
-    if operator.upper() not in ['AND', 'OR']:
-        raise ValueError('Indicator operator must be "AND" or "OR".')
+    if operator.upper() not in VALID_INDICATOR_OPERATORS:
+        raise ValueError('Indicator operator must be in [{}].'.format(VALID_INDICATOR_OPERATORS))
     i_node = et.Element('Indicator')
     if nid:
         i_node.attrib['id'] = nid
@@ -691,36 +618,34 @@ def make_indicatoritem_node(condition,
                             context_type='mir',
                             nid=None):
     """
-    This makes a IndicatorItem element.  This contains the actual threat
-    intelligence in the IOC.
+    This makes a IndicatorItem element.  This contains the actual threat intelligence in the IOC.
 
-    input
-        condition: This is the condition of the item ('is', 'contains',
-            'matches', etc).
-        document: String value.  Denotes the type of document to look for
-            the encoded artifact in.
-        search: String value.  Specifies what attribute of the doucment type
-            the encoded value is.
-        content_type: This is the display type of the item, which is derived
-            from the iocterm for the search value.
-        content: a string value, containing the data to be identified.
-        preserve_case: Boolean value.  Specify if the
-            IndicatorItem/content/text() is case sensitive.
-        negate: Boolean value.  Specify if the IndicatorItem/@condition is
-            negated, ie:
-                @condition = 'is' & @negate = 'true' would be equal to the
-                @condition = 'isnot' in OpenIOC 1.0.
-        context_type: a string value, giving context to the document/search
-            information.  This defaults to 'mir'.
-        nid: a string value.  This is used to provide a GUID for the IndicatorItem
-            The ID should NOT be specified under normal circumstances.
-
-    returns
-        an elementTree Element item
-
+    :param condition: This is the condition of the item ('is', 'contains', 'matches', etc).
+     The following contants in ioc_api may be used:
+       ioc_api.IS - Exact String match.
+       ioc_api.CONTAINS - Substring match.
+       ioc_api.MATCHES - Regex match.
+       ioc_api.STARTS_WITH - String match at the beginning of a string.
+       ioc_api.ENDS_WITH - String match at the end of a string.
+       ioc_api.GREATER_THAN - Integer match indicating a greater than (>) operation.
+       ioc_api.LESS_THAN - Integger match indicator a less than (<) operation.
+    :param document: Denotes the type of document to look for the encoded artifact in.
+    :param search: Specifies what attribute of the document type the encoded value is.
+    :param content_type: This is the display type of the item. This is normally derived from the iocterm for the
+     search value.
+    :param content: The threat intelligence that is being encoded.
+    :param preserve_case: Specifiy that the content should be treated in a case sensitive manner.
+    :param negate: Specifify that the condition is negated.
+      An example of this is
+       @condition = 'is' & @negate = 'true' would be equal to the
+       @condition = 'isnot' in OpenIOC 1.0.
+    :param context_type: Gives context to the document/search information.
+    :param nid: This is used to provide a GUID for the IndicatorItem. The ID should NOT be specified under normal
+     circumstances.
+    :return: an elementTree Element item
     """
     # validate condition
-    if condition not in valid_indicatoritem_conditions:
+    if condition not in VALID_INDICATORITEM_CONDITIONS:
         raise ValueError('Invalid IndicatorItem condition [{}]'.format(condition))
     ii_node = et.Element('IndicatorItem')
     if nid:
@@ -747,11 +672,8 @@ def get_top_level_indicator_node(root_node):
     """
     This returns the first top level Indicator node under the criteria node.
 
-    input
-        root:   root node of an IOC
-
-    return
-        The top level level In
+    :param root_node: Root node of an etree.
+    :return: an elementTree Element item, or None if no item is found.
     """
     if root_node.tag != 'OpenIOC':
         raise IOCParseError('Root tag is not "OpenIOC" [{}].'.format(root_node.tag))
@@ -771,21 +693,19 @@ def get_top_level_indicator_node(root_node):
 
 def write_ioc(root, output_dir=None, force=False):
     """
-    writes an IOC, as defined by a set of etree Elements, to a .IOC file.
+    Serialize an IOC, as defined by a set of etree Elements, to a .IOC file.
 
-    input
-        root: etree Element to write out.  Should have the tag 'OpenIOC'
-        output_dir: directory to write the ioc out to.  default is current
-        working directory.
-        force: Boolean - will skip the root node tag check.
-
-    output: return True, unless an error occurs while writing the IOC.
+    :param root: etree Element to write out.  Should have the tag 'OpenIOC'
+    :param output_dir: Directory to write the ioc out to.  default is current working directory.
+    :param force: If set, skip the root node tag check.
+    :return: True, unless an error occurs while writing the IOC.
     """
     root_tag = 'OpenIOC'
     if not force and root.tag != root_tag:
         raise ValueError('Root tag is not "{}".'.format(root_tag))
     default_encoding = 'utf-8'
     tree = root.getroottree()
+    # noinspection PyBroadException
     try:
         encoding = tree.docinfo.encoding
     except:
@@ -798,9 +718,8 @@ def write_ioc(root, output_dir=None, force=False):
     else:
         fn = os.path.join(os.getcwd(), fn)
     try:
-        fout = open(fn, 'wb')
-        fout.write(et.tostring(tree, encoding=encoding, xml_declaration=True, pretty_print=True))
-        fout.close()
+        with open(fn, 'wb') as fout:
+            fout.write(et.tostring(tree, encoding=encoding, xml_declaration=True, pretty_print=True))
     except (IOError, OSError):
         log.exception('Failed to write out IOC')
         return False
@@ -811,19 +730,17 @@ def write_ioc(root, output_dir=None, force=False):
 
 def write_ioc_string(root, force=False):
     """
-    writes an IOC, as defined by a set of etree Elements, to a String.
-
-    input
-        root: etree Element to write out.  Should have the tag 'OpenIOC'
-        force: Boolean - will skip the root node tag check.
-
-    output: return the XML as String.
+    Serialize an IOC, as defined by a set of etree Elements, to a String.
+    :param root: etree Element to serialize.  Should have the tag 'OpenIOC'
+    :param force: Skip the root node tag check.
+    :return:
     """
     root_tag = 'OpenIOC'
     if not force and root.tag != root_tag:
         raise ValueError('Root tag is not "{}".'.format(root_tag))
     default_encoding = 'utf-8'
     tree = root.getroottree()
+    # noinspection PyBroadException
     try:
         encoding = tree.docinfo.encoding
     except:

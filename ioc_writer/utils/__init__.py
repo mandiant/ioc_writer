@@ -1,14 +1,8 @@
-# XXX Fill out docstring!
 """
 __init__.py.py from ioc_writer
 Created: 12/17/15
 
-Purpose:
-
-Examples:
-
-Usage:
-
+Purpose: Utility functions for use in ioc_writer
 """
 # Stdlib
 from __future__ import print_function
@@ -27,6 +21,12 @@ except NameError:
 
 
 def safe_makedirs(fdir):
+    """
+    Make an arbitrary directory.  This is safe to call for Python 2 users.
+
+    :param fdir: Directory path to make.
+    :return:
+    """
     if os.path.isdir(fdir):
         pass
         # print 'dir already exists: %s' % str(dir)

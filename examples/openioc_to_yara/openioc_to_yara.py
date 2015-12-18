@@ -27,22 +27,19 @@ import sys
 
 log = logging.getLogger(__name__)
 
-# third party - custom
-try:
-    from ioc_writer import ioc_api
-except ImportError:
-    log.exception('Could not import ioc_writer.  Make sure you have ioc_writer installed.')
-    sys.exit(1)
+import ioc_writer.ioc_api as ioc_api
+import ioc_writer.managers as managers
+
 
 
 class IOCParseError(Exception):
     pass
 
 
-class YaraIOCManager:
+class YaraIOCManager(managers.IOCManager):
     def __init__(self):
-        self.iocs = {}  # elementTree representing the IOC
-        self.ioc_name = {}  # guid -> name mapping
+        managers.IOCManager.__init__(self)
+        self.register_parser_callback(self.yara_parse)
         self.ioc_names_set = set([])  # allows for quickly checking if a ioc name is present
         self.ioc_names_mangled_set = set([])  # set containing mangled names
         self.yara_signatures = {}  # guid -> yara string mapping
@@ -84,48 +81,9 @@ class YaraIOCManager:
         self.YARA_CONDITION_TEMPLATE = '''condition:
         %(condition)s'''
 
-    def __len__(self):
-        return len(self.iocs)
-
-    def insert(self, filename):
-        """
-        insert(filedir)
-
-        import [all] IOC(s) from a file or directory
-        """
-        errors = []
-        count = 0
-        if os.path.isfile(filename):
-            log.info('loading IOC from: {}'.format(filename))
-            self.parse(ioc_api.IOC(filename))
-            count += 1
-        elif os.path.isdir(filename):
-            log.info('loading IOCs from: {}'.format(filename))
-            for fn in glob.glob(filename + os.path.sep + '*.ioc'):
-                if not os.path.isfile(fn):
-                    continue
-                else:
-                    self.parse(ioc_api.IOC(fn))
-                    count += 1
-        else:
-            pass
-        log.info('Inserted [%s] IOCs into ioc_manager.' % str(count))
-        return errors
-
-    def parse(self, ioc_obj):
-        if ioc_obj is None:
-            return
-        iocid = ioc_obj.iocid
-        if iocid in self.iocs:
-            sd = ioc_obj.root.findtext('.//short_description') or 'NoName'
-            msg = 'duplicate IOC UUID [{}] [orig_shortName: {}][new_shortName: {}]'.format(iocid,
-                                                                                           self.ioc_name[iocid],
-                                                                                           sd)
-            log.warning(msg)
-        self.ioc_name[iocid] = ioc_obj.root.findtext('.//short_description') or 'NoName'
-        self.ioc_names_set.add(self.ioc_name[iocid])
-        self.ioc_names_mangled_set.add(mangle_name(self.ioc_name[iocid]))
-        self.iocs[iocid] = ioc_obj
+    def yara_parse(self, ioc_obj):
+        self.ioc_names_set.add(self.ioc_name[ioc_obj.iocid])
+        self.ioc_names_mangled_set.add(mangle_name(self.ioc_name[ioc_obj.iocid]))
 
     def emit_yara(self):
         if len(self) < 1:

@@ -75,10 +75,9 @@ class DowngradeManager(IOCManager):
 
     def convert_to_10(self):
         """
-        convert_to_10
-
         converts the iocs in self.iocs from openioc 1.1 to openioc 1.0 format.
         the converted iocs are stored in the dictionary self.iocs_10
+        :return: A list of iocid values which had errors downgrading.
         """
         if len(self) < 1:
             log.error('no iocs available to modify')
