@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="378f0cce-b8df-41d5-8189-3d7ec102e52f" last-modified="2015-12-18T19:02:58Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="378f0cce-b8df-41d5-8189-3d7ec102e52f" last-modified="2015-12-18T23:05:08Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
   <metadata>
     <short_description>Prune</short_description>
     <description>Pruned indicators will result</description>
@@ -46,7 +46,7 @@
           <Context document="FileItem" search="FileItem/FileName" type="mir" />
           <Content type="string">duck</Content>
         </IndicatorItem>
-        <IndicatorItem id="25c748ce-05ff-41e5-96e4-de49433ab3ed" condition="contains" preserve-case="false" negate="false">
+        <IndicatorItem id="25c748ce-05ff-41e5-96e4-de49433ab3ed" condition="ends-with" preserve-case="false" negate="false">
           <Context document="FileItem" search="FileItem/FilePath" type="mir" />
           <Content type="string">temp</Content>
         </IndicatorItem>
@@ -56,7 +56,7 @@
           <Context document="FileItem" search="FileItem/FileName" type="mir" />
           <Content type="string">quack</Content>
         </IndicatorItem>
-        <IndicatorItem id="66c45923-46d9-4e84-8b9d-1351b367b1c6" condition="contains" preserve-case="false" negate="false">
+        <IndicatorItem id="66c45923-46d9-4e84-8b9d-1351b367b1c6" condition="starts-with" preserve-case="false" negate="false">
           <Context document="FileItem" search="FileItem/FilePath" type="mir" />
           <Content type="string">windows</Content>
         </IndicatorItem>
