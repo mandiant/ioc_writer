@@ -14,9 +14,7 @@ Usage:
 from __future__ import print_function
 import logging
 import os
-# Custom Code
-from ioc_writer.utils import xmlutils
-__all__ = ['xmlutils']
+
 
 __author__ = 'will.gibb'
 log = logging.getLogger(__name__)
