@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="c158ef8c-e664-43c5-b71d-3488a3325fcb" last-modified="2015-12-18T18:46:55Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>NoPrune</short_description>
+    <description>Test IOC for downgrading.</description>
+    <authored_by>william.gibb@fireeye.com</authored_by>
+    <authored_date>2015-12-18T18:44:04Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="d7cb90c1-94cd-4683-a2e0-9c7d67e9508c">
+      <IndicatorItem id="de67c8e7-3fc3-4e19-bf6d-f42ec0ff8dff" condition="is" preserve-case="false" negate="false">
+        <Context document="FileItem" search="FileItem/Md5sum" type="mir" />
+        <Content type="md5">0123456789abcdef0123456789abcdef</Content>
+      </IndicatorItem>
+      <Indicator operator="AND" id="5674baae-64fc-48aa-b4b2-bc5a5ec563a1">
+        <IndicatorItem id="e0fc6cec-9db5-4943-a1a4-4f10391f67e5" condition="contains" preserve-case="false" negate="false">
+          <Context document="FileItem" search="FileItem/FileName" type="mir" />
+          <Content type="string">svchost.exe</Content>
+        </IndicatorItem>
+        <IndicatorItem id="3c6b1fd8-75f2-4cd9-ae17-a1b2703ad5f1" condition="contains" preserve-case="false" negate="true">
+          <Context document="FileItem" search="FileItem/FilePath" type="mir" />
+          <Content type="string">windows</Content>
+        </IndicatorItem>
+      </Indicator>
+    </Indicator>
+  </criteria>
+  <parameters />
+</OpenIOC>
