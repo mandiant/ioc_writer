@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="378f0cce-b8df-41d5-8189-3d7ec102e52f" last-modified="2015-12-18T23:05:08Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>Prune</short_description>
+    <description>Pruned indicators will result</description>
+    <authored_by>william.gibb@fireeye.com</authored_by>
+    <authored_date>2015-12-18T18:47:14Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="df9d0fc5-a338-44bf-8090-d4aa39606d09">
+      <IndicatorItem id="a10efe3e-aa06-46c4-9821-93d40a50e36c" condition="is" preserve-case="false" negate="false">
+        <Context document="FileItem" search="FileItem/Md5sum" type="mir" />
+        <Content type="md5">23456789abcdef0123456789abcdef01</Content>
+      </IndicatorItem>
+      <IndicatorItem id="23c790c9-bbaa-4154-918f-3fdb0920bb76" condition="matches" preserve-case="false" negate="false">
+        <Context document="FileItem" search="FileItem/FileName" type="mir" />
+        <Content type="string">foo|duck.exe</Content>
+      </IndicatorItem>
+      <IndicatorItem id="7a5cd5fe-4fb5-49c4-bea7-caf0157524e4" condition="is" preserve-case="true" negate="false">
+        <Context document="FileItem" search="FileItem/FileName" type="mir" />
+        <Content type="string">GooD.eXE</Content>
+      </IndicatorItem>
+      <Indicator operator="AND" id="d15eaf8d-7b7d-444d-9be8-33a845df3bf9">
+        <IndicatorItem id="42a86f8a-f022-4b0a-9d6f-564dc03ede4f" condition="greater-than" preserve-case="false" negate="false">
+          <Context document="FileItem" search="FileItem/SizeInBytes" type="mir" />
+          <Content type="int">1000</Content>
+        </IndicatorItem>
+        <IndicatorItem id="c4542f34-2217-4a3c-9dab-7ef576e37428" condition="contains" preserve-case="false" negate="false">
+          <Context document="FileItem" search="FileItem/FileName" type="mir" />
+          <Content type="string">foo</Content>
+        </IndicatorItem>
+      </Indicator>
+      <Indicator operator="AND" id="b02adab9-db40-4f38-a1f6-f3c8574df65d">
+        <IndicatorItem id="7fbb2e38-8e05-497f-af1b-1eb9d062a235" condition="contains" preserve-case="false" negate="false">
+          <Context document="FileItem" search="FileItem/FileName" type="mir" />
+          <Content type="string">bar</Content>
+        </IndicatorItem>
+        <IndicatorItem id="3856c4cd-baea-4947-8a75-50f16b01a2a4" condition="less-than" preserve-case="false" negate="false">
+          <Context document="FileItem" search="FileItem/SizeInBytes" type="mir" />
+          <Content type="int">1000</Content>
+        </IndicatorItem>
+      </Indicator>
+      <Indicator operator="AND" id="b8328341-0308-4e9f-8842-e11b2f41ef7d">
+        <IndicatorItem id="673062fe-0adf-4341-9206-adbaca2da08f" condition="contains" preserve-case="false" negate="false">
+          <Context document="FileItem" search="FileItem/FileName" type="mir" />
+          <Content type="string">duck</Content>
+        </IndicatorItem>
+        <IndicatorItem id="25c748ce-05ff-41e5-96e4-de49433ab3ed" condition="ends-with" preserve-case="false" negate="false">
+          <Context document="FileItem" search="FileItem/FilePath" type="mir" />
+          <Content type="string">temp</Content>
+        </IndicatorItem>
+      </Indicator>
+      <Indicator operator="AND" id="352e2462-135f-43d7-b2fe-a994ef4a3a85">
+        <IndicatorItem id="b0e2ce88-0b09-4599-a10e-2df4ad0c3727" condition="contains" preserve-case="false" negate="false">
+          <Context document="FileItem" search="FileItem/FileName" type="mir" />
+          <Content type="string">quack</Content>
+        </IndicatorItem>
+        <IndicatorItem id="66c45923-46d9-4e84-8b9d-1351b367b1c6" condition="starts-with" preserve-case="false" negate="false">
+          <Context document="FileItem" search="FileItem/FilePath" type="mir" />
+          <Content type="string">windows</Content>
+        </IndicatorItem>
+      </Indicator>
+    </Indicator>
+  </criteria>
+  <parameters />
+</OpenIOC>

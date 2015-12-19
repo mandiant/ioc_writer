@@ -50,4 +50,4 @@ following locations.
 
 ===============================================================================
 Bug reports / questions / feedback / feature requests:
-william.gibb at mandiant dot com
+william.gibb at fireeye dot com

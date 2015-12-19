@@ -20,29 +20,26 @@
 # See README for more information.
 #
 import argparse
-import glob
 import logging
 import os
 import sys
+import ioc_writer.managers as managers
+import ioc_writer.utils as utils
 
 log = logging.getLogger(__name__)
 
-# third party - custom
-try:
-    from ioc_writer import ioc_api
-except ImportError:
-    log.exception('Could not import ioc_writer.  Make sure you have ioc_writer installed.')
-    sys.exit(1)
 
-
-class IOCParseError(Exception):
+class YaraConversionError(Exception):
+    """
+    Exception raised when processing an OpenIOC document into Yara.
+    """
     pass
 
 
-class YaraIOCManager:
+class YaraIOCManager(managers.IOCManager):
     def __init__(self):
-        self.iocs = {}  # elementTree representing the IOC
-        self.ioc_name = {}  # guid -> name mapping
+        managers.IOCManager.__init__(self)
+        self.register_parser_callback(self.yara_parse)
         self.ioc_names_set = set([])  # allows for quickly checking if a ioc name is present
         self.ioc_names_mangled_set = set([])  # set containing mangled names
         self.yara_signatures = {}  # guid -> yara string mapping
@@ -84,48 +81,9 @@ class YaraIOCManager:
         self.YARA_CONDITION_TEMPLATE = '''condition:
         %(condition)s'''
 
-    def __len__(self):
-        return len(self.iocs)
-
-    def insert(self, filename):
-        """
-        insert(filedir)
-
-        import [all] IOC(s) from a file or directory
-        """
-        errors = []
-        count = 0
-        if os.path.isfile(filename):
-            log.info('loading IOC from: {}'.format(filename))
-            self.parse(ioc_api.IOC(filename))
-            count += 1
-        elif os.path.isdir(filename):
-            log.info('loading IOCs from: {}'.format(filename))
-            for fn in glob.glob(filename + os.path.sep + '*.ioc'):
-                if not os.path.isfile(fn):
-                    continue
-                else:
-                    self.parse(ioc_api.IOC(fn))
-                    count += 1
-        else:
-            pass
-        log.info('Inserted [%s] IOCs into ioc_manager.' % str(count))
-        return errors
-
-    def parse(self, ioc_obj):
-        if ioc_obj is None:
-            return
-        iocid = ioc_obj.iocid
-        if iocid in self.iocs:
-            sd = ioc_obj.root.findtext('.//short_description') or 'NoName'
-            msg = 'duplicate IOC UUID [{}] [orig_shortName: {}][new_shortName: {}]'.format(iocid,
-                                                                                           self.ioc_name[iocid],
-                                                                                           sd)
-            log.warning(msg)
-        self.ioc_name[iocid] = ioc_obj.root.findtext('.//short_description') or 'NoName'
-        self.ioc_names_set.add(self.ioc_name[iocid])
-        self.ioc_names_mangled_set.add(mangle_name(self.ioc_name[iocid]))
-        self.iocs[iocid] = ioc_obj
+    def yara_parse(self, ioc_obj):
+        self.ioc_names_set.add(self.ioc_name[ioc_obj.iocid])
+        self.ioc_names_mangled_set.add(mangle_name(self.ioc_name[ioc_obj.iocid]))
 
     def emit_yara(self):
         if len(self) < 1:
@@ -138,7 +96,7 @@ class YaraIOCManager:
                 metadata_string = self.get_yara_metadata(iocid)
                 strings_list = self.get_yara_stringlist(iocid)
                 condition_string = self.get_yara_condition(iocid)
-            except IOCParseError:
+            except YaraConversionError:
                 log.exception('Failed to parse [[}]'.format(iocid))
                 continue
             # extract an entire yara signatures embedded in Yara/Yara nodes
@@ -232,12 +190,11 @@ class YaraIOCManager:
 
         indicator_node_id = str(indicator_node.get('id'))
         if indicator_node_id not in ids_to_process:
-            raise IOCParseError(
-                'Entered into get_yara_condition_string with a invalid node to walk [[}]'.format(indicator_node_id))
+            msg = 'Entered into get_yara_condition_string with a invalid node to walk [[}]'.format(indicator_node_id)
+            raise YaraConversionError(msg)
         expected_tag = 'Indicator'
         if indicator_node.tag != expected_tag:
-            raise IOCParseError('indicator_node expected tag is [%s]' % expected_tag)
-
+            raise YaraConversionError('indicator_node expected tag is [%s]' % expected_tag)
         is_set = None
         # print 'indicator node id [%s]' % str(indicator_node_id)
         for param in parameters_node.xpath('.//param[@ref-id="{}"]'.format(indicator_node_id)):
@@ -247,13 +204,13 @@ class YaraIOCManager:
                 try:
                     temp = int(set_count)
                     if temp < 1:
-                        raise IOCParseError('yara/set parameter value was less than 1')
+                        raise YaraConversionError('yara/set parameter value was less than 1')
                     if temp > len(indicator_node.getchildren()):
-                        raise IOCParseError(
-                            'yara/set value is greater than the number of children of Indicator node [%s]' % str(
-                                indicator_node_id))
+                        msg = 'yara/set value is greater than the number of children' \
+                              ' of Indicator node [%s]' % str(indicator_node_id)
+                        raise YaraConversionError(msg)
                 except ValueError:
-                    raise IOCParseError('yara/set parameter was not a integer')
+                    raise YaraConversionError('yara/set parameter was not a integer')
                 set_dict = {'set_count': set_count, 'set_ids': []}
 
         for node in indicator_node.getchildren():
@@ -279,9 +236,8 @@ class YaraIOCManager:
 
                     yara_condition = self.condition_to_yara_map[condition]
                     if not yara_condition:
-                        raise IOCParseError(
-                            'Invalid IndicatorItem condition encountered [%s][%s]' % (str(node_id), str(condition)))
-
+                        msg = 'Invalid IndicatorItem condition encountered [%s][%s]' % (str(node_id), str(condition))
+                        raise YaraConversionError(msg)
                     if negation.lower() == 'true':
                         negation = True
                     else:
@@ -306,7 +262,7 @@ class YaraIOCManager:
                         if mangle_name(content) != content:
                             msg = 'Yara/RuleName contains characters which would cause libyara errors' \
                                   ' [{}]'.format(node_id)
-                            raise IOCParseError(msg)
+                            raise YaraConversionError(msg)
                         mapping['prefix'] = ''
                         mapping['identifier'] = content
                     # handle parameters
@@ -315,8 +271,8 @@ class YaraIOCManager:
                              ' @name="yara/offset/in")]'.format(node_id)
                         params = parameters_node.xpath(xp)
                         if len(params) > 1:
-                            raise IOCParseError(
-                                'More than one condition parameters assigned to IndicatorItem [{}]'.format(node_id))
+                            msg = 'More than one condition parameters assigned to IndicatorItem [{}]'.format(node_id)
+                            raise YaraConversionError(msg)
                         for param in params:
                             param_name = param.get('name', None)
                             if param_name == 'yara/count':
@@ -352,10 +308,10 @@ class YaraIOCManager:
 
             elif node.tag == 'Indicator':
                 if is_set:
-                    raise IOCParseError('Cannot have Indicator nodes underneath a Indicator node with yara/set')
+                    raise YaraConversionError('Cannot have Indicator nodes underneath a Indicator node with yara/set')
                 operator = node.get('operator').lower()
                 if operator not in ['or', 'and']:
-                    raise IOCParseError('Indicator@operator is not and/or. [%s] has [%s]' % (id, operator))
+                    raise YaraConversionError('Indicator@operator is not and/or. [%s] has [%s]' % (id, operator))
                 # handle parameters
                 # XXX Temp POC
                 recursed_condition = self.get_yara_condition_string(node, parameters_node, ids_to_process, '', operator)
@@ -370,12 +326,12 @@ class YaraIOCManager:
                     # print 'recursed got: [%s]' % condition_string
             else:
                 # should never get here
-                raise IOCParseError('node.tag is not a Indicator/IndicatorItem [%s]' % str(id))
+                raise YaraConversionError('node.tag is not a Indicator/IndicatorItem [%s]' % str(id))
 
         if is_set:
             log.debug('Building set expression for [%s]' % indicator_node_id)
             if len(set_dict['set_ids']) == 0:
-                raise IOCParseError('yara/set processing did not yield any set ids')
+                raise YaraConversionError('yara/set processing did not yield any set ids')
             elif len(set_dict['set_ids']) == 1:
                 log.warning('yara/set with 1 id found for node [%s]' % node_id)
                 set_ids = ''.join(set_dict['set_ids'])
@@ -425,7 +381,7 @@ class YaraIOCManager:
                 string_modifier = ''
 
             indicator_content = content_node.text
-            # XXX strip out '-' characters from the ids.  If a guid is used as
+            # strip out '-' characters from the ids.  If a guid is used as
             # the id, this will cause processing errors
             node_id = node_id.replace('-', '')
             mapping = {'string_id': node_id, 'content': indicator_content, 'modifiers': string_modifier}
@@ -450,7 +406,7 @@ class YaraIOCManager:
         for link in ioc_obj.metadata.xpath('.//link'):
             rel = link.get('rel', None)
             if not rel:
-                raise IOCParseError('link node without rel attribute. [%s] is not schema compliant' % (str(iocid)))
+                raise YaraConversionError('link node without rel attribute [%s] is not schema compliant' % (str(iocid)))
             href = link.get('href', None)
             text = link.text
             if text and href:
@@ -488,7 +444,7 @@ class YaraIOCManager:
 
 
 def mangle_name(name):
-    # XXX cannot have certain characters in the name, causes libyara errors.
+    # cannot have certain characters in the name, causes libyara errors.
     new_name = str(name)
     chars_to_replace = [(' ', '_'), ('(', '_'), (')', '_')]
     for pair in chars_to_replace:
@@ -504,21 +460,6 @@ def has_siblings(node):
         return False
 
 
-def safe_makedirs(fdir):
-    if os.path.isdir(fdir):
-        pass
-        # print 'dir already exists: %s' % str(dir)
-    else:
-        try:
-            os.makedirs(fdir)
-        except WindowsError as e:
-            if 'Cannot create a file when that file already exists' in e:
-                log.debug('relevant dir already exists')
-            else:
-                raise WindowsError(e)
-    return True
-
-
 def main(options):
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s %(levelname)s: %(message)s  [%(filename)s:%(funcName)s]')
@@ -531,7 +472,7 @@ def main(options):
             log.error('cannot specify a directory as the output location')
             sys.exit(1)
         elif not os.path.isfile(output_file):
-            safe_makedirs(os.path.split(output_file)[0])
+            utils.safe_makedirs(os.path.split(output_file)[0])
     else:
         output_file = os.path.join(os.getcwd(), 'iocs.yara')
         log.info('Output not specified. Writing output to [{}]'.format(output_file))

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="55075e99-273a-4b81-b92b-672be6666474" last-modified="2015-12-18T18:59:21Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <short_description>Null</short_description>
+    <description>All items should be pruned when downgrading.</description>
+    <authored_by>william.gibb@fireeye.com</authored_by>
+    <authored_date>2015-12-18T18:55:11Z</authored_date>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="b5f8bde3-2be0-4f93-902f-2d01ed697300">
+      <IndicatorItem id="71f52724-110f-4e82-bf4f-93ce85356ac6" condition="matches" preserve-case="false" negate="false">
+        <Context document="FileItem" search="FileItem/FilePath" type="mir" />
+        <Content type="string">really[^G]ood/Path</Content>
+      </IndicatorItem>
+    </Indicator>
+  </criteria>
+  <parameters />
+</OpenIOC>
