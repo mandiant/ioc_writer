@@ -13,7 +13,6 @@ Usage:
 from __future__ import print_function
 import logging
 import os
-import sys
 import unittest
 # Third Party code
 from lxml import etree as et
@@ -256,8 +255,12 @@ class TestIOCApi(unittest.TestCase):
         self.assertEqual(len(ioc_obj.metadata.find('links').getchildren()), 2)
 
     def test_ioc_class_creation_file(self):
-        # Read from an asset and then validate the asset contents were read in properly.
-        pass
+        iocid = '378f0cce-b8df-41d5-8189-3d7ec102e52f'
+        fn = '{}.ioc'.format(iocid)
+        fp = os.path.join(OPENIOC_11_ASSETS, fn)
+        ioc_obj = ioc_api.IOC(fp)
+        self.assertEqual(ioc_obj.iocid, iocid)
+        self.assertEqual(len(ioc_obj.top_level_indicator.getchildren()), 7)
 
 
 class TestIOCAPIFuncs(unittest.TestCase):
