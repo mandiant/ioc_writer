@@ -1,5 +1,5 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def read(fname):
@@ -7,11 +7,11 @@ def read(fname):
 
 
 setup(name="ioc_writer",
-      version="0.3.1",
+      version="0.3.2",
       author="William Gibb",
       author_email="william.gibb@mandiant.com",
       url="http://www.github.com/mandiant/ioc_writer/",
-      packages=['ioc_writer'],
+      packages=find_packages(exclude=['docs', 'tests']),
       description="""API providing a limited CRUD for manipulating OpenIOC formatted Indicators of Compromise.""",
       long_description=read('README'),
       install_requires=['lxml'],
