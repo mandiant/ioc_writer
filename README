@@ -38,9 +38,9 @@ of the IOC.
 No decision has been made about whether or not to support changing of
 existing Indicator/IndicatorItem nodes.
 
-See the Docs in the Docs\ directory, and the examples directory for examples of
-working with the library.  The user code should only be calling functionality
-provided in ioc_api or ioc_common.
+See the Docs located at https://pythonhosted.org/ioc_writer/ and the examples
+directory for examples of working with the library.  The user code should
+avoid having to call functionality in ioc_writer.ioc_et.
 
 
 Requirements
