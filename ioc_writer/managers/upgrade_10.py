@@ -7,12 +7,14 @@ Purpose: Provide a single reference class for converting OpenIOC 1.0 documents t
 This upgrade process is a non-lossy process, as all conditions that can be expressed in
 OpenIOC 1.0 can also be expressed in OpenIOC 1.1.
 
-Usage:
-iocm = UpgradeManager()
-iocm.insert(options.iocs)
-iocm.convert_to_11()
-output_dir = './iocs'
-iocm.write_iocs(output_dir)
+Usage Example:
+::
+    iocm = UpgradeManager()
+    iocm.insert(iocs_dir)
+    iocm.convert_to_11()
+    output_dir = './iocs'
+    iocm.write_iocs(output_dir)
+
 """
 # Stdlib
 from __future__ import print_function

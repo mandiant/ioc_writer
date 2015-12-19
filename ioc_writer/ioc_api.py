@@ -57,16 +57,22 @@ class IOCParseError(Exception):
 
 class IOC(object):
     """
-    Class for easy creation and manipulation of IOCs.
+Class for easy creation and manipulation of IOCs.  Attributes are populated from a file or a blank IOC is created.
 
-    class attributes
-        id:                     Unique identifier for the ioc
-        metadata:               The metadata node
-        parameters:             The Parameters node
-        top_level_indicator:    Top level Indicator node, typically a toplevel
-                                OR node for a valid MIR IOC.
-        root:                   Root node of the IOC (OpenIOC element)
-    """
+Useful class attributes:
+* iocid - Unique identifier for the IOC
+* metadata - The metadate node
+* parameters - The parameters node
+* top_level_indicator - The Top Level Indicator node, typically a OR node for a valid MIR IOC.
+* root - The root node of the lxml.ElementTree
+
+:param fn: This is a path to a file to open, or a string containing XML representing an IOC.
+:param name: string, Name of the ioc
+:param description: string, description of the ioc
+:param author: string, author name/email address
+:param links: ist of tuples.  Each tuple should be in the form (rel, href, value).
+:param keywords: string.  This is normally a space delimited string of values that may be used as keywords
+:param iocid: GUID for the IOC.  This should not be specified under normal circumstances."""
 
     def __init__(self,
                  fn=None,
@@ -76,19 +82,6 @@ class IOC(object):
                  links=None,
                  keywords=None,
                  iocid=None):
-        """
-        creates an IOC class object, populating the class attributes from a
-        file or by creating them.
-
-        :param fn: This is a path to a file to open, or a string containing XML representing an IOC.
-        :param name: string, Name of the ioc
-        :param description: string, description of the ioc
-        :param author: string, author name/email address
-        :param links: ist of tuples.  Each tuple should be in the form (rel, href, value).
-        :param keywords: string.  This is normally a space delimited string of values that may be used as keywords
-        :param iocid: GUID for the IOC.  This should not be specified under normal circumstances.
-        :return:
-        """
         self.root = None
         self.top_level_indicator = None
         self.parameters = None
@@ -592,9 +585,9 @@ class IOC(object):
 def make_indicator_node(operator, nid=None):
     """
     This makes a Indicator node element.  These allow the construction of a logic tree within the IOC.
+
     :param operator: String 'AND' or 'OR'.  The constants ioc_api.OR and ioc_api.AND may be used as well.
-    :param nid: This is used to provide a GUID for the Indicator. The ID should NOT be specified under normal
-     circumstances.
+    :param nid: This is used to provide a GUID for the Indicator. The ID should NOT be specified under normal circumstances.
     :return: elementTree element
     """
     if operator.upper() not in VALID_INDICATOR_OPERATORS:
@@ -620,23 +613,25 @@ def make_indicatoritem_node(condition,
     """
     This makes a IndicatorItem element.  This contains the actual threat intelligence in the IOC.
 
-    :param condition: This is the condition of the item ('is', 'contains', 'matches', etc).
-     The following contants in ioc_api may be used:
-       ioc_api.IS - Exact String match.
-       ioc_api.CONTAINS - Substring match.
-       ioc_api.MATCHES - Regex match.
-       ioc_api.STARTS_WITH - String match at the beginning of a string.
-       ioc_api.ENDS_WITH - String match at the end of a string.
-       ioc_api.GREATER_THAN - Integer match indicating a greater than (>) operation.
-       ioc_api.LESS_THAN - Integger match indicator a less than (<) operation.
+    :param condition: This is the condition of the item ('is', 'contains', 'matches', etc). The following contants in ioc_api may be used:
+==================== =====================================================
+Constant             Meaning
+==================== =====================================================
+ioc_api.IS           Exact String match.
+ioc_api.CONTAINS     Substring match.
+ioc_api.MATCHES      Regex match.
+ioc_api.STARTS_WITH  String match at the beginning of a string.
+ioc_api.ENDS_WITH    String match at the end of a string.
+ioc_api.GREATER_THAN Integer match indicating a greater than (>) operation.
+ioc_api.LESS_THAN    Integer match indicator a less than (<) operation.
+==================== =====================================================
+
     :param document: Denotes the type of document to look for the encoded artifact in.
     :param search: Specifies what attribute of the document type the encoded value is.
-    :param content_type: This is the display type of the item. This is normally derived from the iocterm for the
-     search value.
+    :param content_type: This is the display type of the item. This is normally derived from the iocterm for the search value.
     :param content: The threat intelligence that is being encoded.
     :param preserve_case: Specifiy that the content should be treated in a case sensitive manner.
-    :param negate: Specifify that the condition is negated.
-      An example of this is
+    :param negate: Specifify that the condition is negated. An example of this is:
        @condition = 'is' & @negate = 'true' would be equal to the
        @condition = 'isnot' in OpenIOC 1.0.
     :param context_type: Gives context to the document/search information.

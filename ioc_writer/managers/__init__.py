@@ -19,9 +19,22 @@ __author__ = 'will.gibb'
 
 class IOCManager(object):
     """
-    Generic class for managing IOC objects in memory.  This base class just provides a mechanism for loading the .ioc
-     files into memory.  This is designed to be subclassed.  The parsing can be extended by a subclass which just needs
-     to have a callback function registered which will consume a IOC object.
+    Generic class for managing IOC objects in memory.
+    This base class just provides a mechanism for loading the .ioc files into memory and storing them in a dictionary.
+    This is designed to be subclassed.
+    The original parsing can be extended by a subclass which just needs to have a callback function registered which will consume a IOC object.
+
+    The following is a subclass example:
+    ::
+        class IOCTestManager(managers.IOCManager):
+            def __init__(self):
+                managers.IOCManager.__init__(self)
+                self.child_count = {}
+                self.register_parser_callback(self.parse_callback)
+
+            def parse_callback(self, ioc_obj):
+                c = ioc_obj.top_level_indicator.getchildren()
+                self.child_count[ioc_obj.iocid] = len(c)
     """
 
     def __init__(self):

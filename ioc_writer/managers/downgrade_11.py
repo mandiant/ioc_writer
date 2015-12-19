@@ -4,36 +4,40 @@ Created: 12/17/15
 
 Purpose:  Provide a single reference class for converting an OpenIOC 1.1 document to OpenIOC 1.0.
 
-This downgrade process is lossy as there are conditions, parameters and link metadata which may
-be present in the 1.1 indicator that cannot be expressed in the 1.0 indicator.  The data that is
- lost is detailed below:
+This downgrade process is lossy as there are conditions, parameters and link metadata which may be present in the 1.1 indicator that cannot be expressed in the 1.0 indicator.
+The data that is lost is detailed below:
 
 Data that will be removed in the downgrade:
-For items directly underneath the top-level Indicator node
-(OpenIOC/criteria/Indicator/@operator='OR'for a valid MIR IOC):
-1) Any IndicatorItems under the top which use the preserve-case attribute will be removed.
-2) Any IndicatorItems which use the conditions 'begins-with', 'ends-with', 'greater-than',
-'less-than', or 'matches' will be removed.
-3) Any Indicator nodes which contains a IndicatorItem node underneath it which match the
-conditions described above in 1) & 2) will be removed.
-Metadata:
-4) Any links which contain link/@href will lose the @href attribute.
-Parmeters:
-5) Any parmeters which point to a Indicator node will be removed.
-6) Any parmeters which point to a IndicatorItem node which do not have param/@name='comment'
-set will be removed.
-General:
-7) The published date, OpenIOC/@published-date, will be removed.
 
-Usage:
+#.For items directly underneath the top-level Indicator node (OpenIOC/criteria/Indicator/@operator='OR'for a valid MIR IOC):
 
-iocm = DowngradeManager()
-iocm.insert(options.iocs)
-errors = iocm.convert_to_10()
-output_dir = './iocs'
-iocm.write_iocs(output_dir)
-iocm.write_pruned_iocs(output_dir, iocm.pruned_11_iocs)
-iocm.write_pruned_iocs(output_dir, iocm.null_pruned_iocs
+    #. Any IndicatorItems under the top which use the preserve-case attribute will be removed.
+    #. Any IndicatorItems which use the conditions 'begins-with', 'ends-with', 'greater-than', 'less-than', or 'matches' will be removed.
+    #. Any Indicator nodes which contains a IndicatorItem node underneath it which match the conditions described above in 1) & 2) will be removed.
+
+#.Metadata:
+
+    #. Any links which contain link/@href will lose the @href attribute.
+
+#. Parmeters:
+
+    #. Any parmeters which point to a Indicator node will be removed.
+    #. Any parmeters which point to a IndicatorItem node which do not have param/@name='comment' set will be removed.
+
+#. General:
+
+    #. The published date, OpenIOC/@published-date, will be removed.
+
+Usage example:
+::
+    iocm = DowngradeManager()
+    iocm.insert(iocs_dir)
+    errors = iocm.convert_to_10()
+    output_dir = './iocs'
+    iocm.write_iocs(output_dir)
+    iocm.write_pruned_iocs(output_dir, iocm.pruned_11_iocs)
+    iocm.write_pruned_iocs(output_dir, iocm.null_pruned_iocs
+
 """
 # Stdlib
 from __future__ import print_function
@@ -274,8 +278,7 @@ class DowngradeManager(IOCManager):
         Serializes IOCs to a directory.
 
         :param directory: Directory to write IOCs to.  If not provided, the current working directory is used.
-        :param source: Dictionary contianing iocid -> IOC mapping.  Defaults to self.iocs_10.
-        This is not normally modifed by a user for this class.
+        :param source: Dictionary contianing iocid -> IOC mapping.  Defaults to self.iocs_10. This is not normally modifed by a user for this class.
         :return:
         """
         """
