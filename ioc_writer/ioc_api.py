@@ -21,6 +21,7 @@
 import os
 import re
 import logging
+import textwrap
 from lxml import etree as et
 from ioc_writer import ioc_et
 from ioc_writer.utils import xmlutils
@@ -93,6 +94,15 @@ Useful class attributes:
             ioc_parts = self.make_ioc(name, description, author, links, keywords, iocid)
             self.root, self.metadata, self.top_level_indicator, self.parameters = ioc_parts
         self.iocid = self.root.get('id', 'NoID')
+        # Control whether or not parameters are displayed by __str__
+        self.display_params = False
+        self.display_desc_width = 120
+        self.display_criteria_sep = '  '
+
+    def __str__(self):
+        return self.display_ioc(width=self.display_desc_width,
+                                sep=self.display_criteria_sep,
+                                params=self.display_params)
 
     @staticmethod
     def open_ioc(fn):
@@ -581,6 +591,166 @@ Useful class attributes:
         """
         return write_ioc_string(self.root, force=force)
 
+    def display_ioc(self, width=120, sep='  ', params=False):
+        """
+        Get a string representation of an IOC.
+
+        :param width: Width to print the description too.
+        :param sep: Separator used for displaying the contents of the criteria nodes.
+        :param params: Boolean, set to True in order to display node parameters.
+        :return:
+        """
+        s = 'Name: {}\n'.format(self.metadata.findtext('short_description', default='No Name'))
+        s += 'ID: {}\n'.format(self.root.attrib.get('id'))
+        s += 'Created: {}\n'.format(self.metadata.findtext('authored_date', default='No authored_date'))
+        s += 'Updated: {}\n\n'.format(self.root.attrib.get('last-modified', default='No last-modified attrib'))
+        s += 'Author: {}\n'.format(self.metadata.findtext('authored_by', default='No authored_by'))
+        desc = self.metadata.findtext('description', default='No Description')
+        desc = textwrap.wrap(desc, width=width)
+        desc = '\n'.join(desc)
+        s += 'Description:\n{}\n\n'.format(desc)
+        links = self.link_text()
+        if links:
+            s += '{}'.format(links)
+        content_text = self.criteria_text(sep=sep, params=params)
+        s += '\nCriteria:\n{}'.format(content_text)
+        return s
+
+    def link_text(self):
+        """
+        Get a text represention of the links node.
+
+        :return:
+        """
+        s = ''
+        links_node = self.metadata.find('links')
+        if links_node is None:
+            return s
+        links = links_node.getchildren()
+        if links is None:
+            return s
+        s += 'IOC Links\n'
+        for link in links:
+            rel = link.attrib.get('rel', 'No Rel')
+            href = link.attrib.get('href')
+            text = link.text
+            lt = '{rel}{href}: {text}\n'.format(rel=rel,
+                                                href=' @ {}'.format(href) if href else '',
+                                                text=text)
+            s += lt
+        return s
+
+    def criteria_text(self, sep='  ', params=False):
+        """
+        Get a text representation of the criteria node.
+
+        :param sep: Separator used to indent the contents of the node.
+        :param params: Boolean, set to True in order to display node parameters.
+        :return:
+        """
+
+        s = ''
+        criteria_node = self.root.find('criteria')
+        if criteria_node is None:
+            return s
+        node_texts = []
+        for node in criteria_node.getchildren():
+            nt = self.get_node_text(node, depth=0, sep=sep, params=params)
+            node_texts.append(nt)
+        s = '\n'.join(node_texts)
+        return s
+
+    def get_node_text(self, node, depth, sep, params=False,):
+        """
+        Get the text for a given Indicator or IndicatorItem node.
+        This does walk an IndicatorItem node to get its children text as well.
+
+        :param node: Node to get the text for.
+        :param depth: Track the number of recursions that have occured, modifies the indentation.
+        :param sep: Seperator used for formatting the text.  Multiplied by the depth to get the indentation.
+        :param params: Boolean, set to True in order to display node parameters.
+        :return:
+        """
+        indent = sep * depth
+        s = ''
+        tag = node.tag
+        if tag == 'Indicator':
+            node_text = self.get_i_text(node)
+        elif tag == 'IndicatorItem':
+            node_text = self.get_ii_text(node)
+        else:
+            raise IOCParseError('Invalid node encountered: {}'.format(tag))
+        s += '{}{}\n'.format(indent, node_text)
+        if params:
+            param_text = self.get_param_text(node.attrib.get('id'))
+            for pt in param_text:
+                s += '{}{}\n'.format(indent+sep, pt)
+        if node.tag == 'Indicator':
+            for child in node.getchildren():
+                s += self.get_node_text(node=child, depth=depth+1, sep=sep, params=params)
+        return s
+
+    @staticmethod
+    def get_i_text(node):
+        """
+        Get the text for an Indicator node.
+
+        :param node: Indicator node.
+        :return:
+        """
+        if node.tag != 'Indicator':
+            raise IOCParseError('Invalid tag: {}'.format(node.tag))
+        s = node.get('operator').upper()
+        return s
+
+    @staticmethod
+    def get_ii_text(node):
+        """
+        Get the text for IndicatorItem node.
+
+        :param node: IndicatorItem node.
+        :return:
+        """
+        if node.tag != 'IndicatorItem':
+            raise IOCParseError('Invalid tag: {}'.format(node.tag))
+        condition = node.attrib.get('condition')
+        preserve_case = node.attrib.get('preserve-case', '')
+        negate = node.attrib.get('negate', '')
+        content = node.findtext('Content')
+        search = node.find('Context').get('search')
+        if preserve_case.lower() == 'true':
+            preserve_case = ' (Preserve Case)'
+        else:
+            preserve_case = ''
+        if negate.lower() == 'true':
+            negate = 'NOT '
+        else:
+            negate = ''
+        s = '{negate}{search} {condition} "{content}"{preserve_case}'.format(negate=negate,
+                                                                             search=search,
+                                                                             condition=condition,
+                                                                             content=content,
+                                                                             preserve_case=preserve_case)
+        return s
+
+    def get_param_text(self, nid):
+        """
+        Get a list of parameters as text values for a given node id.
+
+        :param nid: id to look for.
+        :return:
+        """
+        r = []
+        params = self.parameters.xpath('.//param[@ref-id="{}"]'.format(nid))
+        if not params:
+            return r
+        for param in params:
+            vnode = param.find('value')
+            s = 'Parameter: {}, type:{}, value: {}'.format(param.attrib.get('name'),
+                                                           vnode.attrib.get('type'),
+                                                           param.findtext('value', default='No Value'))
+            r.append(s)
+        return r
 
 def make_indicator_node(operator, nid=None):
     """

@@ -63,5 +63,9 @@
       </Indicator>
     </Indicator>
   </criteria>
-  <parameters />
+  <parameters>
+    <param id="b1c68b9d-46d9-4e84-6c45-1351b3676923" ref-id="df9d0fc5-a338-44bf-8090-d4aa39606d09" name="comment">
+      <value type="string">I am a comment!</value>
+    </param>
+  </parameters>
 </OpenIOC>
