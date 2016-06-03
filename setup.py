@@ -29,5 +29,9 @@ setup(name="ioc_writer",
           'Programming Language :: Python :: 3.5',
           'Topic :: Security',
           'Topic :: Text Processing :: Markup :: XML'
-      ]
+      ],
+      entry_points={
+          "console_scripts": ["openioc_10_to_11 = ioc_writer.scripts.openioc_10_to_11:_main",
+                              ]
+      }
       )
