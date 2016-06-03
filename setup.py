@@ -32,6 +32,7 @@ setup(name="ioc_writer",
       ],
       entry_points={
           "console_scripts": ["openioc_10_to_11 = ioc_writer.scripts.openioc_10_to_11:_main",
+                              "openioc_11_to_10 = ioc_writer.scripts.openioc_11_to_10:_main",
                               ]
       }
       )
