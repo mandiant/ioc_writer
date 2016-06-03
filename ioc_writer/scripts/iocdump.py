@@ -55,7 +55,6 @@ def _main():
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s [%(filename)s:%(funcName)s]')
     p = makeargpaser()
     opts = p.parse_args()
-    print(opts)
     main(opts)
 
 if __name__ == '__main__':
