@@ -1,0 +1,23 @@
+<OpenIOC xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="d7ec102e-b8df-41d5-8189-352f378f0cce" last-modified="2015-12-18T23:05:08Z" published-date="0001-01-01T00:00:00" xmlns="http://openioc.org/schemas/OpenIOC_1.1">
+  <metadata>
+    <authored_by>william.gibb@fireeye.com</authored_by>
+    <authored_date>2015-12-18T18:47:14Z</authored_date>
+    <short_description>Prune</short_description>
+    <keywords> a word</keywords>
+    <description>Bad schema order</description>
+    <links />
+  </metadata>
+  <criteria>
+    <Indicator operator="OR" id="df9d0fc5-a338-44bf-8090-d4aa39606d09">
+      <IndicatorItem id="a10efe3e-aa06-46c4-9821-93d40a50e36c" condition="is" preserve-case="false" negate="false">
+        <Context document="FileItem" search="FileItem/Md5sum" type="mir" />
+        <Content type="md5">23456789abcdef0123456789abcdef01</Content>
+      </IndicatorItem>
+    </Indicator>
+  </criteria>
+  <parameters>
+    <param id="b1c68b9d-46d9-4e84-6c45-1351b3676923" ref-id="df9d0fc5-a338-44bf-8090-d4aa39606d09" name="comment">
+      <value type="string">I am a comment!</value>
+    </param>
+  </parameters>
+</OpenIOC>

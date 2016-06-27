@@ -496,19 +496,20 @@ class TestIOCManager(unittest.TestCase):
         self.iocm = managers.IOCManager()
         self.test_iocm = IOCTestManager()
 
-
     def test_iocm(self):
         iocids = {'378f0cce-b8df-41d5-8189-3d7ec102e52f',
                   '55075e99-273a-4b81-b92b-672be6666474',
-                  'c158ef8c-e664-43c5-b71d-3488a3325fcb'}
+                  'c158ef8c-e664-43c5-b71d-3488a3325fcb',
+                  'd7ec102e-b8df-41d5-8189-352f378f0cce'}
         self.iocm.insert(OPENIOC_11_ASSETS)
-        self.assertEqual(len(self.iocm), 3)
+        self.assertEqual(len(self.iocm), 4)
         self.assertEqual(set(self.iocm.iocs.keys()), iocids)
 
     def test_custom_iocm(self):
         expected_dict = {'378f0cce-b8df-41d5-8189-3d7ec102e52f': 7,
                          '55075e99-273a-4b81-b92b-672be6666474': 1,
-                         'c158ef8c-e664-43c5-b71d-3488a3325fcb': 2}
+                         'c158ef8c-e664-43c5-b71d-3488a3325fcb': 2,
+                         'd7ec102e-b8df-41d5-8189-352f378f0cce': 1}
         self.test_iocm.insert(OPENIOC_11_ASSETS)
         self.assertDictEqual(self.test_iocm.child_count, expected_dict)
 
@@ -524,17 +525,35 @@ class TestDowngrade(unittest.TestCase):
     def test_downgrade(self):
         self.iocm.insert(OPENIOC_11_ASSETS)
         self.iocm.convert_to_10()
-        self.assertEqual(set(self.iocm.iocs_10.keys())-(self.iocm.pruned_11_iocs.union(self.iocm.null_pruned_iocs)),
-                         {'c158ef8c-e664-43c5-b71d-3488a3325fcb'})
+        self.assertEqual(set(self.iocm.iocs_10.keys()) - (self.iocm.pruned_11_iocs.union(self.iocm.null_pruned_iocs)),
+                         {'c158ef8c-e664-43c5-b71d-3488a3325fcb', 'd7ec102e-b8df-41d5-8189-352f378f0cce'})
         self.assertEqual(self.iocm.pruned_11_iocs, {'378f0cce-b8df-41d5-8189-3d7ec102e52f'})
         self.assertEqual(self.iocm.null_pruned_iocs, {'55075e99-273a-4b81-b92b-672be6666474'})
         expected_dict = {'378f0cce-b8df-41d5-8189-3d7ec102e52f': 1,
                          '55075e99-273a-4b81-b92b-672be6666474': 0,
-                         'c158ef8c-e664-43c5-b71d-3488a3325fcb': 2}
+                         'c158ef8c-e664-43c5-b71d-3488a3325fcb': 2,
+                         'd7ec102e-b8df-41d5-8189-352f378f0cce': 1}
         for iocid, num_children in expected_dict.items():
             ioc_obj = self.iocm.iocs_10.get(iocid)
             self.assertEqual(len(ioc_obj.top_level_indicator.getchildren()), num_children)
 
+    def test_schema_format(self):
+        """
+        Ensures that the format of child nodes is correct.
+        """
+        iocid = 'd7ec102e-b8df-41d5-8189-352f378f0cce'
+        self.iocm.insert(os.path.join(OPENIOC_11_ASSETS, '{}.ioc'.format(iocid)))
+        self.iocm.convert_to_10()
+        self.assertEqual(set(self.iocm.iocs_10.keys()), {'d7ec102e-b8df-41d5-8189-352f378f0cce'})
+        ioc_obj = self.iocm.iocs_10.get(iocid)
+        child_tags = [node.tag for node in ioc_obj.root.getchildren()]
+        reference_tags = list(downgrade_11.METADATA_ORDER_10)
+        reference_tags.append('definition')
+        # Validate no additional tags made it in
+        self.assertTrue(set(reference_tags).issuperset(set(child_tags)))
+        # Validate the tags are ordered properly!
+        ordered_tags = [tag for tag in reference_tags if tag in child_tags]
+        self.assertEqual(child_tags, ordered_tags)
 
 
 if __name__ == '__main__':
