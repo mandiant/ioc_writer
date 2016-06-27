@@ -340,6 +340,142 @@ class TestIOCAPIFuncs(unittest.TestCase):
                                                       content_type=self.content_type,
                                                       content=self.content)
 
+    def test_display_new(self):
+        ioc_obj = ioc_api.IOC()
+        s = ioc_obj.display_ioc()
+        self.assertIn('Name: \nID: ', s)
+        self.assertIn('IOC_api', s)
+        self.assertIn('Description:\nAutomatically generated IOC', s)
+        self.assertIn('Criteria:\nOR\n', s)
+
+    def test_display_existing(self):
+        iocid = '378f0cce-b8df-41d5-8189-3d7ec102e52f'
+        expected = '''Name: Prune
+ID: 378f0cce-b8df-41d5-8189-3d7ec102e52f
+Created: 2015-12-18T18:47:14Z
+Updated: 2015-12-18T23:05:08Z
+
+Author: william.gibb@fireeye.com
+Description:
+Pruned indicators will result
+
+IOC Links
+
+Criteria:
+OR
+  FileItem/Md5sum is "23456789abcdef0123456789abcdef01"
+  FileItem/FileName matches "foo|duck.exe"
+  FileItem/FileName is "GooD.eXE" (Preserve Case)
+  AND
+    FileItem/SizeInBytes greater-than "1000"
+    FileItem/FileName contains "foo"
+  AND
+    FileItem/FileName contains "bar"
+    FileItem/SizeInBytes less-than "1000"
+  AND
+    FileItem/FileName contains "duck"
+    FileItem/FilePath ends-with "temp"
+  AND
+    FileItem/FileName contains "quack"
+    FileItem/FilePath starts-with "windows"
+'''
+        fn = '{}.ioc'.format(iocid)
+        fp = os.path.join(OPENIOC_11_ASSETS, fn)
+        ioc_obj = ioc_api.IOC(fp)
+        s = ioc_obj.display_ioc()
+        expected_lines = [line for line in expected.split('\n')]
+        s_lines = [line for line in s.split('\n')]
+        self.assertEqual(len(s_lines), len(expected_lines))
+        for _e, _s in zip(expected_lines, s_lines):
+            self.assertEqual(_e, _s)
+
+    def test_display_existing_params(self):
+        iocid = '378f0cce-b8df-41d5-8189-3d7ec102e52f'
+        expected = '''Name: Prune
+ID: 378f0cce-b8df-41d5-8189-3d7ec102e52f
+Created: 2015-12-18T18:47:14Z
+Updated: 2015-12-18T23:05:08Z
+
+Author: william.gibb@fireeye.com
+Description:
+Pruned indicators will result
+
+IOC Links
+
+Criteria:
+OR
+  Parameter: comment, type:string, value: I am a comment!
+  FileItem/Md5sum is "23456789abcdef0123456789abcdef01"
+  FileItem/FileName matches "foo|duck.exe"
+  FileItem/FileName is "GooD.eXE" (Preserve Case)
+  AND
+    FileItem/SizeInBytes greater-than "1000"
+    FileItem/FileName contains "foo"
+  AND
+    FileItem/FileName contains "bar"
+    FileItem/SizeInBytes less-than "1000"
+  AND
+    FileItem/FileName contains "duck"
+    FileItem/FilePath ends-with "temp"
+  AND
+    FileItem/FileName contains "quack"
+    FileItem/FilePath starts-with "windows"
+'''
+        fn = '{}.ioc'.format(iocid)
+        fp = os.path.join(OPENIOC_11_ASSETS, fn)
+        ioc_obj = ioc_api.IOC(fp)
+        ioc_obj.display_params = True
+        s = str(ioc_obj)
+        expected_lines = [line for line in expected.split('\n')]
+        s_lines = [line for line in s.split('\n')]
+        self.assertEqual(len(s_lines), len(expected_lines))
+        for _e, _s in zip(expected_lines, s_lines):
+            self.assertEqual(_e, _s)
+
+    def test_display_existing_sep(self):
+        iocid = '378f0cce-b8df-41d5-8189-3d7ec102e52f'
+        expected = '''Name: Prune
+ID: 378f0cce-b8df-41d5-8189-3d7ec102e52f
+Created: 2015-12-18T18:47:14Z
+Updated: 2015-12-18T23:05:08Z
+
+Author: william.gibb@fireeye.com
+Description:
+Pruned indicators will result
+
+IOC Links
+
+Criteria:
+OR
+XXParameter: comment, type:string, value: I am a comment!
+XXFileItem/Md5sum is "23456789abcdef0123456789abcdef01"
+XXFileItem/FileName matches "foo|duck.exe"
+XXFileItem/FileName is "GooD.eXE" (Preserve Case)
+XXAND
+XXXXFileItem/SizeInBytes greater-than "1000"
+XXXXFileItem/FileName contains "foo"
+XXAND
+XXXXFileItem/FileName contains "bar"
+XXXXFileItem/SizeInBytes less-than "1000"
+XXAND
+XXXXFileItem/FileName contains "duck"
+XXXXFileItem/FilePath ends-with "temp"
+XXAND
+XXXXFileItem/FileName contains "quack"
+XXXXFileItem/FilePath starts-with "windows"
+'''
+        fn = '{}.ioc'.format(iocid)
+        fp = os.path.join(OPENIOC_11_ASSETS, fn)
+        ioc_obj = ioc_api.IOC(fp)
+        ioc_obj.display_params = True
+        ioc_obj.display_criteria_sep = 'XX'
+        s = str(ioc_obj)
+        expected_lines = [line for line in expected.split('\n')]
+        s_lines = [line for line in s.split('\n')]
+        self.assertEqual(len(s_lines), len(expected_lines))
+        for _e, _s in zip(expected_lines, s_lines):
+            self.assertEqual(_e, _s)
+
 
 class IOCTestManager(managers.IOCManager):
     """
