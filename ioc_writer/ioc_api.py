@@ -95,7 +95,7 @@ Useful class attributes:
             self.root, self.metadata, self.top_level_indicator, self.parameters = ioc_parts
         self.iocid = self.root.get('id', 'NoID')
         # Control whether or not parameters are displayed by __str__
-        self.display_params = False
+        self.display_params = True
         self.display_desc_width = 120
         self.display_criteria_sep = '  '
 
