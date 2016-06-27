@@ -29,6 +29,7 @@ log = logging.getLogger(__name__)
 
 
 OPENIOC_11_ASSETS = os.path.join(os.path.split(__file__)[0], 'assets/openioc_11_assets')
+OPENIOC_10_SCHEMA = os.path.join(os.path.split(__file__)[0], 'schemas/openioc_10_schema.xsd')
 
 
 class TestIocEt(unittest.TestCase):
@@ -554,6 +555,18 @@ class TestDowngrade(unittest.TestCase):
         # Validate the tags are ordered properly!
         ordered_tags = [tag for tag in reference_tags if tag in child_tags]
         self.assertEqual(child_tags, ordered_tags)
+
+    def test_true_schema_validation(self):
+        schema_tree = et.parse(OPENIOC_10_SCHEMA)
+        schema = et.XMLSchema(schema_tree)
+        self.iocm.insert(OPENIOC_11_ASSETS)
+        self.iocm.convert_to_10()
+        for iocid, ioc_obj in self.iocm.iocs_10.items():
+            log.info('Validating serialized form of: {}'.format(iocid))
+            ioc_obj = self.iocm.iocs_10.get(iocid)
+            s = ioc_obj.write_ioc_to_string(force=True)
+            ioc_tree = et.fromstring(s)
+            self.assertTrue(schema.validate(ioc_tree))
 
 
 if __name__ == '__main__':
