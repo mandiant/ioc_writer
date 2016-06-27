@@ -37,15 +37,16 @@ def main(options):
     for i in options.input:
         iocm.insert(i)
     for ioc_obj in iocm.iocs.values():
-        ioc_obj.display_params = options.params
+        if options.hide_params:
+            ioc_obj.display_params = False
         print(ioc_obj)
 
 def makeargpaser():
     parser = argparse.ArgumentParser(description="Display a textual representation of an IOC or directory of IOCs")
     parser.add_argument('input', type=str, nargs='+',
                         help='Input files or folders')
-    parser.add_argument('--params', dest='params', default=False, action='store_true',
-                        help='Display parameters attached to an IOC.')
+    parser.add_argument('-n', '--no-params', dest='hide_params', default=False, action='store_true',
+                        help='Do not display parameters attached to an IOC.')
     parser.add_argument('-v', '--verbose', dest='verbose', default=False, action='store_true',
                         help='Enable verbose output')
     return parser
