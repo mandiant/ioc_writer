@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+    TITLE:          OpenIOC 1.1 Schema
+    VERSION:        1.1 (draft)
+    DESCRIPTION:    OpenIOC 1.1 Schema document, describing the structure of OpenIOC 1.1.
+    LICENSE:        Copyright 2013 Mandiant Corporation.  Licensed under the Apache 2.0 license.  
+
+    Mandiant licenses this file to you under the Apache License, Version
+    2.0 (the "License"); you may not use this file except in compliance with the
+    License.  You may obtain a copy of the License at:
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+    implied.  See the License for the specific language governing
+    permissions and limitations under the License.
+-->
+<xs:schema xmlns:tns="http://openioc.org/schemas/OpenIOC_1.1" elementFormDefault="qualified" targetNamespace="http://openioc.org/schemas/OpenIOC_1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="OpenIOC" nillable="true" type="tns:IndicatorOfCompromise" />
+  <xs:complexType name="IndicatorOfCompromise">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="metadata" type="tns:IOCMetadata" />
+      <xs:element minOccurs="1" maxOccurs="1" name="criteria" type="tns:ArrayOfIocIndicator" />
+      <xs:element minOccurs="0" maxOccurs="1" name="parameters" type="tns:ArrayOfIOCParameter" />
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required" />
+    <xs:attribute name="last-modified" type="xs:dateTime" use="required" />
+    <xs:attribute name="published-date" type="xs:dateTime" use="required" />
+  </xs:complexType>
+  <xs:complexType name="IOCMetadata">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="short_description" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="description" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="keywords" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="authored_by" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="authored_date" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" maxOccurs="1" name="links" type="tns:ArrayOfLink" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfLink">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="link" nillable="true" type="tns:Link" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Link" mixed="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Identity">
+        <xs:attribute name="rel" type="xs:string" use="required"/>
+        <xs:attribute name="title" type="xs:string" />
+        <xs:attribute name="type" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Identity">
+    <xs:attribute name="href" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="ArrayOfIocIndicator">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="unbounded" name="Indicator" nillable="true" type="tns:IocIndicator" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="IocIndicator">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="IndicatorItem" type="tns:IndicatorItem" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Indicator" type="tns:IocIndicator" />
+    </xs:sequence>
+    <xs:attribute name="operator" type="tns:IocOperator" use="required" />
+    <xs:attribute name="id" type="xs:string" use="required" />
+    <xs:attribute name="node-context" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="IndicatorItem">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="Context" type="tns:IndicatorItemContext" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Content" type="tns:IndicatorItemContent" />
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required" />
+    <xs:attribute name="condition" type="tns:IndicatorItemCondition" use="required"/>
+    <xs:attribute name="preserve-case" type="xs:boolean" use="required" />
+    <xs:attribute name="negate" type="xs:boolean" use="required" />
+  </xs:complexType>
+  <xs:complexType name="IndicatorItemContext">
+    <xs:attribute name="document" type="xs:string" />
+    <xs:attribute name="search" type="xs:string" />
+    <xs:attribute name="type" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="IndicatorItemContent">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="type" type="xs:string" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:simpleType name="IndicatorItemCondition">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="is" />
+      <xs:enumeration value="contains" />
+      <xs:enumeration value="matches" />
+      <xs:enumeration value="starts-with" />
+      <xs:enumeration value="ends-with" />
+      <xs:enumeration value="greater-than" />
+      <xs:enumeration value="less-than" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="IocOperator">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="OR" />
+      <xs:enumeration value="AND" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ArrayOfIOCParameter">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="param" nillable="true" type="tns:IOCParameter" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="IOCParameter">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="value" type="tns:IndicatorItemContent" />
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required" />
+    <xs:attribute name="ref-id" type="xs:string" use="required" />
+    <xs:attribute name="name" type="xs:string" use="required" />
+  </xs:complexType>
+</xs:schema>
