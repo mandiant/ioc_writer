@@ -30,6 +30,7 @@ log = logging.getLogger(__name__)
 
 OPENIOC_11_ASSETS = os.path.join(os.path.split(__file__)[0], 'assets/openioc_11_assets')
 OPENIOC_10_SCHEMA = os.path.join(os.path.split(__file__)[0], 'schemas/openioc_10_schema.xsd')
+OPENIOC_11_SCHEMA = os.path.join(os.path.split(__file__)[0], 'schemas/openioc_11_schema.xsd')
 
 
 class TestIocEt(unittest.TestCase):
@@ -262,6 +263,157 @@ class TestIOCApi(unittest.TestCase):
         ioc_obj = ioc_api.IOC(fp)
         self.assertEqual(ioc_obj.iocid, iocid)
         self.assertEqual(len(ioc_obj.top_level_indicator.getchildren()), 7)
+
+    def test_schema_validation_from_file(self):
+        iocid = '378f0cce-b8df-41d5-8189-3d7ec102e52f'
+        schema = et.XMLSchema(et.parse(OPENIOC_11_SCHEMA))
+        fn = '{}.ioc'.format(iocid)
+        fp = os.path.join(OPENIOC_11_ASSETS, fn)
+        t = et.parse(fp)
+        # Ensure our input is valid
+        schema.assertValid(t)
+        self.assertTrue(schema.validate(t))
+        ioc_obj = ioc_api.IOC(fp)
+        s = ioc_obj.write_ioc_to_string()
+        ioc_tree = et.fromstring(s)
+        # Ensure our output is valid after reserializing
+        schema.assertValid(ioc_tree)
+        self.assertTrue(schema.validate(ioc_tree))
+
+    def test_schema_validation_from_api(self):
+        schema = et.XMLSchema(et.parse(OPENIOC_11_SCHEMA))
+        ioc_obj = ioc_api.IOC(name=self.name,
+                              description=self.description,
+                              author=self.author,
+                              links=self.links,
+                              keywords=self.keywords,
+                              iocid=self.iocid)
+        ii_node = ioc_api.make_indicatoritem_node(condition='is',
+                                                  document=self.context_document,
+                                                  search=self.context_search,
+                                                  content_type=self.content_type,
+                                                  content=self.content_text,
+                                                  context_type='mir')
+        ioc_obj.top_level_indicator.append(ii_node)
+        s = ioc_obj.write_ioc_to_string()
+        ioc_tree = et.fromstring(s)
+        # Ensure our output is valid after reserializing
+        schema.assertValid(ioc_tree)
+        self.assertTrue(schema.validate(ioc_tree))
+
+    def test_schema_validation_from_api_fail(self):
+        schema = et.XMLSchema(et.parse(OPENIOC_11_SCHEMA))
+        ioc_obj = ioc_api.IOC(name=self.name,
+                              description=self.description,
+                              author=self.author,
+                              links=self.links,
+                              keywords=self.keywords,
+                              iocid=self.iocid)
+        i_node = ioc_api.make_indicator_node('AND')
+        ioc_obj.top_level_indicator.append(i_node)
+        ii_node = ioc_api.make_indicatoritem_node(condition='is',
+                                                  document=self.context_document,
+                                                  search=self.context_search,
+                                                  content_type=self.content_type,
+                                                  content=self.content_text,
+                                                  context_type='mir')
+        ioc_obj.top_level_indicator.append(ii_node)
+        s = ioc_obj.write_ioc_to_string()
+        ioc_tree = et.fromstring(s)
+        # Ensure our output is valid after reserializing
+        with self.assertRaises(et.DocumentInvalid) as cm:
+            schema.assertValid(ioc_tree)
+        self.assertIn('This element is not expected', str(cm.exception))
+
+
+    def test_schema_validation_from_api_fix_ordering_failure(self):
+        schema = et.XMLSchema(et.parse(OPENIOC_11_SCHEMA))
+        ioc_obj = ioc_api.IOC(name=self.name,
+                              description=self.description,
+                              author=self.author,
+                              links=self.links,
+                              keywords=self.keywords,
+                              iocid=self.iocid)
+        empty_i_node = ioc_api.make_indicator_node('AND', nid='EmptyANDnode')
+        ioc_obj.top_level_indicator.append(empty_i_node)
+        ii_node = ioc_api.make_indicatoritem_node(condition='is',
+                                                  document=self.context_document,
+                                                  search=self.context_search,
+                                                  content_type=self.content_type,
+                                                  content=self.content_text,
+                                                  context_type='mir')
+        ioc_obj.top_level_indicator.append(ii_node)
+        ii_node = ioc_api.make_indicatoritem_node(condition='is',
+                                                  document=self.context_document,
+                                                  search=self.context_search,
+                                                  content_type=self.content_type,
+                                                  content='test text',
+                                                  context_type='mir')
+        ioc_obj.top_level_indicator.append(ii_node)
+        and_node_1 = ioc_api.make_indicator_node('AND', nid='ANDnode1')
+        ioc_obj.top_level_indicator.append(and_node_1)
+        ii_node = ioc_api.make_indicatoritem_node(condition='is',
+                                                  document=self.context_document,
+                                                  search=self.context_search,
+                                                  content_type=self.content_type,
+                                                  content='and node 1 content 1',
+                                                  context_type='mir')
+        and_node_1.append(ii_node)
+        ii_node = ioc_api.make_indicatoritem_node(condition='is',
+                                                  document=self.context_document,
+                                                  search=self.context_search,
+                                                  content_type=self.content_type,
+                                                  content='and node 1 content 2',
+                                                  context_type='mir')
+        and_node_1.append(ii_node)
+        and_node_2 = ioc_api.make_indicator_node('AND', nid='ANDnode2')
+        ioc_obj.top_level_indicator.append(and_node_2)
+        ii_node = ioc_api.make_indicatoritem_node(condition='is',
+                                                  document=self.context_document,
+                                                  search=self.context_search,
+                                                  content_type=self.content_type,
+                                                  content='test text',
+                                                  context_type='mir')
+        and_node_2.append(ii_node)
+        or_node_1 = ioc_api.make_indicator_node('OR', nid='ORnode1')
+        and_node_2.append(or_node_1)
+        ii_node = ioc_api.make_indicatoritem_node(condition='is',
+                                                  document=self.context_document,
+                                                  search=self.context_search,
+                                                  content_type=self.content_type,
+                                                  content='test text',
+                                                  context_type='mir')
+        or_node_1.append(ii_node)
+        inner_i_node = ioc_api.make_indicator_node('AND', nid='InnderANDnode')
+        or_node_1.append(inner_i_node)
+        ii_node = ioc_api.make_indicatoritem_node(condition='is',
+                                                  document=self.context_document,
+                                                  search=self.context_search,
+                                                  content_type=self.content_type,
+                                                  content='test text',
+                                                  context_type='mir')
+        inner_i_node.append(ii_node)
+        ii_node = ioc_api.make_indicatoritem_node(condition='is',
+                                                  document=self.context_document,
+                                                  search=self.context_search,
+                                                  content_type=self.content_type,
+                                                  content='test text',
+                                                  context_type='mir')
+        inner_i_node.append(ii_node)
+        ii_node = ioc_api.make_indicatoritem_node(condition='is',
+                                                  document=self.context_document,
+                                                  search=self.context_search,
+                                                  content_type=self.content_type,
+                                                  content='test text',
+                                                  context_type='mir')
+        or_node_1.append(ii_node)
+        ioc_api.fix_schema_node_ordering(ioc_obj.top_level_indicator)
+        s = ioc_obj.write_ioc_to_string()
+        print(s)
+        ioc_tree = et.fromstring(s)
+        # Ensure our output is valid after reserializing
+        schema.assertValid(ioc_tree)
+        self.assertTrue(schema.validate(ioc_tree))
 
 
 class TestIOCAPIFuncs(unittest.TestCase):
