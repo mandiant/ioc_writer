@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.mandiant.com/2010/ioc" elementFormDefault="qualified" targetNamespace="http://schemas.mandiant.com/2010/ioc" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.mandiant.com/2010/ioc/TR/" />
+  <xs:element name="ioc" nillable="true" type="tns:IndicatorOfCompromise" />
+  <xs:complexType name="IndicatorOfCompromise">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="short_description" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="description" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="keywords" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="authored_by" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="authored_date" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" maxOccurs="1" name="links" type="tns:ArrayOfLink" />
+      <xs:element minOccurs="0" maxOccurs="1" name="definition" type="tns:ArrayOfIocIndicator" />
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" />
+    <xs:attribute name="last-modified" type="xs:dateTime" use="required" />
+  </xs:complexType>
+  <xs:complexType name="ArrayOfLink">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="link" nillable="true" type="tns:Link" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Link" mixed="true">
+    <xs:complexContent mixed="true">
+      <xs:extension base="tns:Identity">
+        <xs:attribute name="rel" type="xs:string" />
+        <xs:attribute name="title" type="xs:string" />
+        <xs:attribute name="type" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Identity">
+    <xs:attribute name="href" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="ArrayOfIocIndicator">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Indicator" nillable="true" type="tns:IocIndicator" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="IocIndicator">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="IndicatorItem" type="tns:IndicatorItem" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Indicator" type="tns:IocIndicator" />
+      <!-- The following statement does't parse with lxml
+      <xs:element minOccurs="0" maxOccurs="unbounded" xmlns:q1="http://schemas.mandiant.com/2010/ioc/TR/" ref="q1:param" /
+      -->
+    </xs:sequence>
+    <xs:attribute name="operator" type="tns:IocOperator" use="required" />
+    <xs:attribute name="id" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="IndicatorItem">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="Context" type="tns:IndicatorItemContext" />
+      <xs:element minOccurs="0" maxOccurs="1" name="Content" type="tns:IndicatorItemContent" />
+      <xs:element minOccurs="0" maxOccurs="1" name="Comment" type="xs:string" />
+      <!-- The following statement does't parse with lxml
+      <xs:element minOccurs="0" maxOccurs="unbounded" xmlns:q2="http://schemas.mandiant.com/2010/ioc/TR/" ref="q2:param" />
+      -->
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" />
+    <xs:attribute name="condition" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="IndicatorItemContext">
+    <xs:attribute name="document" type="xs:string" />
+    <xs:attribute name="search" type="xs:string" />
+    <xs:attribute name="type" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="IndicatorItemContent">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="type" type="xs:string" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:simpleType name="IocOperator">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="OR" />
+      <xs:enumeration value="AND" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

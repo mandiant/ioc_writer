@@ -56,6 +56,15 @@ __author__ = 'will.gibb'
 __version__ = '0.0.1'
 
 
+METADATA_ORDER_10 = ['short_description',
+                     'description',
+                     'keywords',
+                     'authored_by',
+                     'authored_date',
+                     'links']
+METADATA_REQUIRED_10 = ['authored_date']
+
+
 class DowngradeError(ioc_api.IOCParseError):
     """
     Exception raised when there is an error in the conversion
@@ -147,8 +156,16 @@ class DowngradeManager(IOCManager):
             # metadata underneath the root node
             metadata_node = ioc_obj_10.metadata
             criteria_node = ioc_obj_10.top_level_indicator.getparent()
+            metadata_dictionary = {}
             for child in metadata_node:
-                ioc_obj_10.root.append(child)
+                metadata_dictionary[child.tag] = child
+            for tag in METADATA_REQUIRED_10:
+                if tag not in metadata_dictionary:
+                    msg = 'IOC {} is missing required metadata: [{}]'.format(iocid, tag)
+                    raise DowngradeError(msg)
+            for tag in METADATA_ORDER_10:
+                if tag in metadata_dictionary:
+                    ioc_obj_10.root.append(metadata_dictionary.get(tag))
             ioc_obj_10.root.remove(metadata_node)
             ioc_obj_10.root.remove(criteria_node)
             criteria_node.tag = 'definition'
