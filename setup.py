@@ -2,18 +2,25 @@ import os
 from setuptools import setup, find_packages
 
 
-def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+try:
+    import pypandoc
+    long_description = pypandoc.convert('README.md', 'rst')
+except ImportError:
+    try:
+        long_description = open('README.md').read()
+    except:
+        long_description = 'README.md not found.'
 
+version = __import__('vbe_decoder').__version__
 
 setup(name="ioc_writer",
-      version="0.3.2",
+      version=version,
       author="William Gibb",
       author_email="william.gibb@mandiant.com",
       url="http://www.github.com/mandiant/ioc_writer/",
       packages=find_packages(exclude=['docs', 'tests']),
       description="""API providing a limited CRUD for manipulating OpenIOC formatted Indicators of Compromise.""",
-      long_description=read('README'),
+      long_description=long_descriptionls,
       install_requires=['lxml'],
       classifiers=[
           'Development Status :: 4 - Beta',

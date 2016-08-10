@@ -4,3 +4,4 @@ from ioc_writer import ioc_common
 from ioc_writer import utils
 from ioc_writer import managers
 __all__ = ['ioc_api', 'ioc_common', 'ioc_et', 'utils', 'managers']
+__version__ = '0.3.3'
