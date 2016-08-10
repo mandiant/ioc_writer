@@ -1,0 +1,12 @@
+[run]
+branch = True
+source = ioc_writer
+include = ioc_writer/*
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+    # Don't complain if non-runnable code isn't run:
+    if __name__ == .__main__.:
