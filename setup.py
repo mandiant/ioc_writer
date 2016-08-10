@@ -11,7 +11,7 @@ except ImportError:
     except:
         long_description = 'README.md not found.'
 
-version = __import__('vbe_decoder').__version__
+version = __import__('ioc_writer').__version__
 
 setup(name="ioc_writer",
       version=version,
@@ -20,7 +20,7 @@ setup(name="ioc_writer",
       url="http://www.github.com/mandiant/ioc_writer/",
       packages=find_packages(exclude=['docs', 'tests']),
       description="""API providing a limited CRUD for manipulating OpenIOC formatted Indicators of Compromise.""",
-      long_description=long_descriptionls,
+      long_description=long_description,
       install_requires=['lxml'],
       classifiers=[
           'Development Status :: 4 - Beta',
