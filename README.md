@@ -4,6 +4,10 @@
 The source code in this package is made available under the terms of the
 Apache License , Version 2.0. See the "LICENSE " file for more information.
 
+## Status
+* [![Build Status](https://travis-ci.org/mandiant/ioc_writer.svg?branch=master)](https://travis-ci.org/mandiant/ioc_writer)
+* [![Coverage Status](https://coveralls.io/repos/github/mandiant/ioc_writer/badge.svg?branch=master)](https://coveralls.io/mandiant/ioc_writer/vbe_decoder?branch=master)
+
 
 ## Author
 William Gibb
