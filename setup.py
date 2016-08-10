@@ -11,7 +11,7 @@ except ImportError:
     except:
         long_description = 'README.md not found.'
 
-version = __import__('ioc_writer').__version__
+version = '0.3.3'
 
 setup(name="ioc_writer",
       version=version,
