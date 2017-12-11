@@ -97,7 +97,7 @@ class YaraIOCManager(managers.IOCManager):
                 strings_list = self.get_yara_stringlist(iocid)
                 condition_string = self.get_yara_condition(iocid)
             except YaraConversionError:
-                log.exception('Failed to parse [[}]'.format(iocid))
+                log.exception('Failed to parse [{}]'.format(iocid))
                 continue
             # extract an entire yara signatures embedded in Yara/Yara nodes
             embedded_signatures = self.get_embedded_yara(iocid)
